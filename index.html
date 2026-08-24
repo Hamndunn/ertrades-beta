@@ -577,7 +577,9 @@
     }
 
     #ertrades-app .field input[type="date"] {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100% !important;
       min-width: 0 !important;
       max-width: 100% !important;
@@ -589,6 +591,8 @@
       appearance: none;
       text-align: center;
       text-align-last: center;
+      padding-left: 13px !important;
+      padding-right: 13px !important;
     }
 
     #ertrades-app .field input[type="date"]::-webkit-date-and-time-value {
@@ -596,11 +600,18 @@
       min-width: 100%;
       margin: 0;
       text-align: center;
+      padding: 0;
     }
 
     #ertrades-app .field input[type="date"]::-webkit-datetime-edit {
       width: 100%;
       text-align: center;
+      padding: 0;
+    }
+
+    #ertrades-app .field input[type="date"]::-webkit-calendar-picker-indicator {
+      position: absolute;
+      right: 12px;
     }
 
     #ertrades-app .native-select-hidden {
@@ -702,6 +713,7 @@
       left: 0;
       top: calc(100% + 7px);
       width: 100%;
+      z-index: 120;
     }
 
     #ertrades-app .trade-form-card .field {
@@ -4849,6 +4861,7 @@
         }
         selectedAccountId = value;
         selectedCalendarDate = null;
+        renderAccountSelector();
         if (!usingCloudData) safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
         accountMenuBtn.hidden = false;
         renderDashboardAccount();
@@ -4883,6 +4896,7 @@
 
       const wirePsychologyMenu = (select, button, menu) => {
         button.addEventListener('click', () => {
+          syncPsychologyUi();
           const open = !menu.classList.contains('open');
           closeCustomMenus(open ? menu : null);
           menu.classList.toggle('open', open);
