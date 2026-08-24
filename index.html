@@ -1,4 +1,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b0d">
+<meta name="application-name" content="eRTrades">
+<meta name="apple-mobile-web-app-title" content="eRTrades">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <style>
   html, body {
     margin: 0;
@@ -302,6 +309,7 @@
       display: grid;
       grid-template-columns: repeat(2,minmax(0,1fr));
       gap: 9px;
+      margin-bottom: 14px;
     }
 
     #ertrades-app .metric {
@@ -581,17 +589,165 @@
       font-size: 16px;
     }
 
-    #ertrades-app .field input[type="date"] {
-      display: block;
+    #ertrades-app .date-input-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a1013;
+      overflow: hidden;
+    }
+
+    #ertrades-app .date-input-wrap input[type="date"] {
+      position: absolute;
+      inset: 0;
       width: 100% !important;
       min-width: 0 !important;
       max-width: 100% !important;
-      inline-size: 100% !important;
-      min-inline-size: 0 !important;
-      max-inline-size: 100% !important;
-      box-sizing: border-box;
+      min-height: 48px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 12px;
+      opacity: .01;
+      cursor: pointer;
       -webkit-appearance: none;
       appearance: none;
+    }
+
+    #ertrades-app .date-input-display {
+      min-height: 48px;
+      padding: 0 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      font-size: 16px;
+      text-align: center;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .date-input-wrap::after {
+      content: "";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-right: 1.5px solid var(--soft);
+      border-bottom: 1.5px solid var(--soft);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+      opacity: .9;
+    }
+
+    #ertrades-app .date-input-wrap:focus-within {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    #ertrades-app .native-select-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    #ertrades-app .custom-select-btn {
+      width: 100%;
+      min-height: 54px;
+      padding: 22px 38px 7px 13px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+      color: var(--text);
+      text-align: left;
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+      position: relative;
+    }
+
+    #ertrades-app .field .custom-select-btn {
+      min-height: 48px;
+      padding: 0 38px 0 13px;
+      border-radius: 12px;
+      background: #0a1013;
+      font-size: 16px;
+      font-weight: 650;
+    }
+
+    #ertrades-app .custom-select-btn::after {
+      content: "";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid var(--soft);
+      border-bottom: 1.5px solid var(--soft);
+      transform: translateY(-60%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    #ertrades-app .popup-menu {
+      display: none;
+      position: absolute;
+      z-index: 80;
+      min-width: 190px;
+      max-width: min(320px, calc(100vw - 32px));
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+      box-shadow: 0 16px 36px rgba(0,0,0,.34);
+    }
+
+    #ertrades-app .popup-menu.open { display: grid; }
+
+    #ertrades-app .popup-menu button {
+      min-height: 44px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      font-size: 13px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    #ertrades-app .popup-menu button.selected {
+      color: var(--accent);
+      background: var(--accent-dark);
+    }
+
+    #ertrades-app .selector-popup {
+      left: 0;
+      top: calc(100% + 7px);
+      width: 100%;
+    }
+
+    #ertrades-app .psychology-select-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #ertrades-app .psychology-popup {
+      left: 0;
+      top: calc(100% + 7px);
+      width: 100%;
+      z-index: 120;
     }
 
     #ertrades-app .trade-form-card .field {
@@ -1430,6 +1586,7 @@
     #ertrades-app.theme-light .field input,
     #ertrades-app.theme-light .field select,
     #ertrades-app.theme-light .field textarea,
+    #ertrades-app.theme-light .field .custom-select-btn,
     #ertrades-app.theme-light .direction-btn,
     #ertrades-app.theme-light .rr-box,
     #ertrades-app.theme-light .detail-item,
@@ -1444,6 +1601,11 @@
     #ertrades-app.theme-light .auth-tab,
     #ertrades-app.theme-light .auth-status {
       background: #f7f9fa;
+    }
+
+    #ertrades-app.theme-light .popup-menu,
+    #ertrades-app.theme-light .custom-select-btn {
+      background: #ffffff;
     }
 
     #ertrades-app.theme-light .summary-card {
@@ -2059,11 +2221,14 @@
       <div class="control-row">
         <div class="selector-wrap">
           <label class="selector-label" for="account-select">Trading account</label>
-          <select id="account-select" aria-label="Select trading account">
+          <button class="custom-select-btn" id="account-select-btn" type="button" aria-haspopup="menu" aria-expanded="false">
+            <span id="account-select-label">No account added</span>
+          </button>
+          <select class="native-select-hidden" id="account-select" aria-label="Select trading account" tabindex="-1">
             <option value="none">No account added</option>
             <option value="__create__">+ Create Account</option>
           </select>
-          <span class="chevron" aria-hidden="true"></span>
+          <div class="popup-menu selector-popup" id="account-select-menu" role="menu"></div>
         </div>
         <div class="account-menu-wrap">
           <button class="account-menu-btn" id="account-menu-btn" type="button" aria-label="Trading account menu" aria-expanded="false" hidden>⋯</button>
@@ -2147,7 +2312,10 @@
               </div>
               <div class="field">
                 <label for="trade-date">Date</label>
-                <input id="trade-date" type="date" required>
+                <div class="date-input-wrap">
+                  <input id="trade-date" type="date" required>
+                  <span class="date-input-display" id="trade-date-display">—</span>
+                </div>
               </div>
               <div class="field">
                 <label for="trade-session">Session</label>
@@ -2231,31 +2399,39 @@
             <div class="trade-grid two-col">
               <div class="field">
                 <label for="psychology-before">Before</label>
-                <select id="psychology-before">
-                  <option value="">Select state</option>
-                  <option value="Confident">Confident</option>
-                  <option value="Neutral">Neutral</option>
-                  <option value="Fomo">Fomo</option>
-                  <option value="Fear">Fear</option>
-                  <option value="Revenge">Revenge</option>
-                  <option value="Disciplined">Disciplined</option>
-                  <option value="Anxious">Anxious</option>
-                  <option value="Excited">Excited</option>
-                </select>
+                <div class="psychology-select-wrap">
+                  <button class="custom-select-btn" id="psychology-before-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
+                  <select class="native-select-hidden" id="psychology-before" tabindex="-1">
+                    <option value="">Select state</option>
+                    <option value="Confident">Confident</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Fomo">Fomo</option>
+                    <option value="Fear">Fear</option>
+                    <option value="Revenge">Revenge</option>
+                    <option value="Disciplined">Disciplined</option>
+                    <option value="Anxious">Anxious</option>
+                    <option value="Excited">Excited</option>
+                  </select>
+                  <div class="popup-menu psychology-popup" id="psychology-before-menu" role="menu"></div>
+                </div>
               </div>
               <div class="field">
                 <label for="psychology-after">After</label>
-                <select id="psychology-after">
-                  <option value="">Select state</option>
-                  <option value="Confident">Confident</option>
-                  <option value="Neutral">Neutral</option>
-                  <option value="Fomo">Fomo</option>
-                  <option value="Fear">Fear</option>
-                  <option value="Revenge">Revenge</option>
-                  <option value="Disciplined">Disciplined</option>
-                  <option value="Anxious">Anxious</option>
-                  <option value="Excited">Excited</option>
-                </select>
+                <div class="psychology-select-wrap">
+                  <button class="custom-select-btn" id="psychology-after-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
+                  <select class="native-select-hidden" id="psychology-after" tabindex="-1">
+                    <option value="">Select state</option>
+                    <option value="Confident">Confident</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Fomo">Fomo</option>
+                    <option value="Fear">Fear</option>
+                    <option value="Revenge">Revenge</option>
+                    <option value="Disciplined">Disciplined</option>
+                    <option value="Anxious">Anxious</option>
+                    <option value="Excited">Excited</option>
+                  </select>
+                  <div class="popup-menu psychology-popup" id="psychology-after-menu" role="menu"></div>
+                </div>
               </div>
             </div>
           </section>
@@ -2638,6 +2814,9 @@
       const notice = root.querySelector('#frontend-notice');
       const tradeSuccess = root.querySelector('#trade-success');
       const accountSelect = root.querySelector('#account-select');
+      const accountSelectBtn = root.querySelector('#account-select-btn');
+      const accountSelectLabel = root.querySelector('#account-select-label');
+      const accountSelectMenu = root.querySelector('#account-select-menu');
       const accountMenuBtn = root.querySelector('#account-menu-btn');
       const accountMenu = root.querySelector('#account-menu');
       const editAccountBtn = root.querySelector('#edit-account-btn');
@@ -2659,6 +2838,7 @@
       const tradeFormError = root.querySelector('#trade-form-error');
       const tradeInstrument = root.querySelector('#trade-instrument');
       const tradeDate = root.querySelector('#trade-date');
+      const tradeDateDisplay = root.querySelector('#trade-date-display');
       const tradeSession = root.querySelector('#trade-session');
       const entryPrice = root.querySelector('#entry-price');
       const stopLoss = root.querySelector('#stop-loss');
@@ -2672,6 +2852,10 @@
       const tradeMistakes = root.querySelector('#trade-mistakes');
       const psychologyBefore = root.querySelector('#psychology-before');
       const psychologyAfter = root.querySelector('#psychology-after');
+      const psychologyBeforeBtn = root.querySelector('#psychology-before-btn');
+      const psychologyAfterBtn = root.querySelector('#psychology-after-btn');
+      const psychologyBeforeMenu = root.querySelector('#psychology-before-menu');
+      const psychologyAfterMenu = root.querySelector('#psychology-after-menu');
       const directionButtons = Array.from(root.querySelectorAll('.direction-btn'));
       const rrBox = root.querySelector('#rr-box');
       const plannedRr = root.querySelector('#planned-rr');
@@ -3651,6 +3835,20 @@
         return `${year}-${month}-${day}`;
       };
 
+      const syncTradeDateDisplay = () => {
+        if (!tradeDateDisplay) return;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(tradeDate.value || '')) {
+          tradeDateDisplay.textContent = 'Select date';
+          return;
+        }
+        const [year, month, day] = tradeDate.value.split('-').map(Number);
+        tradeDateDisplay.textContent = new Intl.DateTimeFormat('id-ID', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }).format(new Date(year, month - 1, day));
+      };
+
       const parseOptionalNumber = (input) => {
         if (input.value.trim() === '') return null;
         const value = Number(input.value);
@@ -3858,6 +4056,7 @@
         tradeInstrument.value = draft.instrument || '';
         selectedDirection = draft.direction === 'BUY' || draft.direction === 'SELL' ? draft.direction : '';
         tradeDate.value = draft.date || getLocalDateValue();
+        syncTradeDateDisplay();
         tradeSession.value = ['Asian', 'London', 'New York'].includes(draft.session) ? draft.session : 'Asian';
         entryPrice.value = draft.entryPrice ?? '';
         stopLoss.value = draft.stopLoss ?? '';
@@ -4176,6 +4375,7 @@
 
       const renderAccountSelector = () => {
         accountSelect.innerHTML = '';
+        accountSelectMenu.innerHTML = '';
         if (accounts.length === 0) {
           const emptyOption = document.createElement('option');
           emptyOption.value = 'none';
@@ -4201,9 +4401,54 @@
         } else {
           accountSelect.value = 'none';
         }
+        accountSelectLabel.textContent = currentAccount()?.name || 'No account selected';
+        accounts.forEach((account) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.dataset.accountValue = account.id;
+          button.textContent = account.name;
+          button.classList.toggle('selected', account.id === selectedAccountId);
+          accountSelectMenu.appendChild(button);
+        });
+        const createButton = document.createElement('button');
+        createButton.type = 'button';
+        createButton.dataset.accountValue = '__create__';
+        createButton.textContent = '+ Create Account';
+        accountSelectMenu.appendChild(createButton);
         accountMenuBtn.hidden = !currentAccount();
         accountMenu.classList.remove('open');
         accountMenuBtn.setAttribute('aria-expanded', 'false');
+        accountSelectMenu.classList.remove('open');
+        accountSelectBtn.setAttribute('aria-expanded', 'false');
+      };
+
+      const psychologyStates = ['', 'Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'];
+
+      const renderPsychologyMenu = (select, button, menu) => {
+        menu.innerHTML = '';
+        psychologyStates.forEach((state) => {
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.dataset.psychologyValue = state;
+          option.textContent = state || 'Select state';
+          option.classList.toggle('selected', select.value === state);
+          menu.appendChild(option);
+        });
+        button.textContent = select.value || 'Select state';
+      };
+
+      const syncPsychologyUi = () => {
+        renderPsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
+        renderPsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
+      };
+
+      const closeCustomMenus = (except = null) => {
+        [accountSelectMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
+          if (menu !== except) menu.classList.remove('open');
+        });
+        if (accountSelectMenu !== except) accountSelectBtn.setAttribute('aria-expanded', 'false');
+        if (psychologyBeforeMenu !== except) psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
+        if (psychologyAfterMenu !== except) psychologyAfterBtn.setAttribute('aria-expanded', 'false');
       };
 
       const showPage = (page) => {
@@ -4274,6 +4519,8 @@
         tradeFormError.textContent = '';
         const restored = restoreDraft();
         if (!restored && !tradeDate.value) tradeDate.value = getLocalDateValue();
+        syncTradeDateDisplay();
+        syncPsychologyUi();
         tradeInstrument.focus();
       };
 
@@ -4285,6 +4532,7 @@
         tradeInstrument.value = trade.instrument || '';
         selectedDirection = trade.direction || '';
         tradeDate.value = trade.date || getLocalDateValue();
+        syncTradeDateDisplay();
         tradeSession.value = trade.session || 'Asian';
         entryPrice.value = trade.entryPrice ?? '';
         stopLoss.value = trade.stopLoss ?? '';
@@ -4298,6 +4546,7 @@
         tradeMistakes.value = trade.mistakes || '';
         psychologyBefore.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyBefore) ? trade.psychologyBefore : '';
         psychologyAfter.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyAfter) ? trade.psychologyAfter : '';
+        syncPsychologyUi();
         await loadTradeScreenshots(trade);
         updateDirectionButtons();
         calculatePlannedRr();
@@ -4327,7 +4576,11 @@
         selectedDirection = '';
         updateDirectionButtons();
         tradeDate.value = getLocalDateValue();
+        syncTradeDateDisplay();
         tradeSession.value = 'Asian';
+        psychologyBefore.value = '';
+        psychologyAfter.value = '';
+        syncPsychologyUi();
         tradeFormError.classList.remove('show');
         tradeFormError.textContent = '';
       };
@@ -4364,12 +4617,14 @@
             clearRecoveryUrl();
             setAuthStatus(decodeURIComponent(recoveryRedirect.error.replace(/\+/g, ' ')), 'error');
             tradeDate.value = getLocalDateValue();
+            syncTradeDateDisplay();
             return;
           }
           if (recoveryRedirect?.accessToken) {
             showPasswordReset(recoveryRedirect.accessToken);
             clearRecoveryUrl();
             tradeDate.value = getLocalDateValue();
+            syncTradeDateDisplay();
             return;
           }
           const session = await getValidSupabaseSession();
@@ -4389,6 +4644,7 @@
             showLogin();
           }
           tradeDate.value = getLocalDateValue();
+          syncTradeDateDisplay();
         } catch (error) {
           showLogin();
           setAuthStatus(error instanceof Error ? error.message : 'Unable to initialize eRTrades.', 'error');
@@ -4571,6 +4827,9 @@
 
       newTrade.addEventListener('click', openTradeForm);
 
+      tradeDate.addEventListener('input', syncTradeDateDisplay);
+      tradeDate.addEventListener('change', syncTradeDateDisplay);
+
       directionButtons.forEach((button) => {
         button.addEventListener('click', () => {
           selectedDirection = button.dataset.direction || '';
@@ -4692,8 +4951,7 @@
         });
       });
 
-      accountSelect.addEventListener('change', async () => {
-        const value = accountSelect.value;
+      const handleAccountSelection = async (value) => {
         if (value === '__create__') {
           openAccountForm();
           return;
@@ -4707,6 +4965,7 @@
         }
         selectedAccountId = value;
         selectedCalendarDate = null;
+        renderAccountSelector();
         if (!usingCloudData) safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
         accountMenuBtn.hidden = false;
         renderDashboardAccount();
@@ -4718,7 +4977,49 @@
           notice.textContent = error instanceof Error ? error.message : 'Unable to save account selection.';
           notice.classList.add('show');
         }
+      };
+
+      accountSelect.addEventListener('change', () => handleAccountSelection(accountSelect.value));
+
+      accountSelectBtn.addEventListener('click', () => {
+        const open = !accountSelectMenu.classList.contains('open');
+        closeCustomMenus(open ? accountSelectMenu : null);
+        accountSelectMenu.classList.toggle('open', open);
+        accountSelectBtn.setAttribute('aria-expanded', String(open));
       });
+
+      accountSelectMenu.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-account-value]');
+        if (!button) return;
+        const value = button.dataset.accountValue || 'none';
+        accountSelect.value = value;
+        accountSelectMenu.classList.remove('open');
+        accountSelectBtn.setAttribute('aria-expanded', 'false');
+        handleAccountSelection(value);
+      });
+
+      const wirePsychologyMenu = (select, button, menu) => {
+        button.addEventListener('click', () => {
+          syncPsychologyUi();
+          const open = !menu.classList.contains('open');
+          closeCustomMenus(open ? menu : null);
+          menu.classList.toggle('open', open);
+          button.setAttribute('aria-expanded', String(open));
+        });
+        menu.addEventListener('click', (event) => {
+          const option = event.target.closest('button[data-psychology-value]');
+          if (!option) return;
+          select.value = option.dataset.psychologyValue || '';
+          menu.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+          syncPsychologyUi();
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      };
+
+      wirePsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
+      wirePsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
+      syncPsychologyUi();
 
       accountForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -4843,6 +5144,18 @@
         if (!accountMenu.contains(event.target) && event.target !== accountMenuBtn) {
           accountMenu.classList.remove('open');
           accountMenuBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (!accountSelectMenu.contains(event.target) && event.target !== accountSelectBtn) {
+          accountSelectMenu.classList.remove('open');
+          accountSelectBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (!psychologyBeforeMenu.contains(event.target) && event.target !== psychologyBeforeBtn) {
+          psychologyBeforeMenu.classList.remove('open');
+          psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (!psychologyAfterMenu.contains(event.target) && event.target !== psychologyAfterBtn) {
+          psychologyAfterMenu.classList.remove('open');
+          psychologyAfterBtn.setAttribute('aria-expanded', 'false');
         }
       });
 
