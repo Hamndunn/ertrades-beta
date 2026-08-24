@@ -436,9 +436,9 @@
     #ertrades-app .nav-shell::-webkit-scrollbar { display: none; }
 
     #ertrades-app .bottom-nav {
-      min-width: 420px;
+      min-width: 350px;
       display: grid;
-      grid-template-columns: repeat(6,1fr);
+      grid-template-columns: repeat(5,1fr);
       gap: 3px;
     }
 
@@ -1124,178 +1124,6 @@
 
     #ertrades-app .analytics-page.visible { display: block; }
 
-    #ertrades-app .ai-analyst-page {
-      display: none;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      background: var(--panel);
-      overflow: hidden;
-    }
-
-    #ertrades-app .ai-analyst-page.visible { display: block; }
-
-    #ertrades-app .ai-body {
-      padding: 14px;
-      display: grid;
-      gap: 14px;
-    }
-
-    #ertrades-app .ai-controls {
-      display: grid;
-      gap: 12px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #0a1013;
-    }
-
-    #ertrades-app .ai-range-grid {
-      display: grid;
-      grid-template-columns: repeat(5,minmax(0,1fr));
-      gap: 6px;
-    }
-
-    #ertrades-app .ai-range-btn {
-      min-height: 40px;
-      padding: 0 7px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--panel);
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    #ertrades-app .ai-range-btn.active {
-      border-color: rgba(184,255,79,.4);
-      background: var(--accent-dark);
-      color: var(--accent);
-    }
-
-    #ertrades-app .ai-custom-range {
-      display: none;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: 9px;
-    }
-
-    #ertrades-app .ai-custom-range.visible { display: grid; }
-
-    #ertrades-app .ai-status {
-      display: none;
-      padding: 12px 13px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #0a1013;
-      color: var(--soft);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    #ertrades-app .ai-status.show { display: block; }
-    #ertrades-app .ai-status.error { color: var(--red); border-color: rgba(255,107,121,.28); }
-    #ertrades-app .ai-status.success { color: var(--green); border-color: rgba(99,230,161,.28); }
-
-    #ertrades-app .ai-report {
-      display: none;
-      gap: 10px;
-    }
-
-    #ertrades-app .ai-report.visible { display: grid; }
-
-    #ertrades-app .ai-report-card {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #0a1013;
-      overflow: hidden;
-    }
-
-    #ertrades-app .ai-report-card summary {
-      min-height: 48px;
-      padding: 0 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      cursor: pointer;
-      list-style: none;
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    #ertrades-app .ai-report-card summary::-webkit-details-marker { display: none; }
-
-    #ertrades-app .ai-report-content {
-      padding: 0 14px 14px;
-      color: var(--soft);
-      font-size: 12px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-    }
-
-    #ertrades-app .ai-report-content ul {
-      margin: 0;
-      padding-left: 18px;
-    }
-
-    #ertrades-app .ai-suggestions {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-      scrollbar-width: none;
-    }
-
-    #ertrades-app .ai-suggestions::-webkit-scrollbar { display: none; }
-
-    #ertrades-app .ai-suggestion-btn {
-      min-height: 40px;
-      padding: 0 11px;
-      flex: 0 0 auto;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: #0a1013;
-      color: var(--soft);
-      font-size: 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    #ertrades-app .ai-chat {
-      display: grid;
-      grid-template-columns: minmax(0,1fr) auto;
-      gap: 8px;
-    }
-
-    #ertrades-app .ai-chat input {
-      width: 100%;
-      min-height: 44px;
-      padding: 0 12px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: #0a1013;
-      color: var(--text);
-      outline: none;
-      font-size: 16px;
-    }
-
-    #ertrades-app .ai-chat input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    #ertrades-app .ai-answer {
-      display: none;
-      padding: 12px 13px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #0a1013;
-      color: var(--soft);
-      font-size: 12px;
-      line-height: 1.55;
-      white-space: pre-wrap;
-    }
-
-    #ertrades-app .ai-answer.show { display: block; }
-
     #ertrades-app .analytics-body {
       padding: 14px;
       display: grid;
@@ -1541,8 +1369,7 @@
     #ertrades-app.theme-light .calendar-nav-btn,
     #ertrades-app.theme-light .screenshot-picker,
     #ertrades-app.theme-light .theme-option,
-    #ertrades-app.theme-light .confirm-dialog,
-    #ertrades-app.theme-light .ai-range-btn {
+    #ertrades-app.theme-light .confirm-dialog {
       background: #ffffff;
     }
 
@@ -1562,13 +1389,7 @@
     #ertrades-app.theme-light .equity-filter,
     #ertrades-app.theme-light .screenshot-slot,
     #ertrades-app.theme-light .auth-tab,
-    #ertrades-app.theme-light .auth-status,
-    #ertrades-app.theme-light .ai-controls,
-    #ertrades-app.theme-light .ai-status,
-    #ertrades-app.theme-light .ai-report-card,
-    #ertrades-app.theme-light .ai-suggestion-btn,
-    #ertrades-app.theme-light .ai-chat input,
-    #ertrades-app.theme-light .ai-answer {
+    #ertrades-app.theme-light .auth-status {
       background: #f7f9fa;
     }
 
@@ -1862,7 +1683,6 @@
     #ertrades-app .calendar-day-head > *,
     #ertrades-app .trade-row-top > *,
     #ertrades-app .trade-row-bottom > *,
-    #ertrades-app .ai-chat > *,
     #ertrades-app .detail-grid > *,
     #ertrades-app .analytics-overview > *,
     #ertrades-app .analytics-insights > * {
@@ -1919,10 +1739,6 @@
     #ertrades-app .confirm-actions > *,
     #ertrades-app .import-actions > * {
       width: 100%;
-      min-width: 0;
-    }
-
-    #ertrades-app .ai-chat input {
       min-width: 0;
     }
 
@@ -1983,7 +1799,6 @@
       #ertrades-app .trade-form-body,
       #ertrades-app .detail-body,
       #ertrades-app .analytics-body,
-      #ertrades-app .ai-body,
       #ertrades-app .settings-body {
         padding-left: 12px;
         padding-right: 12px;
@@ -1996,22 +1811,6 @@
       #ertrades-app .trade-form-actions,
       #ertrades-app .detail-actions {
         grid-template-columns: minmax(0,1fr);
-      }
-
-      #ertrades-app .ai-range-grid {
-        grid-template-columns: repeat(3,minmax(0,1fr));
-      }
-
-      #ertrades-app .ai-custom-range {
-        grid-template-columns: minmax(0,1fr);
-      }
-
-      #ertrades-app .ai-chat {
-        grid-template-columns: minmax(0,1fr);
-      }
-
-      #ertrades-app .ai-chat .primary-btn {
-        width: 100%;
       }
 
       #ertrades-app .calendar-wrap {
@@ -2375,6 +2174,40 @@
           </section>
 
           <section class="trade-section">
+            <div class="trade-section-title">Trading Psychology</div>
+            <div class="trade-grid two-col">
+              <div class="field">
+                <label for="psychology-before">Before</label>
+                <select id="psychology-before">
+                  <option value="">Select state</option>
+                  <option value="Confident">Confident</option>
+                  <option value="Neutral">Neutral</option>
+                  <option value="Fomo">Fomo</option>
+                  <option value="Fear">Fear</option>
+                  <option value="Revenge">Revenge</option>
+                  <option value="Disciplined">Disciplined</option>
+                  <option value="Anxious">Anxious</option>
+                  <option value="Excited">Excited</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="psychology-after">After</label>
+                <select id="psychology-after">
+                  <option value="">Select state</option>
+                  <option value="Confident">Confident</option>
+                  <option value="Neutral">Neutral</option>
+                  <option value="Fomo">Fomo</option>
+                  <option value="Fear">Fear</option>
+                  <option value="Revenge">Revenge</option>
+                  <option value="Disciplined">Disciplined</option>
+                  <option value="Anxious">Anxious</option>
+                  <option value="Excited">Excited</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="trade-section">
             <div class="trade-section-title">Trade Screenshots</div>
             <div class="screenshot-grid">
               <div class="screenshot-slot">
@@ -2638,73 +2471,6 @@
         </div>
       </section>
 
-      <section class="ai-analyst-page" id="ai-analyst-page" aria-labelledby="ai-analyst-title">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Journal Intelligence</div>
-            <div class="section-title" id="ai-analyst-title">AI Trading Analyst</div>
-          </div>
-          <span class="section-meta" id="ai-data-count">0 trades</span>
-        </div>
-        <div class="ai-body">
-          <section class="ai-controls">
-            <div class="field">
-              <label for="ai-account-select">Trading Account</label>
-              <select id="ai-account-select"></select>
-            </div>
-            <div>
-              <div class="detail-label" style="margin-bottom:7px">Date Range</div>
-              <div class="ai-range-grid" role="group" aria-label="AI analysis date range">
-                <button class="ai-range-btn" type="button" data-ai-range="7D">7D</button>
-                <button class="ai-range-btn active" type="button" data-ai-range="30D">30D</button>
-                <button class="ai-range-btn" type="button" data-ai-range="3M">3M</button>
-                <button class="ai-range-btn" type="button" data-ai-range="6M">6M</button>
-                <button class="ai-range-btn" type="button" data-ai-range="ALL">ALL</button>
-              </div>
-            </div>
-            <div class="field">
-              <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:11px">
-                <input id="ai-custom-toggle" type="checkbox" style="width:auto;min-height:auto">
-                Custom Date Range
-              </label>
-            </div>
-            <div class="ai-custom-range" id="ai-custom-range">
-              <div class="field">
-                <label for="ai-start-date">Start Date</label>
-                <input id="ai-start-date" type="date">
-              </div>
-              <div class="field">
-                <label for="ai-end-date">End Date</label>
-                <input id="ai-end-date" type="date">
-              </div>
-            </div>
-            <button class="primary-btn" id="ai-analyze-btn" type="button">Analyze My Trading</button>
-          </section>
-
-          <div class="ai-status" id="ai-status" role="status" aria-live="polite"></div>
-
-          <section class="ai-report" id="ai-report" aria-label="AI trading analysis report"></section>
-
-          <section class="analytics-section">
-            <div class="analytics-section-head"><div class="analytics-section-title">Suggested Questions</div></div>
-            <div style="padding:12px">
-              <div class="ai-suggestions" id="ai-suggestions">
-                <button class="ai-suggestion-btn" type="button">Analyze my weaknesses</button>
-                <button class="ai-suggestion-btn" type="button">Review my risk management</button>
-                <button class="ai-suggestion-btn" type="button">Best and worst session</button>
-                <button class="ai-suggestion-btn" type="button">Why am I losing?</button>
-                <button class="ai-suggestion-btn" type="button">Review my prop firm status</button>
-              </div>
-              <form class="ai-chat" id="ai-chat-form" style="margin-top:10px">
-                <input id="ai-question" type="text" maxlength="500" placeholder="Ask about this journal data..." autocomplete="off">
-                <button class="primary-btn" id="ai-ask-btn" type="submit">Ask</button>
-              </form>
-              <div class="ai-answer" id="ai-answer" aria-live="polite"></div>
-            </div>
-          </section>
-        </div>
-      </section>
-
       <section class="settings-page" id="settings-page" aria-labelledby="settings-title">
         <div class="section-head">
           <div>
@@ -2781,10 +2547,6 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19V9m5 10V5m5 14v-7m4 7V8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
             Analytics
           </button>
-          <button class="nav-btn" type="button" data-page="AI Analyst">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.35 4.15L17.5 8.5l-4.15 1.35L12 14l-1.35-4.15L6.5 8.5l4.15-1.35L12 3zM18.5 14l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2zM6 15l.7 1.8 1.8.7-1.8.7L6 20l-.7-1.8-1.8-.7 1.8-.7L6 15z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-            AI Analyst
-          </button>
           <button class="nav-btn" type="button" data-page="Settings">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M19 12a7.2 7.2 0 00-.1-1.1l2-1.5-2-3.4-2.5 1a7.4 7.4 0 00-1.9-1.1L14.2 3h-4.4l-.4 2.9A7.4 7.4 0 007.5 7L5 6 3 9.4l2 1.5A7.2 7.2 0 005 13.1l-2 1.5L5 18l2.5-1a7.4 7.4 0 001.9 1.1l.4 2.9h4.4l.4-2.9a7.4 7.4 0 001.9-1.1l2.5 1 2-3.4-2-1.5A7.2 7.2 0 0019 12z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
             Settings
@@ -2842,6 +2604,8 @@
       const tradeResult = root.querySelector('#trade-result');
       const tradeNotes = root.querySelector('#trade-notes');
       const tradeMistakes = root.querySelector('#trade-mistakes');
+      const psychologyBefore = root.querySelector('#psychology-before');
+      const psychologyAfter = root.querySelector('#psychology-after');
       const directionButtons = Array.from(root.querySelectorAll('.direction-btn'));
       const rrBox = root.querySelector('#rr-box');
       const plannedRr = root.querySelector('#planned-rr');
@@ -2912,22 +2676,6 @@
       const analyticsDailyPlChart = root.querySelector('#analytics-daily-pl-chart');
       const analyticsInsights = root.querySelector('#analytics-insights');
       const analyticsFilters = Array.from(root.querySelectorAll('.analytics-filter'));
-      const aiAnalystPage = root.querySelector('#ai-analyst-page');
-      const aiAccountSelect = root.querySelector('#ai-account-select');
-      const aiRangeButtons = Array.from(root.querySelectorAll('.ai-range-btn'));
-      const aiCustomToggle = root.querySelector('#ai-custom-toggle');
-      const aiCustomRange = root.querySelector('#ai-custom-range');
-      const aiStartDate = root.querySelector('#ai-start-date');
-      const aiEndDate = root.querySelector('#ai-end-date');
-      const aiAnalyzeBtn = root.querySelector('#ai-analyze-btn');
-      const aiStatus = root.querySelector('#ai-status');
-      const aiReport = root.querySelector('#ai-report');
-      const aiDataCount = root.querySelector('#ai-data-count');
-      const aiSuggestions = root.querySelector('#ai-suggestions');
-      const aiChatForm = root.querySelector('#ai-chat-form');
-      const aiQuestion = root.querySelector('#ai-question');
-      const aiAskBtn = root.querySelector('#ai-ask-btn');
-      const aiAnswer = root.querySelector('#ai-answer');
       const calendarAccountName = root.querySelector('#calendar-account-name');
       const calendarPrev = root.querySelector('#calendar-prev');
       const calendarNext = root.querySelector('#calendar-next');
@@ -2986,10 +2734,6 @@
       let previewUrls = { before: null, after: null };
       let equityFilter = 'ALL';
       let analyticsFilter = 'ALL';
-      let aiRange = '30D';
-      let aiSelectedAccountId = null;
-      let aiLastPayload = null;
-      let aiLastReport = null;
       const calendarNow = new Date();
       let calendarYear = calendarNow.getFullYear();
       let calendarMonth = calendarNow.getMonth();
@@ -3328,8 +3072,6 @@
           movedStopLoss,
           overtraded,
           psychologyNotes,
-          psychologyBefore,
-          psychologyAfter,
           ...cleanTrade
         } = trade;
         return cleanTrade;
@@ -3835,285 +3577,6 @@
         });
       };
 
-      const aiProvider = () => {
-        const provider = window.eRTradesAIProvider;
-        if (!provider || typeof provider.analyzeJournal !== 'function') return null;
-        return provider;
-      };
-
-      const setAiStatus = (message, type = '') => {
-        aiStatus.textContent = message;
-        aiStatus.className = `ai-status show${type ? ` ${type}` : ''}`;
-      };
-
-      const clearAiStatus = () => {
-        aiStatus.textContent = '';
-        aiStatus.className = 'ai-status';
-      };
-
-      const aiAccount = () => accounts.find((account) => account.id === aiSelectedAccountId) || null;
-
-      const aiTradeDateTimestamp = (trade) => {
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(trade.date || '')) return 0;
-        const [year, month, day] = trade.date.split('-').map(Number);
-        return new Date(year, month - 1, day, 12, 0, 0, 0).getTime();
-      };
-
-      const aiFilteredTrades = () => {
-        const accountId = aiSelectedAccountId;
-        const base = trades
-          .filter((trade) => trade.accountId === accountId)
-          .slice()
-          .sort((a, b) => {
-            const dateDiff = aiTradeDateTimestamp(a) - aiTradeDateTimestamp(b);
-            if (dateDiff !== 0) return dateDiff;
-            const createdDiff = (a.createdAt || 0) - (b.createdAt || 0);
-            if (createdDiff !== 0) return createdDiff;
-            return String(a.id).localeCompare(String(b.id));
-          });
-
-        if (aiCustomToggle.checked) {
-          if (!aiStartDate.value || !aiEndDate.value) return [];
-          const start = new Date(`${aiStartDate.value}T00:00:00`).getTime();
-          const end = new Date(`${aiEndDate.value}T23:59:59`).getTime();
-          if (!Number.isFinite(start) || !Number.isFinite(end) || start > end) return [];
-          return base.filter((trade) => {
-            const timestamp = aiTradeDateTimestamp(trade);
-            return timestamp >= start && timestamp <= end;
-          });
-        }
-
-        if (aiRange === 'ALL') return base;
-        const now = new Date();
-        const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
-        const days = aiRange === '7D' ? 7 : aiRange === '30D' ? 30 : aiRange === '3M' ? 90 : 180;
-        const start = end - ((days - 1) * 86400000);
-        return base.filter((trade) => {
-          const timestamp = aiTradeDateTimestamp(trade);
-          return timestamp >= start && timestamp <= end;
-        });
-      };
-
-      const aiMaxDrawdown = (account, items) => {
-        let equity = Number(account?.startingBalance) || 0;
-        let peak = equity;
-        let maximum = 0;
-        items.forEach((trade) => {
-          equity += Number(trade.profitLoss) || 0;
-          if (equity > peak) peak = equity;
-          if (peak > 0) {
-            const drawdown = ((peak - equity) / peak) * 100;
-            if (Number.isFinite(drawdown) && drawdown > maximum) maximum = drawdown;
-          }
-        });
-        return maximum;
-      };
-
-      const aiLongestStreak = (items, result) => {
-        let current = 0;
-        let longest = 0;
-        items.forEach((trade) => {
-          if (trade.result === result) {
-            current += 1;
-            longest = Math.max(longest, current);
-          } else {
-            current = 0;
-          }
-        });
-        return longest;
-      };
-
-      const aiGrouped = (items, keyFn) => {
-        const groups = new Map();
-        items.forEach((trade) => {
-          const key = keyFn(trade);
-          if (!key) return;
-          if (!groups.has(key)) groups.set(key, []);
-          groups.get(key).push(trade);
-        });
-        return Array.from(groups.entries()).map(([name, group]) => ({ name, ...analyticsGroupStats(group) }));
-      };
-
-      const buildAiPayload = () => {
-        const account = aiAccount();
-        const items = aiFilteredTrades();
-        if (!account) throw new Error('Select a trading account.');
-        if (aiCustomToggle.checked) {
-          if (!aiStartDate.value || !aiEndDate.value) throw new Error('Choose both custom start and end dates.');
-          if (aiStartDate.value > aiEndDate.value) throw new Error('Custom start date must be before the end date.');
-        }
-
-        const wins = items.filter((trade) => trade.result === 'WIN');
-        const losses = items.filter((trade) => trade.result === 'LOSS');
-        const breakEven = items.filter((trade) => trade.result === 'BREAK EVEN');
-        const closed = items.filter((trade) => ['WIN', 'LOSS', 'BREAK EVEN'].includes(trade.result));
-        const netPl = items.reduce((sum, trade) => sum + (Number(trade.profitLoss) || 0), 0);
-        const averageWin = wins.length ? wins.reduce((sum, trade) => sum + (Number(trade.profitLoss) || 0), 0) / wins.length : 0;
-        const averageLoss = losses.length ? losses.reduce((sum, trade) => sum + (Number(trade.profitLoss) || 0), 0) / losses.length : 0;
-        const grossWins = wins.reduce((sum, trade) => sum + Math.max(0, Number(trade.profitLoss) || 0), 0);
-        const grossLosses = Math.abs(losses.reduce((sum, trade) => sum + Math.min(0, Number(trade.profitLoss) || 0), 0));
-        const winRateDecimal = closed.length ? wins.length / closed.length : 0;
-        const lossRateDecimal = closed.length ? losses.length / closed.length : 0;
-        const rrItems = items.filter((trade) => Number.isFinite(Number(trade.plannedRr)));
-        const averageRr = rrItems.length ? rrItems.reduce((sum, trade) => sum + Number(trade.plannedRr), 0) / rrItems.length : 0;
-        const dailyMap = new Map();
-        items.forEach((trade) => dailyMap.set(trade.date, (dailyMap.get(trade.date) || 0) + (Number(trade.profitLoss) || 0)));
-        const dailyPl = Array.from(dailyMap.entries()).sort((a, b) => a[0].localeCompare(b[0])).map(([date, pnl]) => ({ date, pnl }));
-
-        let equity = Number(account.startingBalance) || 0;
-        const equityPerformance = [{ label: 'Starting Balance', equity }];
-        items.forEach((trade) => {
-          equity += Number(trade.profitLoss) || 0;
-          equityPerformance.push({ date: trade.date, equity });
-        });
-
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const performanceByTradingDay = aiGrouped(items, (trade) => {
-          if (!/^\d{4}-\d{2}-\d{2}$/.test(trade.date || '')) return null;
-          const [year, month, day] = trade.date.split('-').map(Number);
-          return dayNames[new Date(year, month - 1, day).getDay()];
-        });
-
-        const propFirmConfig = account.propFirmConfig && typeof account.propFirmConfig === 'object' ? account.propFirmConfig : null;
-
-        return {
-          purpose: 'Analyze this user\'s own saved trading journal only. Do not provide buy/sell signals, market predictions, future asset recommendations, automated execution instructions, or financial advice. Every material conclusion must be supported by supplied journal statistics.',
-          responseSchema: {
-            overallPerformance: 'string',
-            strengths: 'array of evidence-based strings',
-            weaknesses: 'array of evidence-based strings',
-            riskManagement: 'array of evidence-based strings',
-            propFirmStatus: 'array of evidence-based strings or not-configured statement',
-            recommendations: 'array of practical journal-based recommendations without market predictions'
-          },
-          userScope: { userId: currentUser?.id || null },
-          account: {
-            id: account.id,
-            name: account.name,
-            currency: account.currency,
-            startingBalance: Number(account.startingBalance) || 0
-          },
-          dateRange: aiCustomToggle.checked ? { type: 'CUSTOM', start: aiStartDate.value, end: aiEndDate.value } : { type: aiRange },
-          dataLevel: items.length < 5 ? 'INSUFFICIENT' : items.length < 20 ? 'EARLY_INSIGHT' : 'FULL',
-          metrics: {
-            totalTrades: items.length,
-            wins: wins.length,
-            losses: losses.length,
-            breakEven: breakEven.length,
-            winRate: winRateDecimal * 100,
-            netPl,
-            averageWin,
-            averageLoss,
-            profitFactor: grossLosses > 0 ? grossWins / grossLosses : grossWins > 0 ? null : 0,
-            profitFactorDisplay: grossLosses > 0 ? (grossWins / grossLosses).toFixed(2) : grossWins > 0 ? 'N/A (no losing trades)' : '0.00',
-            averageRr,
-            expectancy: (winRateDecimal * averageWin) - (lossRateDecimal * Math.abs(averageLoss)),
-            maxDrawdownPercent: aiMaxDrawdown(account, items),
-            bestTrade: items.length ? Math.max(...items.map((trade) => Number(trade.profitLoss) || 0)) : 0,
-            worstTrade: items.length ? Math.min(...items.map((trade) => Number(trade.profitLoss) || 0)) : 0,
-            longestWinningStreak: aiLongestStreak(items, 'WIN'),
-            longestLosingStreak: aiLongestStreak(items, 'LOSS')
-          },
-          performanceByInstrument: aiGrouped(items, (trade) => trade.instrument || null).sort((a, b) => b.net - a.net),
-          performanceBySession: aiGrouped(items, (trade) => trade.session || null).sort((a, b) => b.net - a.net),
-          performanceByTradingDay: performanceByTradingDay.sort((a, b) => b.net - a.net),
-          dailyPl,
-          equityPerformance,
-          propFirm: propFirmConfig,
-          journalRecords: items.map((trade) => ({
-            date: trade.date,
-            instrument: trade.instrument,
-            direction: trade.direction,
-            session: trade.session,
-            result: trade.result,
-            profitLoss: Number(trade.profitLoss) || 0,
-            plannedRr: Number.isFinite(Number(trade.plannedRr)) ? Number(trade.plannedRr) : null,
-            riskPercent: Number.isFinite(Number(trade.riskPercent)) ? Number(trade.riskPercent) : null,
-            reasonForEntry: trade.notes || '',
-            mistakes: trade.mistakes || ''
-          }))
-        };
-      };
-
-      const normalizeAiSection = (value) => {
-        if (Array.isArray(value)) return value.filter((item) => typeof item === 'string' && item.trim());
-        if (typeof value === 'string' && value.trim()) return value.trim();
-        return 'Not enough data yet.';
-      };
-
-      const renderAiReport = (response) => {
-        aiReport.innerHTML = '';
-        const sections = [
-          ['Overall Performance', response?.overallPerformance],
-          ['Strengths', response?.strengths],
-          ['Weaknesses', response?.weaknesses],
-          ['Risk Management', response?.riskManagement],
-          ['Prop Firm Status', response?.propFirmStatus],
-          ['Recommendations', response?.recommendations]
-        ];
-        sections.forEach(([title, raw], index) => {
-          const value = normalizeAiSection(raw);
-          const details = document.createElement('details');
-          details.className = 'ai-report-card';
-          if (index === 0) details.open = true;
-          const summary = document.createElement('summary');
-          summary.textContent = title;
-          const content = document.createElement('div');
-          content.className = 'ai-report-content';
-          if (Array.isArray(value)) {
-            const list = document.createElement('ul');
-            value.forEach((text) => {
-              const item = document.createElement('li');
-              item.textContent = text;
-              list.appendChild(item);
-            });
-            content.appendChild(list);
-          } else {
-            content.textContent = value;
-          }
-          details.append(summary, content);
-          aiReport.appendChild(details);
-        });
-        aiReport.classList.add('visible');
-      };
-
-      const renderAiSelector = () => {
-        const previous = aiSelectedAccountId;
-        aiAccountSelect.innerHTML = '';
-        if (!accounts.length) {
-          const option = document.createElement('option');
-          option.value = '';
-          option.textContent = 'No trading accounts';
-          aiAccountSelect.appendChild(option);
-          aiSelectedAccountId = null;
-          aiDataCount.textContent = '0 trades';
-          return;
-        }
-        accounts.forEach((account) => {
-          const option = document.createElement('option');
-          option.value = account.id;
-          option.textContent = account.name;
-          aiAccountSelect.appendChild(option);
-        });
-        aiSelectedAccountId = accounts.some((account) => account.id === previous)
-          ? previous
-          : accounts.some((account) => account.id === selectedAccountId)
-            ? selectedAccountId
-            : accounts[0].id;
-        aiAccountSelect.value = aiSelectedAccountId;
-        const count = aiFilteredTrades().length;
-        aiDataCount.textContent = `${count} ${count === 1 ? 'trade' : 'trades'}`;
-      };
-
-      const refreshAiDataCount = () => {
-        if (!aiSelectedAccountId) {
-          aiDataCount.textContent = '0 trades';
-          return;
-        }
-        const count = aiFilteredTrades().length;
-        aiDataCount.textContent = `${count} ${count === 1 ? 'trade' : 'trades'}`;
-      };
-
       const getLocalDateValue = () => {
         const now = new Date();
         const year = now.getFullYear();
@@ -4263,6 +3726,8 @@
           result: tradeResult.value,
           notes: tradeNotes.value,
           mistakes: tradeMistakes.value,
+          psychologyBefore: psychologyBefore.value,
+          psychologyAfter: psychologyAfter.value,
           plannedRr: rrResult.valid && Number.isFinite(rrResult.value) ? rrResult.value : null,
           realizedR: updateRealizedRPreview(),
           updatedAt: Date.now()
@@ -4283,7 +3748,9 @@
           (draft.profitLoss ?? '') !== '' ||
           draft.result ||
           (draft.notes || '').trim() ||
-          (draft.mistakes || '').trim()
+          (draft.mistakes || '').trim() ||
+          draft.psychologyBefore ||
+          draft.psychologyAfter
         );
       };
 
@@ -4336,6 +3803,8 @@
         tradeResult.value = ['WIN', 'LOSS', 'BREAK EVEN'].includes(draft.result) ? draft.result : '';
         tradeNotes.value = draft.notes || '';
         tradeMistakes.value = draft.mistakes || '';
+        psychologyBefore.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(draft.psychologyBefore) ? draft.psychologyBefore : '';
+        psychologyAfter.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(draft.psychologyAfter) ? draft.psychologyAfter : '';
         updateDirectionButtons();
         calculatePlannedRr();
         updateRealizedRPreview();
@@ -4581,7 +4050,9 @@
           detailField('Planned RR', Number.isFinite(Number(trade.plannedRr)) ? `1:${Number(trade.plannedRr).toFixed(2)}` : '—'),
           detailField('Realized R', formatRealizedR(calculateTradeRealizedR(trade))),
           detailField('Reason for Entry', trade.notes || '—', true),
-          detailField('Mistakes', trade.mistakes || '—', true)
+          detailField('Mistakes', trade.mistakes || '—', true),
+          detailField('Psychology Before', trade.psychologyBefore || '—'),
+          detailField('Psychology After', trade.psychologyAfter || '—')
         );
       };
 
@@ -4634,7 +4105,6 @@
         renderEquityCurve();
         renderCalendar();
         renderAnalytics();
-        renderAiSelector();
         renderTrades();
       };
 
@@ -4681,10 +4151,9 @@
         journalPage.classList.toggle('visible', page === 'Journal');
         calendarPage.classList.toggle('visible', page === 'Calendar');
         analyticsPage.classList.toggle('visible', page === 'Analytics');
-        aiAnalystPage.classList.toggle('visible', page === 'AI Analyst');
         tradeDetailPage.classList.toggle('visible', page === 'Trade Detail');
         settingsPage.classList.toggle('visible', page === 'Settings');
-        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'AI Analyst' && page !== 'Trade Detail' && page !== 'Settings') {
+        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'Trade Detail' && page !== 'Settings') {
           placeholder.classList.add('visible');
           placeholderTitle.textContent = page;
         } else {
@@ -4692,7 +4161,6 @@
         }
         if (page === 'Calendar') renderCalendar();
         if (page === 'Analytics') renderAnalytics();
-        if (page === 'AI Analyst') renderAiSelector();
       };
 
       const openAccountForm = (account = null) => {
@@ -4762,6 +4230,8 @@
         tradeResult.value = trade.result || '';
         tradeNotes.value = trade.notes || '';
         tradeMistakes.value = trade.mistakes || '';
+        psychologyBefore.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyBefore) ? trade.psychologyBefore : '';
+        psychologyAfter.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyAfter) ? trade.psychologyAfter : '';
         await loadTradeScreenshots(trade);
         updateDirectionButtons();
         calculatePlannedRr();
@@ -5068,7 +4538,9 @@
         profitLoss,
         tradeResult,
         tradeNotes,
-        tradeMistakes
+        tradeMistakes,
+        psychologyBefore,
+        psychologyAfter
       ].forEach((field) => {
         field.addEventListener('input', () => saveDraftNow());
         field.addEventListener('change', () => saveDraftNow());
@@ -5152,131 +4624,6 @@
           analyticsFilter = button.dataset.analyticsFilter || 'ALL';
           renderAnalytics();
         });
-      });
-
-      aiRangeButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          aiRange = button.dataset.aiRange || '30D';
-          aiRangeButtons.forEach((item) => item.classList.toggle('active', item === button));
-          if (aiCustomToggle.checked) aiCustomToggle.checked = false;
-          aiCustomRange.classList.remove('visible');
-          clearAiStatus();
-          refreshAiDataCount();
-        });
-      });
-
-      aiCustomToggle.addEventListener('change', () => {
-        aiCustomRange.classList.toggle('visible', aiCustomToggle.checked);
-        clearAiStatus();
-        refreshAiDataCount();
-      });
-
-      [aiStartDate, aiEndDate].forEach((input) => input.addEventListener('change', refreshAiDataCount));
-
-      aiAccountSelect.addEventListener('change', () => {
-        aiSelectedAccountId = aiAccountSelect.value || null;
-        aiLastPayload = null;
-        aiLastReport = null;
-        aiReport.classList.remove('visible');
-        aiReport.innerHTML = '';
-        aiAnswer.classList.remove('show');
-        aiAnswer.textContent = '';
-        clearAiStatus();
-        refreshAiDataCount();
-      });
-
-      aiAnalyzeBtn.addEventListener('click', async () => {
-        clearAiStatus();
-        aiAnswer.classList.remove('show');
-        aiAnswer.textContent = '';
-        let payload;
-        try {
-          payload = buildAiPayload();
-        } catch (error) {
-          setAiStatus(error instanceof Error ? error.message : 'Unable to prepare journal data.', 'error');
-          return;
-        }
-
-        const count = payload.metrics.totalTrades;
-        if (count < 5) {
-          aiReport.classList.remove('visible');
-          setAiStatus('Not enough trading data yet. Add at least 5 trades in this range before requesting AI analysis.');
-          return;
-        }
-
-        const provider = aiProvider();
-        if (!provider) {
-          aiReport.classList.remove('visible');
-          setAiStatus('AI Analyst is ready to connect. Configure a secure server-side AI provider that exposes window.eRTradesAIProvider.analyzeJournal(). API credentials must remain server-side.');
-          return;
-        }
-
-        aiAnalyzeBtn.disabled = true;
-        aiAnalyzeBtn.textContent = 'Analyzing…';
-        setAiStatus(count < 20 ? 'Early Insight: limited sample size. Generating a cautious journal-based review…' : 'Analyzing your saved journal data…');
-        try {
-          const response = await provider.analyzeJournal(payload);
-          if (!response || typeof response !== 'object') throw new Error('The AI provider returned an invalid response.');
-          aiLastPayload = payload;
-          aiLastReport = response;
-          renderAiReport(response);
-          setAiStatus(count < 20 ? 'Early Insight generated from this account and date range only.' : 'Analysis generated from this account and date range only.', 'success');
-        } catch (error) {
-          aiReport.classList.remove('visible');
-          setAiStatus('Unable to generate analysis right now. Your trading data is safe. You can retry.', 'error');
-        } finally {
-          aiAnalyzeBtn.disabled = false;
-          aiAnalyzeBtn.textContent = 'Analyze My Trading';
-        }
-      });
-
-      aiSuggestions.addEventListener('click', (event) => {
-        const button = event.target.closest('.ai-suggestion-btn');
-        if (!button) return;
-        aiQuestion.value = button.textContent.trim();
-        aiQuestion.focus();
-      });
-
-      aiChatForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const question = aiQuestion.value.trim();
-        if (!question) return;
-        const provider = aiProvider();
-        if (!provider || typeof provider.askJournal !== 'function') {
-          setAiStatus('AI follow-up is ready to connect. A secure server-side provider with askJournal() is required.', 'error');
-          return;
-        }
-        let payload;
-        try {
-          payload = buildAiPayload();
-        } catch (error) {
-          setAiStatus(error instanceof Error ? error.message : 'Unable to prepare journal data.', 'error');
-          return;
-        }
-        if (payload.metrics.totalTrades < 5) {
-          setAiStatus('Not enough trading data yet for a reliable follow-up.', 'error');
-          return;
-        }
-        aiAskBtn.disabled = true;
-        aiAskBtn.textContent = 'Asking…';
-        aiAnswer.classList.remove('show');
-        try {
-          const response = await provider.askJournal({
-            ...payload,
-            question,
-            instruction: 'Answer only from the supplied trading journal. Do not provide market predictions, buy/sell signals, or financial advice.'
-          });
-          const answer = typeof response === 'string' ? response : response?.answer;
-          if (!answer || typeof answer !== 'string') throw new Error('Invalid AI response.');
-          aiAnswer.textContent = answer;
-          aiAnswer.classList.add('show');
-          clearAiStatus();
-        } catch (_) {
-          setAiStatus('Unable to answer right now. Your trading data is safe. You can retry.', 'error');
-        } finally {
-          aiAskBtn.disabled = false;
-          aiAskBtn.textContent = 'Ask';
-        }
       });
 
       accountSelect.addEventListener('change', async () => {
@@ -5509,6 +4856,8 @@
           result,
           notes: tradeNotes.value.trim(),
           mistakes: tradeMistakes.value.trim(),
+          psychologyBefore: psychologyBefore.value,
+          psychologyAfter: psychologyAfter.value,
           plannedRr: rrResult.value,
           realizedR: calculateRealizedRFromValues({
             profitLossValue: parseOptionalNumber(profitLoss) ?? 0,
