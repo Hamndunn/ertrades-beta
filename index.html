@@ -1124,16 +1124,6 @@
 
     #ertrades-app .analytics-page.visible { display: block; }
 
-    #ertrades-app .psychology-page {
-      display: none;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      background: var(--panel);
-      overflow: hidden;
-    }
-
-    #ertrades-app .psychology-page.visible { display: block; }
-
     #ertrades-app .ai-analyst-page {
       display: none;
       border: 1px solid var(--border);
@@ -1305,29 +1295,6 @@
     }
 
     #ertrades-app .ai-answer.show { display: block; }
-
-    #ertrades-app .yes-no-grid {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: 7px;
-    }
-
-    #ertrades-app .yes-no-btn {
-      min-height: 42px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: #0a1013;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    #ertrades-app .yes-no-btn.active {
-      border-color: rgba(184,255,79,.45);
-      background: var(--accent-dark);
-      color: var(--accent);
-    }
 
     #ertrades-app .analytics-body {
       padding: 14px;
@@ -1590,7 +1557,6 @@
     #ertrades-app.theme-light .analytics-filter,
     #ertrades-app.theme-light .analytics-stat,
     #ertrades-app.theme-light .analytics-section,
-    #ertrades-app.theme-light .yes-no-btn,
     #ertrades-app.theme-light .calendar-stat,
     #ertrades-app.theme-light .calendar-cell,
     #ertrades-app.theme-light .equity-filter,
@@ -2409,63 +2375,6 @@
           </section>
 
           <section class="trade-section">
-            <div class="trade-section-title">Trading Psychology</div>
-            <div class="trade-grid two-col">
-              <div class="field">
-                <label for="emotional-state">Emotional State</label>
-                <select id="emotional-state">
-                  <option value="">Select state</option>
-                  <option value="Calm">Calm</option>
-                  <option value="Confident">Confident</option>
-                  <option value="Neutral">Neutral</option>
-                  <option value="Fear">Fear</option>
-                  <option value="Greed">Greed</option>
-                  <option value="FOMO">FOMO</option>
-                  <option value="Revenge">Revenge</option>
-                  <option value="Frustrated">Frustrated</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="confidence-score">Confidence Score</label>
-                <select id="confidence-score">
-                  <option value="">Not set</option>
-                  <option value="1">1 / 5</option>
-                  <option value="2">2 / 5</option>
-                  <option value="3">3 / 5</option>
-                  <option value="4">4 / 5</option>
-                  <option value="5">5 / 5</option>
-                </select>
-              </div>
-            </div>
-            <div class="trade-grid two-col" style="margin-top:12px">
-              <div class="field">
-                <label>Followed Trading Plan</label>
-                <div class="yes-no-grid" data-psych-control="followedPlan"><button class="yes-no-btn" type="button" data-value="yes">Yes</button><button class="yes-no-btn" type="button" data-value="no">No</button></div>
-              </div>
-              <div class="field">
-                <label>FOMO</label>
-                <div class="yes-no-grid" data-psych-control="fomo"><button class="yes-no-btn" type="button" data-value="yes">Yes</button><button class="yes-no-btn" type="button" data-value="no">No</button></div>
-              </div>
-              <div class="field">
-                <label>Revenge Trade</label>
-                <div class="yes-no-grid" data-psych-control="revengeTrade"><button class="yes-no-btn" type="button" data-value="yes">Yes</button><button class="yes-no-btn" type="button" data-value="no">No</button></div>
-              </div>
-              <div class="field">
-                <label>Moved Stop Loss</label>
-                <div class="yes-no-grid" data-psych-control="movedStopLoss"><button class="yes-no-btn" type="button" data-value="yes">Yes</button><button class="yes-no-btn" type="button" data-value="no">No</button></div>
-              </div>
-              <div class="field">
-                <label>Overtraded</label>
-                <div class="yes-no-grid" data-psych-control="overtraded"><button class="yes-no-btn" type="button" data-value="yes">Yes</button><button class="yes-no-btn" type="button" data-value="no">No</button></div>
-              </div>
-            </div>
-            <div class="field" style="margin-top:12px">
-              <label for="psychology-notes">Psychology Notes</label>
-              <textarea id="psychology-notes" maxlength="2000" placeholder="How you felt, impulsive behavior, lessons learned..."></textarea>
-            </div>
-          </section>
-
-          <section class="trade-section">
             <div class="trade-section-title">Trade Screenshots</div>
             <div class="screenshot-grid">
               <div class="screenshot-slot">
@@ -2729,43 +2638,6 @@
         </div>
       </section>
 
-      <section class="psychology-page" id="psychology-page" aria-labelledby="psychology-title">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">Psychology Journal</div>
-            <div class="section-title" id="psychology-title">Psychology Analytics</div>
-          </div>
-          <div class="analytics-filters" aria-label="Psychology date range">
-            <button class="analytics-filter psychology-filter" type="button" data-psychology-filter="7D">7D</button>
-            <button class="analytics-filter psychology-filter" type="button" data-psychology-filter="30D">30D</button>
-            <button class="analytics-filter psychology-filter" type="button" data-psychology-filter="3M">3M</button>
-            <button class="analytics-filter psychology-filter active" type="button" data-psychology-filter="ALL">ALL</button>
-          </div>
-        </div>
-        <div class="analytics-body">
-          <section class="analytics-section">
-            <div class="analytics-section-head"><div class="analytics-section-title">Emotional State Performance</div></div>
-            <div class="analytics-list" id="psychology-emotional-list"></div>
-          </section>
-          <section class="analytics-section">
-            <div class="analytics-section-head"><div class="analytics-section-title">Confidence Performance</div></div>
-            <div class="analytics-list" id="psychology-confidence-list"></div>
-          </section>
-          <section class="analytics-section">
-            <div class="analytics-section-head"><div class="analytics-section-title">Discipline</div></div>
-            <div class="analytics-list" id="psychology-discipline-list"></div>
-          </section>
-          <section class="analytics-section">
-            <div class="analytics-section-head"><div class="analytics-section-title">Common Mistakes</div></div>
-            <div class="analytics-list" id="psychology-mistakes-list"></div>
-          </section>
-          <section class="analytics-section">
-            <div class="analytics-section-head"><div class="analytics-section-title">Psychology Impact</div></div>
-            <div class="analytics-insights" id="psychology-insights"></div>
-          </section>
-        </div>
-      </section>
-
       <section class="ai-analyst-page" id="ai-analyst-page" aria-labelledby="ai-analyst-title">
         <div class="section-head">
           <div>
@@ -2818,7 +2690,6 @@
             <div style="padding:12px">
               <div class="ai-suggestions" id="ai-suggestions">
                 <button class="ai-suggestion-btn" type="button">Analyze my weaknesses</button>
-                <button class="ai-suggestion-btn" type="button">Analyze my psychology</button>
                 <button class="ai-suggestion-btn" type="button">Review my risk management</button>
                 <button class="ai-suggestion-btn" type="button">Best and worst session</button>
                 <button class="ai-suggestion-btn" type="button">Why am I losing?</button>
@@ -2971,10 +2842,6 @@
       const tradeResult = root.querySelector('#trade-result');
       const tradeNotes = root.querySelector('#trade-notes');
       const tradeMistakes = root.querySelector('#trade-mistakes');
-      const emotionalState = root.querySelector('#emotional-state');
-      const confidenceScore = root.querySelector('#confidence-score');
-      const psychologyNotes = root.querySelector('#psychology-notes');
-      const psychologyControls = Array.from(root.querySelectorAll('[data-psych-control]'));
       const directionButtons = Array.from(root.querySelectorAll('.direction-btn'));
       const rrBox = root.querySelector('#rr-box');
       const plannedRr = root.querySelector('#planned-rr');
@@ -3045,13 +2912,6 @@
       const analyticsDailyPlChart = root.querySelector('#analytics-daily-pl-chart');
       const analyticsInsights = root.querySelector('#analytics-insights');
       const analyticsFilters = Array.from(root.querySelectorAll('.analytics-filter'));
-      const psychologyPage = root.querySelector('#psychology-page');
-      const psychologyEmotionalList = root.querySelector('#psychology-emotional-list');
-      const psychologyConfidenceList = root.querySelector('#psychology-confidence-list');
-      const psychologyDisciplineList = root.querySelector('#psychology-discipline-list');
-      const psychologyMistakesList = root.querySelector('#psychology-mistakes-list');
-      const psychologyInsights = root.querySelector('#psychology-insights');
-      const psychologyFilters = Array.from(root.querySelectorAll('.psychology-filter'));
       const aiAnalystPage = root.querySelector('#ai-analyst-page');
       const aiAccountSelect = root.querySelector('#ai-account-select');
       const aiRangeButtons = Array.from(root.querySelectorAll('.ai-range-btn'));
@@ -3126,12 +2986,10 @@
       let previewUrls = { before: null, after: null };
       let equityFilter = 'ALL';
       let analyticsFilter = 'ALL';
-      let psychologyFilter = 'ALL';
       let aiRange = '30D';
       let aiSelectedAccountId = null;
       let aiLastPayload = null;
       let aiLastReport = null;
-      let psychologyState = { followedPlan: null, fomo: null, revengeTrade: null, movedStopLoss: null, overtraded: null };
       const calendarNow = new Date();
       let calendarYear = calendarNow.getFullYear();
       let calendarMonth = calendarNow.getMonth();
@@ -3459,15 +3317,34 @@
         setAuthMode('login');
       };
 
+      const stripPsychologyData = (trade) => {
+        if (!trade || typeof trade !== 'object') return trade;
+        const {
+          emotionalState,
+          confidenceScore,
+          followedPlan,
+          fomo,
+          revengeTrade,
+          movedStopLoss,
+          overtraded,
+          psychologyNotes,
+          psychologyBefore,
+          psychologyAfter,
+          ...cleanTrade
+        } = trade;
+        return cleanTrade;
+      };
+
       const loadCloudState = () => {
         if (!currentUser) return;
         const record = getCloudRecord(currentUser.id);
         accounts = Array.isArray(record.accounts) ? record.accounts : [];
-        trades = Array.isArray(record.trades) ? record.trades : [];
+        trades = Array.isArray(record.trades) ? record.trades.map(stripPsychologyData) : [];
         selectedAccountId = accounts.some((account) => account.id === record.selectedAccountId)
           ? record.selectedAccountId
           : accounts[0]?.id || null;
         usingCloudData = true;
+        persistCloudState();
         renderAccountSelector();
         renderDashboardAccount();
       };
@@ -3958,85 +3835,6 @@
         });
       };
 
-      const psychologyTrades = () => {
-        const accountTrades = currentTradesChronological();
-        if (psychologyFilter === 'ALL') return accountTrades;
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
-        const days = psychologyFilter === '7D' ? 7 : psychologyFilter === '30D' ? 30 : 90;
-        const cutoff = today - ((days - 1) * 86400000);
-        return accountTrades.filter((trade) => {
-          const timestamp = tradeTimestamp(trade);
-          return timestamp >= cutoff && timestamp <= today;
-        });
-      };
-
-      const renderPsychology = () => {
-        const currency = currentAccount()?.currency || 'USD';
-        const items = psychologyTrades();
-        psychologyFilters.forEach((button) => button.classList.toggle('active', button.dataset.psychologyFilter === psychologyFilter));
-
-        const states = ['Calm', 'Confident', 'Neutral', 'Fear', 'Greed', 'FOMO', 'Revenge', 'Frustrated'];
-        const emotionalEntries = states
-          .map((name) => ({ name, stats: analyticsGroupStats(items.filter((trade) => trade.emotionalState === name)) }))
-          .filter((entry) => entry.stats.trades > 0)
-          .sort((a, b) => b.stats.net - a.stats.net);
-        psychologyEmotionalList.innerHTML = '';
-        if (!emotionalEntries.length) psychologyEmotionalList.innerHTML = '<div class="analytics-empty">No emotional state data yet.</div>';
-        else emotionalEntries.forEach((entry) => psychologyEmotionalList.appendChild(makeAnalyticsRow(entry.name, entry.stats, currency, false)));
-
-        psychologyConfidenceList.innerHTML = '';
-        const confidenceEntries = [1,2,3,4,5]
-          .map((score) => ({ name: `${score} / 5`, stats: analyticsGroupStats(items.filter((trade) => Number(trade.confidenceScore) === score)) }))
-          .filter((entry) => entry.stats.trades > 0);
-        if (!confidenceEntries.length) psychologyConfidenceList.innerHTML = '<div class="analytics-empty">No confidence score data yet.</div>';
-        else confidenceEntries.forEach((entry) => psychologyConfidenceList.appendChild(makeAnalyticsRow(entry.name, entry.stats, currency, false)));
-
-        psychologyDisciplineList.innerHTML = '';
-        const disciplineEntries = [
-          { name: 'Followed Plan — YES', stats: analyticsGroupStats(items.filter((trade) => trade.followedPlan === true)) },
-          { name: 'Followed Plan — NO', stats: analyticsGroupStats(items.filter((trade) => trade.followedPlan === false)) }
-        ].filter((entry) => entry.stats.trades > 0);
-        if (!disciplineEntries.length) psychologyDisciplineList.innerHTML = '<div class="analytics-empty">No discipline data yet.</div>';
-        else disciplineEntries.forEach((entry) => psychologyDisciplineList.appendChild(makeAnalyticsRow(entry.name, entry.stats, currency, false)));
-
-        psychologyMistakesList.innerHTML = '';
-        const mistakeEntries = [
-          ['FOMO Trades', 'fomo'],
-          ['Revenge Trades', 'revengeTrade'],
-          ['Moved Stop Loss', 'movedStopLoss'],
-          ['Overtrading', 'overtraded']
-        ].map(([name, key]) => ({ name, stats: analyticsGroupStats(items.filter((trade) => trade[key] === true)) }));
-        if (!mistakeEntries.some((entry) => entry.stats.trades > 0)) psychologyMistakesList.innerHTML = '<div class="analytics-empty">No recorded psychology mistakes yet.</div>';
-        else mistakeEntries.filter((entry) => entry.stats.trades > 0).forEach((entry) => psychologyMistakesList.appendChild(makeAnalyticsRow(entry.name, entry.stats, currency, false)));
-
-        psychologyInsights.innerHTML = '';
-        const bestState = emotionalEntries[0] || null;
-        const worstState = emotionalEntries.length ? emotionalEntries[emotionalEntries.length - 1] : null;
-        const followedYes = disciplineEntries.find((entry) => entry.name.includes('YES')) || null;
-        const followedNo = disciplineEntries.find((entry) => entry.name.includes('NO')) || null;
-        const costlyMistakes = mistakeEntries.filter((entry) => entry.stats.trades > 0).sort((a, b) => a.stats.net - b.stats.net);
-        const mostCostly = costlyMistakes[0] || null;
-        const insights = [
-          ['Best Emotional State', bestState ? `${bestState.name} · ${formatMoney(bestState.stats.net, currency)}` : 'Not enough data yet.'],
-          ['Worst Emotional State', worstState ? `${worstState.name} · ${formatMoney(worstState.stats.net, currency)}` : 'Not enough data yet.'],
-          ['Following Plan', followedYes ? `${formatMoney(followedYes.stats.net, currency)} · ${followedYes.stats.winRate.toFixed(2)}% Win Rate` : 'Not enough data yet.'],
-          ['Breaking Plan', followedNo ? `${formatMoney(followedNo.stats.net, currency)} · ${followedNo.stats.winRate.toFixed(2)}% Win Rate` : 'Not enough data yet.'],
-          ['Most Costly Mistake', mostCostly ? `${mostCostly.name} · ${formatMoney(mostCostly.stats.net, currency)}` : 'Not enough data yet.']
-        ];
-        insights.forEach(([label, value]) => {
-          const card = document.createElement('div');
-          card.className = 'analytics-insight';
-          const labelEl = document.createElement('div');
-          labelEl.className = 'metric-label';
-          labelEl.textContent = label;
-          const valueEl = document.createElement('strong');
-          valueEl.textContent = value;
-          card.append(labelEl, valueEl);
-          psychologyInsights.appendChild(card);
-        });
-      };
-
       const aiProvider = () => {
         const provider = window.eRTradesAIProvider;
         if (!provider || typeof provider.analyzeJournal !== 'function') return null;
@@ -4176,7 +3974,6 @@
           return dayNames[new Date(year, month - 1, day).getDay()];
         });
 
-        const psychologyTagged = items.filter((trade) => trade.emotionalState || Number.isFinite(Number(trade.confidenceScore)) || typeof trade.followedPlan === 'boolean' || typeof trade.fomo === 'boolean' || typeof trade.revengeTrade === 'boolean' || typeof trade.movedStopLoss === 'boolean' || typeof trade.overtraded === 'boolean' || (trade.psychologyNotes || '').trim());
         const propFirmConfig = account.propFirmConfig && typeof account.propFirmConfig === 'object' ? account.propFirmConfig : null;
 
         return {
@@ -4185,7 +3982,6 @@
             overallPerformance: 'string',
             strengths: 'array of evidence-based strings',
             weaknesses: 'array of evidence-based strings',
-            psychology: 'array of evidence-based strings or insufficient-data statement',
             riskManagement: 'array of evidence-based strings',
             propFirmStatus: 'array of evidence-based strings or not-configured statement',
             recommendations: 'array of practical journal-based recommendations without market predictions'
@@ -4223,19 +4019,6 @@
           performanceByTradingDay: performanceByTradingDay.sort((a, b) => b.net - a.net),
           dailyPl,
           equityPerformance,
-          psychology: {
-            taggedTrades: psychologyTagged.length,
-            emotionalStatePerformance: aiGrouped(psychologyTagged, (trade) => trade.emotionalState || null),
-            confidencePerformance: aiGrouped(psychologyTagged, (trade) => Number.isFinite(Number(trade.confidenceScore)) ? `${Number(trade.confidenceScore)} / 5` : null),
-            followedPlan: {
-              yes: analyticsGroupStats(psychologyTagged.filter((trade) => trade.followedPlan === true)),
-              no: analyticsGroupStats(psychologyTagged.filter((trade) => trade.followedPlan === false))
-            },
-            fomo: analyticsGroupStats(psychologyTagged.filter((trade) => trade.fomo === true)),
-            revengeTrade: analyticsGroupStats(psychologyTagged.filter((trade) => trade.revengeTrade === true)),
-            movedStopLoss: analyticsGroupStats(psychologyTagged.filter((trade) => trade.movedStopLoss === true)),
-            overtraded: analyticsGroupStats(psychologyTagged.filter((trade) => trade.overtraded === true))
-          },
           propFirm: propFirmConfig,
           journalRecords: items.map((trade) => ({
             date: trade.date,
@@ -4247,15 +4030,7 @@
             plannedRr: Number.isFinite(Number(trade.plannedRr)) ? Number(trade.plannedRr) : null,
             riskPercent: Number.isFinite(Number(trade.riskPercent)) ? Number(trade.riskPercent) : null,
             reasonForEntry: trade.notes || '',
-            mistakes: trade.mistakes || '',
-            emotionalState: trade.emotionalState || '',
-            confidenceScore: Number.isFinite(Number(trade.confidenceScore)) ? Number(trade.confidenceScore) : null,
-            followedPlan: typeof trade.followedPlan === 'boolean' ? trade.followedPlan : null,
-            fomo: typeof trade.fomo === 'boolean' ? trade.fomo : null,
-            revengeTrade: typeof trade.revengeTrade === 'boolean' ? trade.revengeTrade : null,
-            movedStopLoss: typeof trade.movedStopLoss === 'boolean' ? trade.movedStopLoss : null,
-            overtraded: typeof trade.overtraded === 'boolean' ? trade.overtraded : null,
-            psychologyNotes: trade.psychologyNotes || ''
+            mistakes: trade.mistakes || ''
           }))
         };
       };
@@ -4272,7 +4047,6 @@
           ['Overall Performance', response?.overallPerformance],
           ['Strengths', response?.strengths],
           ['Weaknesses', response?.weaknesses],
-          ['Psychology', response?.psychology],
           ['Risk Management', response?.riskManagement],
           ['Prop Firm Status', response?.propFirmStatus],
           ['Recommendations', response?.recommendations]
@@ -4489,14 +4263,6 @@
           result: tradeResult.value,
           notes: tradeNotes.value,
           mistakes: tradeMistakes.value,
-          emotionalState: emotionalState.value,
-          confidenceScore: confidenceScore.value,
-          followedPlan: psychologyState.followedPlan,
-          fomo: psychologyState.fomo,
-          revengeTrade: psychologyState.revengeTrade,
-          movedStopLoss: psychologyState.movedStopLoss,
-          overtraded: psychologyState.overtraded,
-          psychologyNotes: psychologyNotes.value,
           plannedRr: rrResult.valid && Number.isFinite(rrResult.value) ? rrResult.value : null,
           realizedR: updateRealizedRPreview(),
           updatedAt: Date.now()
@@ -4517,26 +4283,8 @@
           (draft.profitLoss ?? '') !== '' ||
           draft.result ||
           (draft.notes || '').trim() ||
-          (draft.mistakes || '').trim() ||
-          draft.emotionalState ||
-          draft.confidenceScore ||
-          draft.followedPlan !== null && typeof draft.followedPlan !== 'undefined' ||
-          draft.fomo !== null && typeof draft.fomo !== 'undefined' ||
-          draft.revengeTrade !== null && typeof draft.revengeTrade !== 'undefined' ||
-          draft.movedStopLoss !== null && typeof draft.movedStopLoss !== 'undefined' ||
-          draft.overtraded !== null && typeof draft.overtraded !== 'undefined' ||
-          (draft.psychologyNotes || '').trim()
+          (draft.mistakes || '').trim()
         );
-      };
-
-      const updatePsychologyControls = () => {
-        psychologyControls.forEach((group) => {
-          const key = group.dataset.psychControl;
-          group.querySelectorAll('.yes-no-btn').forEach((button) => {
-            const expected = button.dataset.value === 'yes';
-            button.classList.toggle('active', psychologyState[key] === expected);
-          });
-        });
       };
 
       const saveDraftNow = ({ quiet = false } = {}) => {
@@ -4588,17 +4336,6 @@
         tradeResult.value = ['WIN', 'LOSS', 'BREAK EVEN'].includes(draft.result) ? draft.result : '';
         tradeNotes.value = draft.notes || '';
         tradeMistakes.value = draft.mistakes || '';
-        emotionalState.value = ['Calm', 'Confident', 'Neutral', 'Fear', 'Greed', 'FOMO', 'Revenge', 'Frustrated'].includes(draft.emotionalState) ? draft.emotionalState : '';
-        confidenceScore.value = ['1','2','3','4','5'].includes(String(draft.confidenceScore || '')) ? String(draft.confidenceScore) : '';
-        psychologyState = {
-          followedPlan: typeof draft.followedPlan === 'boolean' ? draft.followedPlan : null,
-          fomo: typeof draft.fomo === 'boolean' ? draft.fomo : null,
-          revengeTrade: typeof draft.revengeTrade === 'boolean' ? draft.revengeTrade : null,
-          movedStopLoss: typeof draft.movedStopLoss === 'boolean' ? draft.movedStopLoss : null,
-          overtraded: typeof draft.overtraded === 'boolean' ? draft.overtraded : null
-        };
-        psychologyNotes.value = draft.psychologyNotes || '';
-        updatePsychologyControls();
         updateDirectionButtons();
         calculatePlannedRr();
         updateRealizedRPreview();
@@ -4846,34 +4583,6 @@
           detailField('Reason for Entry', trade.notes || '—', true),
           detailField('Mistakes', trade.mistakes || '—', true)
         );
-        const hasPsychology = Boolean(
-          trade.emotionalState ||
-          Number.isFinite(Number(trade.confidenceScore)) ||
-          typeof trade.followedPlan === 'boolean' ||
-          typeof trade.fomo === 'boolean' ||
-          typeof trade.revengeTrade === 'boolean' ||
-          typeof trade.movedStopLoss === 'boolean' ||
-          typeof trade.overtraded === 'boolean' ||
-          (trade.psychologyNotes || '').trim()
-        );
-        if (hasPsychology) {
-          const yesNo = (value) => typeof value === 'boolean' ? (value ? 'Yes' : 'No') : '—';
-          tradeDetailGrid.append(
-            detailField('Emotional State', trade.emotionalState || '—'),
-            detailField('Confidence', Number.isFinite(Number(trade.confidenceScore)) ? `${Number(trade.confidenceScore)} / 5` : '—'),
-            detailField('Followed Plan', yesNo(trade.followedPlan)),
-            detailField('FOMO', yesNo(trade.fomo)),
-            detailField('Revenge Trade', yesNo(trade.revengeTrade)),
-            detailField('Moved Stop Loss', yesNo(trade.movedStopLoss)),
-            detailField('Overtraded', yesNo(trade.overtraded)),
-            detailField('Psychology Notes', trade.psychologyNotes || '—', true)
-          );
-        } else if (trade.psychologyBefore || trade.psychologyAfter) {
-          tradeDetailGrid.append(
-            detailField('Psychology Before', trade.psychologyBefore || '—'),
-            detailField('Psychology After', trade.psychologyAfter || '—')
-          );
-        }
       };
 
       const renderTrades = () => {
@@ -4925,7 +4634,6 @@
         renderEquityCurve();
         renderCalendar();
         renderAnalytics();
-        renderPsychology();
         renderAiSelector();
         renderTrades();
       };
@@ -4973,11 +4681,10 @@
         journalPage.classList.toggle('visible', page === 'Journal');
         calendarPage.classList.toggle('visible', page === 'Calendar');
         analyticsPage.classList.toggle('visible', page === 'Analytics');
-        psychologyPage.classList.toggle('visible', page === 'Psychology');
         aiAnalystPage.classList.toggle('visible', page === 'AI Analyst');
         tradeDetailPage.classList.toggle('visible', page === 'Trade Detail');
         settingsPage.classList.toggle('visible', page === 'Settings');
-        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'Psychology' && page !== 'AI Analyst' && page !== 'Trade Detail' && page !== 'Settings') {
+        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'AI Analyst' && page !== 'Trade Detail' && page !== 'Settings') {
           placeholder.classList.add('visible');
           placeholderTitle.textContent = page;
         } else {
@@ -4985,7 +4692,6 @@
         }
         if (page === 'Calendar') renderCalendar();
         if (page === 'Analytics') renderAnalytics();
-        if (page === 'Psychology') renderPsychology();
         if (page === 'AI Analyst') renderAiSelector();
       };
 
@@ -5056,17 +4762,6 @@
         tradeResult.value = trade.result || '';
         tradeNotes.value = trade.notes || '';
         tradeMistakes.value = trade.mistakes || '';
-        emotionalState.value = trade.emotionalState || '';
-        confidenceScore.value = Number.isFinite(Number(trade.confidenceScore)) ? String(trade.confidenceScore) : '';
-        psychologyState = {
-          followedPlan: typeof trade.followedPlan === 'boolean' ? trade.followedPlan : null,
-          fomo: typeof trade.fomo === 'boolean' ? trade.fomo : null,
-          revengeTrade: typeof trade.revengeTrade === 'boolean' ? trade.revengeTrade : null,
-          movedStopLoss: typeof trade.movedStopLoss === 'boolean' ? trade.movedStopLoss : null,
-          overtraded: typeof trade.overtraded === 'boolean' ? trade.overtraded : null
-        };
-        psychologyNotes.value = trade.psychologyNotes || '';
-        updatePsychologyControls();
         await loadTradeScreenshots(trade);
         updateDirectionButtons();
         calculatePlannedRr();
@@ -5094,8 +4789,6 @@
         tradeFormTitle.textContent = 'New Trade';
         tradeFormSubmit.textContent = 'Save Trade';
         selectedDirection = '';
-        psychologyState = { followedPlan: null, fomo: null, revengeTrade: null, movedStopLoss: null, overtraded: null };
-        updatePsychologyControls();
         updateDirectionButtons();
         tradeDate.value = getLocalDateValue();
         tradeSession.value = 'Asian';
@@ -5304,7 +4997,7 @@
         try {
           const [localAccountsRaw, localTradesRaw] = await Promise.all([getAllAccounts(), getAllTrades()]);
           const localAccounts = Array.isArray(localAccountsRaw) ? localAccountsRaw : [];
-          const localTrades = Array.isArray(localTradesRaw) ? localTradesRaw : [];
+          const localTrades = Array.isArray(localTradesRaw) ? localTradesRaw.map(stripPsychologyData) : [];
           const accountIds = new Set(accounts.map((account) => account.id));
           const tradeIds = new Set(trades.map((trade) => trade.id));
           const mergedAccounts = accounts.concat(localAccounts.filter((account) => !accountIds.has(account.id)));
@@ -5375,25 +5068,10 @@
         profitLoss,
         tradeResult,
         tradeNotes,
-        tradeMistakes,
-        emotionalState,
-        confidenceScore,
-        psychologyNotes
+        tradeMistakes
       ].forEach((field) => {
         field.addEventListener('input', () => saveDraftNow());
         field.addEventListener('change', () => saveDraftNow());
-      });
-
-      psychologyControls.forEach((group) => {
-        group.querySelectorAll('.yes-no-btn').forEach((button) => {
-          button.addEventListener('click', () => {
-            const key = group.dataset.psychControl;
-            const value = button.dataset.value === 'yes';
-            psychologyState[key] = psychologyState[key] === value ? null : value;
-            updatePsychologyControls();
-            saveDraftNow();
-          });
-        });
       });
 
       document.addEventListener('visibilitychange', () => {
@@ -5473,13 +5151,6 @@
         button.addEventListener('click', () => {
           analyticsFilter = button.dataset.analyticsFilter || 'ALL';
           renderAnalytics();
-        });
-      });
-
-      psychologyFilters.forEach((button) => {
-        button.addEventListener('click', () => {
-          psychologyFilter = button.dataset.psychologyFilter || 'ALL';
-          renderPsychology();
         });
       });
 
@@ -5838,16 +5509,6 @@
           result,
           notes: tradeNotes.value.trim(),
           mistakes: tradeMistakes.value.trim(),
-          emotionalState: emotionalState.value,
-          confidenceScore: confidenceScore.value ? Number(confidenceScore.value) : null,
-          followedPlan: psychologyState.followedPlan,
-          fomo: psychologyState.fomo,
-          revengeTrade: psychologyState.revengeTrade,
-          movedStopLoss: psychologyState.movedStopLoss,
-          overtraded: psychologyState.overtraded,
-          psychologyNotes: psychologyNotes.value.trim(),
-          ...(existingTrade?.psychologyBefore ? { psychologyBefore: existingTrade.psychologyBefore } : {}),
-          ...(existingTrade?.psychologyAfter ? { psychologyAfter: existingTrade.psychologyAfter } : {}),
           plannedRr: rrResult.value,
           realizedR: calculateRealizedRFromValues({
             profitLossValue: parseOptionalNumber(profitLoss) ?? 0,
