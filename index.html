@@ -124,11 +124,14 @@
       position: absolute;
       left: 14px;
       top: 7px;
+      z-index: 3;
+      display: block;
       color: var(--muted);
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .09em;
+      white-space: nowrap;
       pointer-events: none;
     }
 
@@ -754,6 +757,16 @@
       min-width: 0;
       max-width: 100%;
       overflow: hidden;
+    }
+
+    #ertrades-app .trade-form-card .field.psychology-field {
+      overflow: visible;
+      position: relative;
+      z-index: 4;
+    }
+
+    #ertrades-app .trade-form-card .field.psychology-field + .field.psychology-field {
+      z-index: 3;
     }
 
     #ertrades-app .field select {
@@ -2397,7 +2410,7 @@
           <section class="trade-section">
             <div class="trade-section-title">Trading Psychology</div>
             <div class="trade-grid two-col">
-              <div class="field">
+              <div class="field psychology-field">
                 <label for="psychology-before">Before</label>
                 <div class="psychology-select-wrap">
                   <button class="custom-select-btn" id="psychology-before-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
@@ -2415,7 +2428,7 @@
                   <div class="popup-menu psychology-popup" id="psychology-before-menu" role="menu"></div>
                 </div>
               </div>
-              <div class="field">
+              <div class="field psychology-field">
                 <label for="psychology-after">After</label>
                 <div class="psychology-select-wrap">
                   <button class="custom-select-btn" id="psychology-after-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
