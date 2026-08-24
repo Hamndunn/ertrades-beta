@@ -577,10 +577,22 @@
     }
 
     #ertrades-app .field input[type="date"] {
-      width: 100%;
+      display: block;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      inline-size: 100% !important;
+      min-inline-size: 0 !important;
+      max-inline-size: 100% !important;
+      box-sizing: border-box;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    #ertrades-app .trade-form-card .field {
       min-width: 0;
       max-width: 100%;
-      display: block;
+      overflow: hidden;
     }
 
     #ertrades-app .field select {
