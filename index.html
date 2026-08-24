@@ -2783,6 +2783,7 @@
       const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_o8YOkT06okbFvAF6IH3YyQ_mnnY8ioP';
       const SUPABASE_SESSION_KEY = 'ertrades-supabase-session-v1';
       const IMPORT_MARKER_PREFIX = 'ertrades-imported-local:';
+      const SUPABASE_IMPORT_MARKER_PREFIX = 'ertrades-supabase-imported:';
       const THEME_KEY_PREFIX = 'ertrades-theme:';
       let accounts = [];
       let trades = [];
@@ -2972,6 +2973,172 @@
         try { return await refreshSupabaseSession(session); } catch (_) { return null; }
       };
 
+      const getSupabaseAuthHeaders = async () => {
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || !session?.user?.id) throw new Error('Your login session expired. Please log in again.');
+        return { Authorization: `Bearer ${session.access_token}` };
+      };
+
+      const dateToMillis = (value) => {
+        if (!value) return Date.now();
+        const parsed = Date.parse(value);
+        return Number.isFinite(parsed) ? parsed : Date.now();
+      };
+
+      const millisToIso = (value) => {
+        const numeric = Number(value);
+        const date = Number.isFinite(numeric) ? new Date(numeric) : new Date(value || Date.now());
+        return Number.isFinite(date.getTime()) ? date.toISOString() : new Date().toISOString();
+      };
+
+      const nullableNumber = (value) => {
+        if (value === null || typeof value === 'undefined' || value === '') return null;
+        const numeric = Number(value);
+        return Number.isFinite(numeric) ? numeric : null;
+      };
+
+      const supabaseAccountFromRow = (row) => ({
+        id: row.id,
+        name: row.name || '',
+        startingBalance: nullableNumber(row.starting_balance) ?? 0,
+        currency: row.currency || 'USD',
+        ...(row.prop_firm_config ? { propFirmConfig: row.prop_firm_config } : {}),
+        createdAt: dateToMillis(row.created_at),
+        updatedAt: dateToMillis(row.updated_at)
+      });
+
+      const supabaseAccountToRow = (account) => ({
+        id: account.id,
+        user_id: currentUser.id,
+        name: account.name,
+        starting_balance: nullableNumber(account.startingBalance) ?? 0,
+        currency: account.currency || 'USD',
+        prop_firm_config: account.propFirmConfig || null,
+        created_at: millisToIso(account.createdAt),
+        updated_at: millisToIso(account.updatedAt || Date.now())
+      });
+
+      const supabaseTradeFromRow = (row) => ({
+        id: row.id,
+        accountId: row.account_id,
+        instrument: row.instrument || '',
+        direction: row.direction || '',
+        date: row.trade_date || '',
+        session: row.session || 'Asian',
+        entryPrice: nullableNumber(row.entry_price),
+        stopLoss: nullableNumber(row.stop_loss),
+        takeProfit: nullableNumber(row.take_profit),
+        lotSize: nullableNumber(row.lot_size),
+        riskPercent: nullableNumber(row.risk_percent),
+        riskAmount: nullableNumber(row.risk_amount),
+        profitLoss: nullableNumber(row.profit_loss) ?? 0,
+        result: row.result || '',
+        plannedRr: nullableNumber(row.planned_rr),
+        realizedR: nullableNumber(row.realized_r),
+        notes: row.reason_for_entry || '',
+        mistakes: row.mistakes || '',
+        psychologyBefore: row.psychology_before || '',
+        psychologyAfter: row.psychology_after || '',
+        screenshotBeforePath: row.screenshot_before_path || null,
+        screenshotAfterPath: row.screenshot_after_path || null,
+        screenshotBeforeId: null,
+        screenshotAfterId: null,
+        createdAt: dateToMillis(row.created_at),
+        updatedAt: dateToMillis(row.updated_at)
+      });
+
+      const supabaseTradeToRow = (trade) => ({
+        id: trade.id,
+        user_id: currentUser.id,
+        account_id: trade.accountId,
+        instrument: trade.instrument || '',
+        direction: trade.direction || '',
+        trade_date: trade.date,
+        session: trade.session || null,
+        entry_price: nullableNumber(trade.entryPrice),
+        stop_loss: nullableNumber(trade.stopLoss),
+        take_profit: nullableNumber(trade.takeProfit),
+        lot_size: nullableNumber(trade.lotSize),
+        risk_percent: nullableNumber(trade.riskPercent),
+        risk_amount: nullableNumber(trade.riskAmount),
+        profit_loss: nullableNumber(trade.profitLoss) ?? 0,
+        result: trade.result || '',
+        planned_rr: nullableNumber(trade.plannedRr),
+        realized_r: nullableNumber(trade.realizedR),
+        reason_for_entry: trade.notes || '',
+        mistakes: trade.mistakes || '',
+        emotional_state: trade.emotionalState || null,
+        confidence_score: Number.isInteger(Number(trade.confidenceScore)) ? Number(trade.confidenceScore) : null,
+        followed_plan: typeof trade.followedPlan === 'boolean' ? trade.followedPlan : false,
+        fomo: typeof trade.fomo === 'boolean' ? trade.fomo : false,
+        revenge_trade: typeof trade.revengeTrade === 'boolean' ? trade.revengeTrade : false,
+        moved_stop_loss: typeof trade.movedStopLoss === 'boolean' ? trade.movedStopLoss : false,
+        overtraded: typeof trade.overtraded === 'boolean' ? trade.overtraded : false,
+        psychology_notes: trade.psychologyNotes || null,
+        psychology_before: trade.psychologyBefore || null,
+        psychology_after: trade.psychologyAfter || null,
+        screenshot_before_path: trade.screenshotBeforePath || null,
+        screenshot_after_path: trade.screenshotAfterPath || null,
+        created_at: millisToIso(trade.createdAt),
+        updated_at: millisToIso(trade.updatedAt || Date.now())
+      });
+
+      const fetchSupabaseTradingData = async () => {
+        if (!currentUser?.id) return { accounts: [], trades: [] };
+        const headers = await getSupabaseAuthHeaders();
+        const userFilter = encodeURIComponent(currentUser.id);
+        const [accountRows, tradeRows] = await Promise.all([
+          supabaseRequest(`/rest/v1/trading_accounts?select=*&user_id=eq.${userFilter}&order=created_at.asc`, { headers }),
+          supabaseRequest(`/rest/v1/trades?select=*&user_id=eq.${userFilter}&order=created_at.asc`, { headers })
+        ]);
+        return {
+          accounts: Array.isArray(accountRows) ? accountRows.map(supabaseAccountFromRow) : [],
+          trades: Array.isArray(tradeRows) ? tradeRows.map(supabaseTradeFromRow) : []
+        };
+      };
+
+      const upsertSupabaseAccounts = async (items) => {
+        if (!currentUser?.id || !Array.isArray(items) || !items.length) return;
+        const headers = await getSupabaseAuthHeaders();
+        await supabaseRequest('/rest/v1/trading_accounts?on_conflict=id', {
+          method: 'POST',
+          headers: { ...headers, Prefer: 'resolution=merge-duplicates,return=minimal' },
+          body: JSON.stringify(items.map(supabaseAccountToRow))
+        });
+      };
+
+      const upsertSupabaseTrades = async (items) => {
+        if (!currentUser?.id || !Array.isArray(items) || !items.length) return;
+        const headers = await getSupabaseAuthHeaders();
+        await supabaseRequest('/rest/v1/trades?on_conflict=id', {
+          method: 'POST',
+          headers: { ...headers, Prefer: 'resolution=merge-duplicates,return=minimal' },
+          body: JSON.stringify(items.map(supabaseTradeToRow))
+        });
+      };
+
+      const deleteSupabaseTrade = async (tradeId) => {
+        const headers = await getSupabaseAuthHeaders();
+        await supabaseRequest(`/rest/v1/trades?id=eq.${encodeURIComponent(tradeId)}&user_id=eq.${encodeURIComponent(currentUser.id)}`, {
+          method: 'DELETE',
+          headers: { ...headers, Prefer: 'return=minimal' }
+        });
+      };
+
+      const deleteSupabaseAccount = async (accountId) => {
+        const headers = await getSupabaseAuthHeaders();
+        const userId = encodeURIComponent(currentUser.id);
+        const account = encodeURIComponent(accountId);
+        await supabaseRequest(`/rest/v1/trades?account_id=eq.${account}&user_id=eq.${userId}`, {
+          method: 'DELETE',
+          headers: { ...headers, Prefer: 'return=minimal' }
+        });
+        await supabaseRequest(`/rest/v1/trading_accounts?id=eq.${account}&user_id=eq.${userId}`, {
+          method: 'DELETE',
+          headers: { ...headers, Prefer: 'return=minimal' }
+        });
+      };
+
       const migrateLegacyCloudForEmail = (email, newUserId) => {
         const legacyUsers = getCloudUsers();
         const legacyUser = legacyUsers.find((user) => normalizeEmail(user.email || '') === normalizeEmail(email || ''));
@@ -3089,21 +3256,11 @@
           : { profile: null, accounts: [], trades: [], selectedAccountId: null, updatedAt: Date.now() };
       };
 
-      const saveCloudRecord = (userId, record) => {
-        const map = getCloudDataMap();
-        map[userId] = { ...record, updatedAt: Date.now() };
-        if (!saveCloudDataMap(map)) throw new Error('Unable to persist signed-in data on this browser.');
-      };
-
       const persistCloudState = () => {
         if (!currentUser || !usingCloudData) return;
-        saveCloudRecord(currentUser.id, {
-          profile: { id: currentUser.id, email: currentUser.email },
-          accounts,
-          trades,
-          selectedAccountId,
-          updatedAt: Date.now()
-        });
+        const key = `${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`;
+        if (selectedAccountId) safeLocalSet(key, selectedAccountId);
+        else safeLocalRemove(key);
       };
 
       const showAuthenticatedApp = () => {
@@ -3143,16 +3300,16 @@
         return cleanTrade;
       };
 
-      const loadCloudState = () => {
+      const loadCloudState = async () => {
         if (!currentUser) return;
-        const record = getCloudRecord(currentUser.id);
-        accounts = Array.isArray(record.accounts) ? record.accounts : [];
-        trades = Array.isArray(record.trades) ? record.trades.map(stripPsychologyData) : [];
-        selectedAccountId = accounts.some((account) => account.id === record.selectedAccountId)
-          ? record.selectedAccountId
+        const remote = await fetchSupabaseTradingData();
+        accounts = Array.isArray(remote.accounts) ? remote.accounts : [];
+        trades = Array.isArray(remote.trades) ? remote.trades.map(stripPsychologyData) : [];
+        const scopedSelected = safeLocalGet(`${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`);
+        selectedAccountId = accounts.some((account) => account.id === scopedSelected)
+          ? scopedSelected
           : accounts[0]?.id || null;
         usingCloudData = true;
-        persistCloudState();
         renderAccountSelector();
         renderDashboardAccount();
       };
@@ -3160,9 +3317,11 @@
       const detectExistingLocalData = async () => {
         try {
           const [localAccounts, localTrades] = await Promise.all([getAllAccounts(), getAllTrades()]);
-          const hasLocal = (Array.isArray(localAccounts) && localAccounts.length > 0) || (Array.isArray(localTrades) && localTrades.length > 0);
-          const imported = safeLocalGet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`) === '1';
-          importBanner.classList.toggle('visible', hasLocal && !imported);
+          const legacyRecord = getCloudRecord(currentUser.id);
+          const hasIndexedDb = (Array.isArray(localAccounts) && localAccounts.length > 0) || (Array.isArray(localTrades) && localTrades.length > 0);
+          const hasLegacyCloud = (Array.isArray(legacyRecord.accounts) && legacyRecord.accounts.length > 0) || (Array.isArray(legacyRecord.trades) && legacyRecord.trades.length > 0);
+          const imported = safeLocalGet(`${SUPABASE_IMPORT_MARKER_PREFIX}${currentUser.id}`) === '1';
+          importBanner.classList.toggle('visible', (hasIndexedDb || hasLegacyCloud) && !imported);
         } catch (_) {
           importBanner.classList.remove('visible');
         }
@@ -4376,7 +4535,7 @@
           currentUser = session?.user?.id ? { id: session.user.id, email: session.user.email || '' } : null;
           if (currentUser) {
             migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
-            loadCloudState();
+            await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
           } else {
@@ -4441,7 +4600,7 @@
             if (!saveSupabaseSession(response)) throw new Error('Unable to persist login session.');
             currentUser = { id: response.user.id, email: response.user.email || email };
             migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
-            loadCloudState();
+            await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
           } else {
@@ -4453,7 +4612,7 @@
             if (!saveSupabaseSession(response)) throw new Error('Unable to persist login session.');
             currentUser = { id: response.user.id, email: response.user.email || email };
             migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
-            loadCloudState();
+            await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
           }
@@ -4532,21 +4691,30 @@
         importLocalBtn.textContent = 'Importing…';
         try {
           const [localAccountsRaw, localTradesRaw] = await Promise.all([getAllAccounts(), getAllTrades()]);
-          const localAccounts = Array.isArray(localAccountsRaw) ? localAccountsRaw : [];
-          const localTrades = Array.isArray(localTradesRaw) ? localTradesRaw.map(stripPsychologyData) : [];
-          const accountIds = new Set(accounts.map((account) => account.id));
-          const tradeIds = new Set(trades.map((trade) => trade.id));
-          const mergedAccounts = accounts.concat(localAccounts.filter((account) => !accountIds.has(account.id)));
-          const mergedTrades = trades.concat(localTrades.filter((trade) => !tradeIds.has(trade.id)));
-          accounts = mergedAccounts;
-          trades = mergedTrades;
-          if (!selectedAccountId || !accounts.some((account) => account.id === selectedAccountId)) selectedAccountId = accounts[0]?.id || null;
-          persistCloudState();
-          safeLocalSet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
+          const legacyRecord = getCloudRecord(currentUser.id);
+          const localAccounts = [
+            ...(Array.isArray(legacyRecord.accounts) ? legacyRecord.accounts : []),
+            ...(Array.isArray(localAccountsRaw) ? localAccountsRaw : [])
+          ];
+          const localTrades = [
+            ...(Array.isArray(legacyRecord.trades) ? legacyRecord.trades.map(stripPsychologyData) : []),
+            ...(Array.isArray(localTradesRaw) ? localTradesRaw.map(stripPsychologyData) : [])
+          ];
+
+          const uniqueAccounts = Array.from(new Map(localAccounts.filter((account) => account?.id).map((account) => [account.id, account])).values());
+          const uniqueTrades = Array.from(new Map(localTrades.filter((trade) => trade?.id && trade?.accountId).map((trade) => [trade.id, trade])).values());
+          const remoteAccountIds = new Set(accounts.map((account) => account.id));
+          const remoteTradeIds = new Set(trades.map((trade) => trade.id));
+          const accountsToImport = uniqueAccounts.filter((account) => !remoteAccountIds.has(account.id));
+          const allAccountIds = new Set([...accounts.map((account) => account.id), ...accountsToImport.map((account) => account.id)]);
+          const tradesToImport = uniqueTrades.filter((trade) => !remoteTradeIds.has(trade.id) && allAccountIds.has(trade.accountId));
+
+          await upsertSupabaseAccounts(accountsToImport);
+          await upsertSupabaseTrades(tradesToImport);
+          await loadCloudState();
+          safeLocalSet(`${SUPABASE_IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
           importBanner.classList.remove('visible');
-          renderAccountSelector();
-          renderDashboardAccount();
-          notice.textContent = 'Existing trading data imported successfully.';
+          notice.textContent = `Supabase sync complete: ${accountsToImport.length} account(s) and ${tradesToImport.length} trade(s) imported.`;
           notice.classList.add('show');
         } catch (error) {
           notice.textContent = error instanceof Error ? error.message : 'Unable to import existing trading data.';
@@ -4558,7 +4726,7 @@
       });
 
       skipImportBtn.addEventListener('click', () => {
-        if (currentUser) safeLocalSet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
+        if (currentUser) safeLocalSet(`${SUPABASE_IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
         importBanner.classList.remove('visible');
       });
 
@@ -4700,14 +4868,16 @@
         }
         if (value === 'none') {
           selectedAccountId = null;
-          safeLocalRemove(SELECTED_ACCOUNT_LOCAL_KEY);
+          if (usingCloudData && currentUser) safeLocalRemove(`${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`);
+          else safeLocalRemove(SELECTED_ACCOUNT_LOCAL_KEY);
           accountMenuBtn.hidden = true;
           renderDashboardAccount();
           return;
         }
         selectedAccountId = value;
         selectedCalendarDate = null;
-        if (!usingCloudData) safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
+        if (usingCloudData && currentUser) safeLocalSet(`${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`, selectedAccountId);
+        else safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
         accountMenuBtn.hidden = false;
         renderDashboardAccount();
         if (tradeFormCard.classList.contains('visible')) restoreDraft();
@@ -4753,7 +4923,8 @@
           updatedAt: Date.now()
         };
         try {
-          if (!usingCloudData) await saveAccount(account);
+          if (usingCloudData) await upsertSupabaseAccounts([account]);
+          else await saveAccount(account);
           if (existingAccount) {
             accounts = accounts.map((item) => item.id === account.id ? account : item);
           } else {
@@ -4802,7 +4973,9 @@
         const accountTradeIds = trades.filter((trade) => trade.accountId === accountId).map((trade) => trade.id);
         try {
           await removeScreenshotsForAccount(accountId);
-          if (!usingCloudData) {
+          if (usingCloudData) {
+            await deleteSupabaseAccount(accountId);
+          } else {
             for (const tradeId of accountTradeIds) await removeTrade(tradeId);
             await removeAccount(accountId);
           }
@@ -4943,7 +5116,8 @@
           const screenshotRefs = await persistTradeScreenshots(trade);
           trade.screenshotBeforeId = screenshotRefs.beforeId;
           trade.screenshotAfterId = screenshotRefs.afterId;
-          if (!usingCloudData) await saveTrade(trade);
+          if (usingCloudData) await upsertSupabaseTrades([trade]);
+          else await saveTrade(trade);
           if (existingTrade) {
             trades = trades.map((item) => item.id === trade.id ? trade : item);
           } else {
@@ -5001,7 +5175,8 @@
         try {
           const tradeToDelete = trades.find((trade) => trade.id === id && trade.accountId === selectedAccountId);
           await removeScreenshotsForTrade(tradeToDelete);
-          if (!usingCloudData) await removeTrade(id);
+          if (usingCloudData) await deleteSupabaseTrade(id);
+          else await removeTrade(id);
           trades = trades.filter((trade) => trade.id !== id);
           if (usingCloudData) persistCloudState();
           detailTradeId = null;
