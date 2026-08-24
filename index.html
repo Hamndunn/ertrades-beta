@@ -2782,6 +2782,7 @@
       const SUPABASE_URL = 'https://vpigfdbkosyspbuxkbdy.supabase.co';
       const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_o8YOkT06okbFvAF6IH3YyQ_mnnY8ioP';
       const SUPABASE_SESSION_KEY = 'ertrades-supabase-session-v1';
+      const SUPABASE_SCREENSHOT_BUCKET = 'trade-screenshots';
       const IMPORT_MARKER_PREFIX = 'ertrades-imported-local:';
       const SUPABASE_IMPORT_MARKER_PREFIX = 'ertrades-supabase-imported:';
       const THEME_KEY_PREFIX = 'ertrades-theme:';
@@ -2972,6 +2973,63 @@
         if (!session?.access_token || !session?.user?.id) return null;
         if (!session.expiresAt || session.expiresAt > Date.now() + 60000) return session;
         try { return await refreshSupabaseSession(session); } catch (_) { return null; }
+      };
+
+      const supabaseStorageRequest = async (objectPath, options = {}) => {
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || !session?.user?.id || !currentUser?.id) throw new Error('Your login session expired. Please log in again.');
+        const encodedPath = String(objectPath || '').split('/').map((part) => encodeURIComponent(part)).join('/');
+        const headers = {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${session.access_token}`,
+          ...(options.headers || {})
+        };
+        let response;
+        try {
+          response = await fetch(`${SUPABASE_URL}/storage/v1/object/${SUPABASE_SCREENSHOT_BUCKET}/${encodedPath}`, { ...options, headers });
+        } catch (_) {
+          throw new Error('Unable to reach Supabase Storage. Check your connection and try again.');
+        }
+        if (!response.ok) {
+          let message = 'Supabase Storage request failed.';
+          try {
+            const payload = await response.json();
+            message = payload?.message || payload?.error || message;
+          } catch (_) {}
+          throw new Error(message);
+        }
+        return response;
+      };
+
+      const screenshotCloudPathFor = (tradeId, slot, name = '', type = '') => {
+        const extensionFromName = String(name || '').toLowerCase().match(/\.([a-z0-9]{2,5})$/)?.[1] || '';
+        const extensionFromType = String(type || '').toLowerCase().split('/')[1]?.replace('jpeg', 'jpg') || '';
+        const extension = extensionFromName || extensionFromType || 'jpg';
+        return `${currentUser.id}/${tradeId}/${slot}.${extension}`;
+      };
+
+      const uploadCloudScreenshot = async (tradeId, slot, blob, name = '', type = '') => {
+        const contentType = type || blob?.type || 'application/octet-stream';
+        const path = screenshotCloudPathFor(tradeId, slot, name, contentType);
+        await supabaseStorageRequest(path, {
+          method: 'POST',
+          headers: {
+            'Content-Type': contentType,
+            'x-upsert': 'true'
+          },
+          body: blob
+        });
+        return path;
+      };
+
+      const downloadCloudScreenshot = async (path) => {
+        const response = await supabaseStorageRequest(path, { method: 'GET' });
+        return response.blob();
+      };
+
+      const deleteCloudScreenshot = async (path) => {
+        if (!path) return;
+        try { await supabaseStorageRequest(path, { method: 'DELETE' }); } catch (_) {}
       };
 
       const getSupabaseAuthHeaders = async () => {
@@ -4119,41 +4177,85 @@
 
       const screenshotIdFor = (tradeId, slot) => `shot:${currentUser.id}:${tradeId}:${slot}`;
 
+      const findLegacyLocalScreenshot = async (trade, slot) => {
+        try {
+          const all = await getAllScreenshots();
+          return all.find((item) => item.tradeId === trade.id && item.accountId === trade.accountId && item.slot === slot) || null;
+        } catch (_) {
+          return null;
+        }
+      };
+
       const loadTradeScreenshots = async (trade) => {
         resetPendingScreenshots();
         if (!currentUser || !trade) return;
         for (const slot of ['before', 'after']) {
-          const id = slot === 'before' ? trade.screenshotBeforeId : trade.screenshotAfterId;
-          if (!id) continue;
-          try {
-            const screenshot = await getScreenshot(id);
-            if (!screenshot || screenshot.userId !== currentUser.id || screenshot.accountId !== trade.accountId || screenshot.tradeId !== trade.id) continue;
-            pendingScreenshots[slot] = { mode: 'existing', id };
-            setScreenshotUi(slot, screenshot.blob, 'Saved');
-          } catch (_) {
-            screenshotElements(slot).status.textContent = 'Unable to load';
+          const cloudPath = slot === 'before' ? trade.screenshotBeforePath : trade.screenshotAfterPath;
+          if (usingCloudData && cloudPath) {
+            try {
+              const blob = await downloadCloudScreenshot(cloudPath);
+              pendingScreenshots[slot] = { mode: 'existing-cloud', path: cloudPath };
+              setScreenshotUi(slot, blob, 'Cloud');
+              continue;
+            } catch (_) {
+              screenshotElements(slot).status.textContent = 'Cloud image unavailable';
+            }
           }
+
+          const id = slot === 'before' ? trade.screenshotBeforeId : trade.screenshotAfterId;
+          let screenshot = null;
+          if (id) {
+            try { screenshot = await getScreenshot(id); } catch (_) {}
+          }
+          if (!screenshot && usingCloudData) screenshot = await findLegacyLocalScreenshot(trade, slot);
+          if (!screenshot) continue;
+          pendingScreenshots[slot] = usingCloudData
+            ? { mode: 'legacy-local', id: screenshot.id, blob: screenshot.blob, name: screenshot.name, type: screenshot.type }
+            : { mode: 'existing', id: screenshot.id };
+          setScreenshotUi(slot, screenshot.blob, usingCloudData ? 'Ready to sync' : 'Saved');
         }
       };
 
       const persistTradeScreenshots = async (trade) => {
         const refs = {
           beforeId: trade.screenshotBeforeId || null,
-          afterId: trade.screenshotAfterId || null
+          afterId: trade.screenshotAfterId || null,
+          beforePath: trade.screenshotBeforePath || null,
+          afterPath: trade.screenshotAfterPath || null
         };
         if (!currentUser) return refs;
         for (const slot of ['before', 'after']) {
           const pending = pendingScreenshots[slot];
-          if (!pending || pending.mode === 'existing') continue;
+          if (!pending || pending.mode === 'existing' || pending.mode === 'existing-cloud') continue;
           const currentId = slot === 'before' ? refs.beforeId : refs.afterId;
+          const currentPath = slot === 'before' ? refs.beforePath : refs.afterPath;
           const refKey = slot === 'before' ? 'beforeId' : 'afterId';
+          const pathKey = slot === 'before' ? 'beforePath' : 'afterPath';
           const elements = screenshotElements(slot);
+
           if (pending.mode === 'remove') {
-            if (currentId) await removeScreenshot(currentId);
+            if (usingCloudData && currentPath) await deleteCloudScreenshot(currentPath);
+            if (currentId) {
+              try { await removeScreenshot(currentId); } catch (_) {}
+            }
             refs[refKey] = null;
+            refs[pathKey] = null;
             continue;
           }
-          elements.status.textContent = 'Saving image…';
+
+          elements.status.textContent = usingCloudData ? 'Uploading to cloud…' : 'Saving image…';
+          if (usingCloudData) {
+            const blob = pending.mode === 'legacy-local' ? pending.blob : pending.file;
+            const name = pending.mode === 'legacy-local' ? pending.name : pending.file?.name;
+            const type = pending.mode === 'legacy-local' ? pending.type : pending.file?.type;
+            const path = await uploadCloudScreenshot(trade.id, slot, blob, name || `${slot}-screenshot`, type || blob?.type || 'application/octet-stream');
+            if (currentPath && currentPath !== path) await deleteCloudScreenshot(currentPath);
+            refs[pathKey] = path;
+            refs[refKey] = null;
+            elements.status.textContent = 'Cloud saved';
+            continue;
+          }
+
           const id = screenshotIdFor(trade.id, slot);
           await saveScreenshot({
             id,
@@ -4174,7 +4276,44 @@
         return refs;
       };
 
+      const migrateLegacyScreenshotsToCloud = async () => {
+        if (!usingCloudData || !currentUser?.id || !trades.length) return 0;
+        let localScreenshots;
+        try { localScreenshots = await getAllScreenshots(); } catch (_) { return 0; }
+        if (!Array.isArray(localScreenshots) || !localScreenshots.length) return 0;
+        const changed = [];
+        let migrated = 0;
+        for (const trade of trades) {
+          let changedTrade = null;
+          for (const slot of ['before', 'after']) {
+            const pathKey = slot === 'before' ? 'screenshotBeforePath' : 'screenshotAfterPath';
+            if (trade[pathKey]) continue;
+            const screenshot = localScreenshots.find((item) => item.tradeId === trade.id && item.accountId === trade.accountId && item.slot === slot);
+            if (!screenshot?.blob) continue;
+            try {
+              const path = await uploadCloudScreenshot(trade.id, slot, screenshot.blob, screenshot.name || `${slot}-screenshot`, screenshot.type || screenshot.blob.type || 'application/octet-stream');
+              changedTrade = changedTrade || { ...trade };
+              changedTrade[pathKey] = path;
+              migrated += 1;
+            } catch (_) {}
+          }
+          if (changedTrade) changed.push(changedTrade);
+        }
+        if (changed.length) {
+          await upsertSupabaseTrades(changed);
+          const changedMap = new Map(changed.map((trade) => [trade.id, trade]));
+          trades = trades.map((trade) => changedMap.get(trade.id) || trade);
+          renderDashboardAccount();
+        }
+        return migrated;
+      };
+
       const removeScreenshotsForTrade = async (trade) => {
+        if (usingCloudData) {
+          for (const path of [trade?.screenshotBeforePath, trade?.screenshotAfterPath].filter(Boolean)) {
+            await deleteCloudScreenshot(path);
+          }
+        }
         for (const id of [trade?.screenshotBeforeId, trade?.screenshotAfterId].filter(Boolean)) {
           try { await removeScreenshot(id); } catch (_) {}
         }
@@ -4182,6 +4321,10 @@
 
       const removeScreenshotsForAccount = async (accountId) => {
         if (!currentUser || !accountId) return;
+        if (usingCloudData) {
+          for (const trade of trades.filter((item) => item.accountId === accountId)) await removeScreenshotsForTrade(trade);
+          return;
+        }
         const all = await getAllScreenshots();
         for (const screenshot of all.filter((item) => item.userId === currentUser.id && item.accountId === accountId)) {
           await removeScreenshot(screenshot.id);
@@ -4201,7 +4344,7 @@
         const instrument = document.createElement('div');
         instrument.className = 'trade-instrument';
         instrument.textContent = trade.instrument;
-        if (trade.screenshotBeforeId || trade.screenshotAfterId) {
+        if (trade.screenshotBeforeId || trade.screenshotAfterId || trade.screenshotBeforePath || trade.screenshotAfterPath) {
           const indicator = document.createElement('span');
           indicator.className = 'photo-indicator';
           indicator.setAttribute('aria-label', 'Trade has screenshot');
@@ -4547,6 +4690,13 @@
             await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
+            try {
+              const migratedScreenshots = await migrateLegacyScreenshotsToCloud();
+              if (migratedScreenshots > 0) {
+                notice.textContent = `${migratedScreenshots} existing screenshot${migratedScreenshots === 1 ? '' : 's'} synced to cloud.`;
+                notice.classList.add('show');
+              }
+            } catch (_) {}
           } else {
             accounts = [];
             trades = [];
@@ -4612,6 +4762,13 @@
             await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
+            try {
+              const migratedScreenshots = await migrateLegacyScreenshotsToCloud();
+              if (migratedScreenshots > 0) {
+                notice.textContent = `${migratedScreenshots} existing screenshot${migratedScreenshots === 1 ? '' : 's'} synced to cloud.`;
+                notice.classList.add('show');
+              }
+            } catch (_) {}
           } else {
             const response = await supabaseRequest('/auth/v1/token?grant_type=password', {
               method: 'POST',
@@ -4624,6 +4781,13 @@
             await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
+            try {
+              const migratedScreenshots = await migrateLegacyScreenshotsToCloud();
+              if (migratedScreenshots > 0) {
+                notice.textContent = `${migratedScreenshots} existing screenshot${migratedScreenshots === 1 ? '' : 's'} synced to cloud.`;
+                notice.classList.add('show');
+              }
+            } catch (_) {}
           }
           authForm.reset();
         } catch (error) {
@@ -5115,6 +5279,8 @@
           }),
           screenshotBeforeId: existingTrade?.screenshotBeforeId || null,
           screenshotAfterId: existingTrade?.screenshotAfterId || null,
+          screenshotBeforePath: existingTrade?.screenshotBeforePath || null,
+          screenshotAfterPath: existingTrade?.screenshotAfterPath || null,
           createdAt: existingTrade?.createdAt || Date.now(),
           updatedAt: Date.now()
         };
@@ -5125,6 +5291,8 @@
           const screenshotRefs = await persistTradeScreenshots(trade);
           trade.screenshotBeforeId = screenshotRefs.beforeId;
           trade.screenshotAfterId = screenshotRefs.afterId;
+          trade.screenshotBeforePath = screenshotRefs.beforePath;
+          trade.screenshotAfterPath = screenshotRefs.afterPath;
           if (usingCloudData) await upsertSupabaseTrades([trade]);
           else await saveTrade(trade);
           if (existingTrade) {
