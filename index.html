@@ -1,11 +1,4 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#070b0d">
-<meta name="application-name" content="eRTrades">
-<meta name="apple-mobile-web-app-title" content="eRTrades">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <style>
   html, body {
     margin: 0;
@@ -309,7 +302,6 @@
       display: grid;
       grid-template-columns: repeat(2,minmax(0,1fr));
       gap: 9px;
-      margin-bottom: 14px;
     }
 
     #ertrades-app .metric {
@@ -589,165 +581,17 @@
       font-size: 16px;
     }
 
-    #ertrades-app .date-input-wrap {
-      position: relative;
-      width: 100%;
-      min-height: 48px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #0a1013;
-      overflow: hidden;
-    }
-
-    #ertrades-app .date-input-wrap input[type="date"] {
-      position: absolute;
-      inset: 0;
+    #ertrades-app .field input[type="date"] {
+      display: block;
       width: 100% !important;
       min-width: 0 !important;
       max-width: 100% !important;
-      min-height: 48px;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      border-radius: 12px;
-      opacity: .01;
-      cursor: pointer;
+      inline-size: 100% !important;
+      min-inline-size: 0 !important;
+      max-inline-size: 100% !important;
+      box-sizing: border-box;
       -webkit-appearance: none;
       appearance: none;
-    }
-
-    #ertrades-app .date-input-display {
-      min-height: 48px;
-      padding: 0 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text);
-      font-size: 16px;
-      text-align: center;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    #ertrades-app .date-input-wrap::after {
-      content: "";
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      width: 8px;
-      height: 8px;
-      border-right: 1.5px solid var(--soft);
-      border-bottom: 1.5px solid var(--soft);
-      transform: translateY(-65%) rotate(45deg);
-      pointer-events: none;
-      opacity: .9;
-    }
-
-    #ertrades-app .date-input-wrap:focus-within {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    #ertrades-app .native-select-hidden {
-      position: absolute !important;
-      width: 1px !important;
-      height: 1px !important;
-      padding: 0 !important;
-      margin: -1px !important;
-      overflow: hidden !important;
-      clip: rect(0,0,0,0) !important;
-      white-space: nowrap !important;
-      border: 0 !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-
-    #ertrades-app .custom-select-btn {
-      width: 100%;
-      min-height: 54px;
-      padding: 22px 38px 7px 13px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--panel);
-      color: var(--text);
-      text-align: left;
-      font-size: 14px;
-      font-weight: 650;
-      cursor: pointer;
-      position: relative;
-    }
-
-    #ertrades-app .field .custom-select-btn {
-      min-height: 48px;
-      padding: 0 38px 0 13px;
-      border-radius: 12px;
-      background: #0a1013;
-      font-size: 16px;
-      font-weight: 650;
-    }
-
-    #ertrades-app .custom-select-btn::after {
-      content: "";
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      width: 7px;
-      height: 7px;
-      border-right: 1.5px solid var(--soft);
-      border-bottom: 1.5px solid var(--soft);
-      transform: translateY(-60%) rotate(45deg);
-      pointer-events: none;
-    }
-
-    #ertrades-app .popup-menu {
-      display: none;
-      position: absolute;
-      z-index: 80;
-      min-width: 190px;
-      max-width: min(320px, calc(100vw - 32px));
-      padding: 6px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--panel);
-      box-shadow: 0 16px 36px rgba(0,0,0,.34);
-    }
-
-    #ertrades-app .popup-menu.open { display: grid; }
-
-    #ertrades-app .popup-menu button {
-      min-height: 44px;
-      padding: 0 12px;
-      border: 0;
-      border-radius: 10px;
-      background: transparent;
-      color: var(--text);
-      text-align: left;
-      font-size: 13px;
-      font-weight: 750;
-      cursor: pointer;
-    }
-
-    #ertrades-app .popup-menu button.selected {
-      color: var(--accent);
-      background: var(--accent-dark);
-    }
-
-    #ertrades-app .selector-popup {
-      left: 0;
-      top: calc(100% + 7px);
-      width: 100%;
-    }
-
-    #ertrades-app .psychology-select-wrap {
-      position: relative;
-      min-width: 0;
-    }
-
-    #ertrades-app .psychology-popup {
-      left: 0;
-      top: calc(100% + 7px);
-      width: 100%;
-      z-index: 120;
     }
 
     #ertrades-app .trade-form-card .field {
@@ -1586,7 +1430,6 @@
     #ertrades-app.theme-light .field input,
     #ertrades-app.theme-light .field select,
     #ertrades-app.theme-light .field textarea,
-    #ertrades-app.theme-light .field .custom-select-btn,
     #ertrades-app.theme-light .direction-btn,
     #ertrades-app.theme-light .rr-box,
     #ertrades-app.theme-light .detail-item,
@@ -1601,11 +1444,6 @@
     #ertrades-app.theme-light .auth-tab,
     #ertrades-app.theme-light .auth-status {
       background: #f7f9fa;
-    }
-
-    #ertrades-app.theme-light .popup-menu,
-    #ertrades-app.theme-light .custom-select-btn {
-      background: #ffffff;
     }
 
     #ertrades-app.theme-light .summary-card {
@@ -2221,14 +2059,11 @@
       <div class="control-row">
         <div class="selector-wrap">
           <label class="selector-label" for="account-select">Trading account</label>
-          <button class="custom-select-btn" id="account-select-btn" type="button" aria-haspopup="menu" aria-expanded="false">
-            <span id="account-select-label">No account added</span>
-          </button>
-          <select class="native-select-hidden" id="account-select" aria-label="Select trading account" tabindex="-1">
+          <select id="account-select" aria-label="Select trading account">
             <option value="none">No account added</option>
             <option value="__create__">+ Create Account</option>
           </select>
-          <div class="popup-menu selector-popup" id="account-select-menu" role="menu"></div>
+          <span class="chevron" aria-hidden="true"></span>
         </div>
         <div class="account-menu-wrap">
           <button class="account-menu-btn" id="account-menu-btn" type="button" aria-label="Trading account menu" aria-expanded="false" hidden>⋯</button>
@@ -2312,10 +2147,7 @@
               </div>
               <div class="field">
                 <label for="trade-date">Date</label>
-                <div class="date-input-wrap">
-                  <input id="trade-date" type="date" required>
-                  <span class="date-input-display" id="trade-date-display">—</span>
-                </div>
+                <input id="trade-date" type="date" required>
               </div>
               <div class="field">
                 <label for="trade-session">Session</label>
@@ -2399,39 +2231,31 @@
             <div class="trade-grid two-col">
               <div class="field">
                 <label for="psychology-before">Before</label>
-                <div class="psychology-select-wrap">
-                  <button class="custom-select-btn" id="psychology-before-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
-                  <select class="native-select-hidden" id="psychology-before" tabindex="-1">
-                    <option value="">Select state</option>
-                    <option value="Confident">Confident</option>
-                    <option value="Neutral">Neutral</option>
-                    <option value="Fomo">Fomo</option>
-                    <option value="Fear">Fear</option>
-                    <option value="Revenge">Revenge</option>
-                    <option value="Disciplined">Disciplined</option>
-                    <option value="Anxious">Anxious</option>
-                    <option value="Excited">Excited</option>
-                  </select>
-                  <div class="popup-menu psychology-popup" id="psychology-before-menu" role="menu"></div>
-                </div>
+                <select id="psychology-before">
+                  <option value="">Select state</option>
+                  <option value="Confident">Confident</option>
+                  <option value="Neutral">Neutral</option>
+                  <option value="Fomo">Fomo</option>
+                  <option value="Fear">Fear</option>
+                  <option value="Revenge">Revenge</option>
+                  <option value="Disciplined">Disciplined</option>
+                  <option value="Anxious">Anxious</option>
+                  <option value="Excited">Excited</option>
+                </select>
               </div>
               <div class="field">
                 <label for="psychology-after">After</label>
-                <div class="psychology-select-wrap">
-                  <button class="custom-select-btn" id="psychology-after-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
-                  <select class="native-select-hidden" id="psychology-after" tabindex="-1">
-                    <option value="">Select state</option>
-                    <option value="Confident">Confident</option>
-                    <option value="Neutral">Neutral</option>
-                    <option value="Fomo">Fomo</option>
-                    <option value="Fear">Fear</option>
-                    <option value="Revenge">Revenge</option>
-                    <option value="Disciplined">Disciplined</option>
-                    <option value="Anxious">Anxious</option>
-                    <option value="Excited">Excited</option>
-                  </select>
-                  <div class="popup-menu psychology-popup" id="psychology-after-menu" role="menu"></div>
-                </div>
+                <select id="psychology-after">
+                  <option value="">Select state</option>
+                  <option value="Confident">Confident</option>
+                  <option value="Neutral">Neutral</option>
+                  <option value="Fomo">Fomo</option>
+                  <option value="Fear">Fear</option>
+                  <option value="Revenge">Revenge</option>
+                  <option value="Disciplined">Disciplined</option>
+                  <option value="Anxious">Anxious</option>
+                  <option value="Excited">Excited</option>
+                </select>
               </div>
             </div>
           </section>
@@ -2814,9 +2638,6 @@
       const notice = root.querySelector('#frontend-notice');
       const tradeSuccess = root.querySelector('#trade-success');
       const accountSelect = root.querySelector('#account-select');
-      const accountSelectBtn = root.querySelector('#account-select-btn');
-      const accountSelectLabel = root.querySelector('#account-select-label');
-      const accountSelectMenu = root.querySelector('#account-select-menu');
       const accountMenuBtn = root.querySelector('#account-menu-btn');
       const accountMenu = root.querySelector('#account-menu');
       const editAccountBtn = root.querySelector('#edit-account-btn');
@@ -2838,7 +2659,6 @@
       const tradeFormError = root.querySelector('#trade-form-error');
       const tradeInstrument = root.querySelector('#trade-instrument');
       const tradeDate = root.querySelector('#trade-date');
-      const tradeDateDisplay = root.querySelector('#trade-date-display');
       const tradeSession = root.querySelector('#trade-session');
       const entryPrice = root.querySelector('#entry-price');
       const stopLoss = root.querySelector('#stop-loss');
@@ -2852,10 +2672,6 @@
       const tradeMistakes = root.querySelector('#trade-mistakes');
       const psychologyBefore = root.querySelector('#psychology-before');
       const psychologyAfter = root.querySelector('#psychology-after');
-      const psychologyBeforeBtn = root.querySelector('#psychology-before-btn');
-      const psychologyAfterBtn = root.querySelector('#psychology-after-btn');
-      const psychologyBeforeMenu = root.querySelector('#psychology-before-menu');
-      const psychologyAfterMenu = root.querySelector('#psychology-after-menu');
       const directionButtons = Array.from(root.querySelectorAll('.direction-btn'));
       const rrBox = root.querySelector('#rr-box');
       const plannedRr = root.querySelector('#planned-rr');
@@ -2968,6 +2784,7 @@
       const SUPABASE_SESSION_KEY = 'ertrades-supabase-session-v1';
       const SUPABASE_SCREENSHOT_BUCKET = 'trade-screenshots';
       const IMPORT_MARKER_PREFIX = 'ertrades-imported-local:';
+      const SUPABASE_IMPORT_MARKER_PREFIX = 'ertrades-supabase-imported:';
       const THEME_KEY_PREFIX = 'ertrades-theme:';
       let accounts = [];
       let trades = [];
@@ -2975,7 +2792,6 @@
       let selectedDirection = '';
       let draftStatusTimer = null;
       let tradeSuccessTimer = null;
-      let screenshotSyncNoticeTimer = null;
       let editingTradeId = null;
       let detailTradeId = null;
       let editingAccountId = null;
@@ -3135,9 +2951,33 @@
         return payload;
       };
 
+      const saveSupabaseSession = (session) => {
+        if (!session?.access_token || !session?.user?.id) return false;
+        const expiresAt = Date.now() + ((Number(session.expires_in) || 3600) * 1000);
+        return writeJsonLocal(SUPABASE_SESSION_KEY, { ...session, expiresAt });
+      };
+
+      const refreshSupabaseSession = async (session) => {
+        if (!session?.refresh_token) return null;
+        const refreshed = await supabaseRequest('/auth/v1/token?grant_type=refresh_token', {
+          method: 'POST',
+          body: JSON.stringify({ refresh_token: session.refresh_token })
+        });
+        if (!refreshed?.access_token || !refreshed?.user?.id) return null;
+        saveSupabaseSession(refreshed);
+        return { ...refreshed, expiresAt: Date.now() + ((Number(refreshed.expires_in) || 3600) * 1000) };
+      };
+
+      const getValidSupabaseSession = async () => {
+        const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
+        if (!session?.access_token || !session?.user?.id) return null;
+        if (!session.expiresAt || session.expiresAt > Date.now() + 60000) return session;
+        try { return await refreshSupabaseSession(session); } catch (_) { return null; }
+      };
+
       const supabaseStorageRequest = async (objectPath, options = {}) => {
         const session = await getValidSupabaseSession();
-        if (!session?.access_token || !currentUser?.id) throw new Error('Sign in again to access cloud screenshots.');
+        if (!session?.access_token || !session?.user?.id || !currentUser?.id) throw new Error('Your login session expired. Please log in again.');
         const encodedPath = String(objectPath || '').split('/').map((part) => encodeURIComponent(part)).join('/');
         const headers = {
           apikey: SUPABASE_PUBLISHABLE_KEY,
@@ -3161,22 +3001,23 @@
         return response;
       };
 
-      const screenshotCloudPathFor = (tradeId, slot, file = null) => {
-        const extensionFromName = String(file?.name || '').toLowerCase().match(/\.([a-z0-9]{2,5})$/)?.[1] || '';
-        const extensionFromType = String(file?.type || '').toLowerCase().split('/')[1]?.replace('jpeg', 'jpg') || '';
+      const screenshotCloudPathFor = (tradeId, slot, name = '', type = '') => {
+        const extensionFromName = String(name || '').toLowerCase().match(/\.([a-z0-9]{2,5})$/)?.[1] || '';
+        const extensionFromType = String(type || '').toLowerCase().split('/')[1]?.replace('jpeg', 'jpg') || '';
         const extension = extensionFromName || extensionFromType || 'jpg';
         return `${currentUser.id}/${tradeId}/${slot}.${extension}`;
       };
 
-      const uploadCloudScreenshot = async (tradeId, slot, file) => {
-        const path = screenshotCloudPathFor(tradeId, slot, file);
+      const uploadCloudScreenshot = async (tradeId, slot, blob, name = '', type = '') => {
+        const contentType = type || blob?.type || 'application/octet-stream';
+        const path = screenshotCloudPathFor(tradeId, slot, name, contentType);
         await supabaseStorageRequest(path, {
           method: 'POST',
           headers: {
-            'Content-Type': file.type || 'application/octet-stream',
+            'Content-Type': contentType,
             'x-upsert': 'true'
           },
-          body: file
+          body: blob
         });
         return path;
       };
@@ -3191,53 +3032,170 @@
         try { await supabaseStorageRequest(path, { method: 'DELETE' }); } catch (_) {}
       };
 
-      const clearCloudScreenshotTradeRef = async (tradeId, slot) => {
-        if (!usingCloudData || !currentUser?.id || !tradeId) return;
+      const getSupabaseAuthHeaders = async () => {
         const session = await getValidSupabaseSession();
-        if (!session?.access_token) throw new Error('Sign in again to update this screenshot.');
-        const column = slot === 'before' ? 'screenshot_before_path' : 'screenshot_after_path';
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/trades?id=eq.${encodeURIComponent(tradeId)}&user_id=eq.${encodeURIComponent(currentUser.id)}`, {
-          method: 'PATCH',
-          headers: {
-            apikey: SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-            Prefer: 'return=minimal'
-          },
-          body: JSON.stringify({ [column]: null, updated_at: new Date().toISOString() })
-        });
-        if (!response.ok) {
-          let message = 'Unable to remove screenshot from the cloud trade record.';
-          try {
-            const payload = await response.json();
-            message = payload?.message || payload?.error || message;
-          } catch (_) {}
-          throw new Error(message);
-        }
+        if (!session?.access_token || !session?.user?.id) throw new Error('Your login session expired. Please log in again.');
+        return { Authorization: `Bearer ${session.access_token}` };
       };
 
-      const saveSupabaseSession = (session) => {
-        if (!session?.access_token || !session?.user?.id) return false;
-        const expiresAt = Date.now() + ((Number(session.expires_in) || 3600) * 1000);
-        return writeJsonLocal(SUPABASE_SESSION_KEY, { ...session, expiresAt });
+      const dateToMillis = (value) => {
+        if (!value) return Date.now();
+        const parsed = Date.parse(value);
+        return Number.isFinite(parsed) ? parsed : Date.now();
       };
 
-      const refreshSupabaseSession = async (session) => {
-        if (!session?.refresh_token) return null;
-        const refreshed = await supabaseRequest('/auth/v1/token?grant_type=refresh_token', {
+      const millisToIso = (value) => {
+        const numeric = Number(value);
+        const date = Number.isFinite(numeric) ? new Date(numeric) : new Date(value || Date.now());
+        return Number.isFinite(date.getTime()) ? date.toISOString() : new Date().toISOString();
+      };
+
+      const nullableNumber = (value) => {
+        if (value === null || typeof value === 'undefined' || value === '') return null;
+        const numeric = Number(value);
+        return Number.isFinite(numeric) ? numeric : null;
+      };
+
+      const supabaseAccountFromRow = (row) => ({
+        id: row.id,
+        name: row.name || '',
+        startingBalance: nullableNumber(row.starting_balance) ?? 0,
+        currency: row.currency || 'USD',
+        ...(row.prop_firm_config ? { propFirmConfig: row.prop_firm_config } : {}),
+        createdAt: dateToMillis(row.created_at),
+        updatedAt: dateToMillis(row.updated_at)
+      });
+
+      const supabaseAccountToRow = (account) => ({
+        id: account.id,
+        user_id: currentUser.id,
+        name: account.name,
+        starting_balance: nullableNumber(account.startingBalance) ?? 0,
+        currency: account.currency || 'USD',
+        prop_firm_config: account.propFirmConfig || null,
+        created_at: millisToIso(account.createdAt),
+        updated_at: millisToIso(account.updatedAt || Date.now())
+      });
+
+      const supabaseTradeFromRow = (row) => ({
+        id: row.id,
+        accountId: row.account_id,
+        instrument: row.instrument || '',
+        direction: row.direction || '',
+        date: row.trade_date || '',
+        session: row.session || 'Asian',
+        entryPrice: nullableNumber(row.entry_price),
+        stopLoss: nullableNumber(row.stop_loss),
+        takeProfit: nullableNumber(row.take_profit),
+        lotSize: nullableNumber(row.lot_size),
+        riskPercent: nullableNumber(row.risk_percent),
+        riskAmount: nullableNumber(row.risk_amount),
+        profitLoss: nullableNumber(row.profit_loss) ?? 0,
+        result: row.result || '',
+        plannedRr: nullableNumber(row.planned_rr),
+        realizedR: nullableNumber(row.realized_r),
+        notes: row.reason_for_entry || '',
+        mistakes: row.mistakes || '',
+        psychologyBefore: row.psychology_before || '',
+        psychologyAfter: row.psychology_after || '',
+        screenshotBeforePath: row.screenshot_before_path || null,
+        screenshotAfterPath: row.screenshot_after_path || null,
+        screenshotBeforeId: null,
+        screenshotAfterId: null,
+        createdAt: dateToMillis(row.created_at),
+        updatedAt: dateToMillis(row.updated_at)
+      });
+
+      const supabaseTradeToRow = (trade) => ({
+        id: trade.id,
+        user_id: currentUser.id,
+        account_id: trade.accountId,
+        instrument: trade.instrument || '',
+        direction: trade.direction || '',
+        trade_date: trade.date,
+        session: trade.session || null,
+        entry_price: nullableNumber(trade.entryPrice),
+        stop_loss: nullableNumber(trade.stopLoss),
+        take_profit: nullableNumber(trade.takeProfit),
+        lot_size: nullableNumber(trade.lotSize),
+        risk_percent: nullableNumber(trade.riskPercent),
+        risk_amount: nullableNumber(trade.riskAmount),
+        profit_loss: nullableNumber(trade.profitLoss) ?? 0,
+        result: trade.result || '',
+        planned_rr: nullableNumber(trade.plannedRr),
+        realized_r: nullableNumber(trade.realizedR),
+        reason_for_entry: trade.notes || '',
+        mistakes: trade.mistakes || '',
+        emotional_state: trade.emotionalState || null,
+        confidence_score: Number.isInteger(Number(trade.confidenceScore)) ? Number(trade.confidenceScore) : null,
+        followed_plan: typeof trade.followedPlan === 'boolean' ? trade.followedPlan : false,
+        fomo: typeof trade.fomo === 'boolean' ? trade.fomo : false,
+        revenge_trade: typeof trade.revengeTrade === 'boolean' ? trade.revengeTrade : false,
+        moved_stop_loss: typeof trade.movedStopLoss === 'boolean' ? trade.movedStopLoss : false,
+        overtraded: typeof trade.overtraded === 'boolean' ? trade.overtraded : false,
+        psychology_notes: trade.psychologyNotes || null,
+        psychology_before: trade.psychologyBefore || null,
+        psychology_after: trade.psychologyAfter || null,
+        screenshot_before_path: trade.screenshotBeforePath || null,
+        screenshot_after_path: trade.screenshotAfterPath || null,
+        created_at: millisToIso(trade.createdAt),
+        updated_at: millisToIso(trade.updatedAt || Date.now())
+      });
+
+      const fetchSupabaseTradingData = async () => {
+        if (!currentUser?.id) return { accounts: [], trades: [] };
+        const headers = await getSupabaseAuthHeaders();
+        const userFilter = encodeURIComponent(currentUser.id);
+        const [accountRows, tradeRows] = await Promise.all([
+          supabaseRequest(`/rest/v1/trading_accounts?select=*&user_id=eq.${userFilter}&order=created_at.asc`, { headers }),
+          supabaseRequest(`/rest/v1/trades?select=*&user_id=eq.${userFilter}&order=created_at.asc`, { headers })
+        ]);
+        return {
+          accounts: Array.isArray(accountRows) ? accountRows.map(supabaseAccountFromRow) : [],
+          trades: Array.isArray(tradeRows) ? tradeRows.map(supabaseTradeFromRow) : []
+        };
+      };
+
+      const upsertSupabaseAccounts = async (items) => {
+        if (!currentUser?.id || !Array.isArray(items) || !items.length) return;
+        const headers = await getSupabaseAuthHeaders();
+        await supabaseRequest('/rest/v1/trading_accounts?on_conflict=id', {
           method: 'POST',
-          body: JSON.stringify({ refresh_token: session.refresh_token })
+          headers: { ...headers, Prefer: 'resolution=merge-duplicates,return=minimal' },
+          body: JSON.stringify(items.map(supabaseAccountToRow))
         });
-        if (!refreshed?.access_token || !refreshed?.user?.id) return null;
-        saveSupabaseSession(refreshed);
-        return { ...refreshed, expiresAt: Date.now() + ((Number(refreshed.expires_in) || 3600) * 1000) };
       };
 
-      const getValidSupabaseSession = async () => {
-        const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
-        if (!session?.access_token || !session?.user?.id) return null;
-        if (!session.expiresAt || session.expiresAt > Date.now() + 60000) return session;
-        try { return await refreshSupabaseSession(session); } catch (_) { return null; }
+      const upsertSupabaseTrades = async (items) => {
+        if (!currentUser?.id || !Array.isArray(items) || !items.length) return;
+        const headers = await getSupabaseAuthHeaders();
+        await supabaseRequest('/rest/v1/trades?on_conflict=id', {
+          method: 'POST',
+          headers: { ...headers, Prefer: 'resolution=merge-duplicates,return=minimal' },
+          body: JSON.stringify(items.map(supabaseTradeToRow))
+        });
+      };
+
+      const deleteSupabaseTrade = async (tradeId) => {
+        const headers = await getSupabaseAuthHeaders();
+        await supabaseRequest(`/rest/v1/trades?id=eq.${encodeURIComponent(tradeId)}&user_id=eq.${encodeURIComponent(currentUser.id)}`, {
+          method: 'DELETE',
+          headers: { ...headers, Prefer: 'return=minimal' }
+        });
+      };
+
+      const deleteSupabaseAccount = async (accountId) => {
+        const headers = await getSupabaseAuthHeaders();
+        const userId = encodeURIComponent(currentUser.id);
+        const account = encodeURIComponent(accountId);
+        await supabaseRequest(`/rest/v1/trades?account_id=eq.${account}&user_id=eq.${userId}`, {
+          method: 'DELETE',
+          headers: { ...headers, Prefer: 'return=minimal' }
+        });
+        await supabaseRequest(`/rest/v1/trading_accounts?id=eq.${account}&user_id=eq.${userId}`, {
+          method: 'DELETE',
+          headers: { ...headers, Prefer: 'return=minimal' }
+        });
       };
 
       const migrateLegacyCloudForEmail = (email, newUserId) => {
@@ -3357,21 +3315,11 @@
           : { profile: null, accounts: [], trades: [], selectedAccountId: null, updatedAt: Date.now() };
       };
 
-      const saveCloudRecord = (userId, record) => {
-        const map = getCloudDataMap();
-        map[userId] = { ...record, updatedAt: Date.now() };
-        if (!saveCloudDataMap(map)) throw new Error('Unable to persist signed-in data on this browser.');
-      };
-
       const persistCloudState = () => {
         if (!currentUser || !usingCloudData) return;
-        saveCloudRecord(currentUser.id, {
-          profile: { id: currentUser.id, email: currentUser.email },
-          accounts,
-          trades,
-          selectedAccountId,
-          updatedAt: Date.now()
-        });
+        const key = `${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`;
+        if (selectedAccountId) safeLocalSet(key, selectedAccountId);
+        else safeLocalRemove(key);
       };
 
       const showAuthenticatedApp = () => {
@@ -3411,16 +3359,16 @@
         return cleanTrade;
       };
 
-      const loadCloudState = () => {
+      const loadCloudState = async () => {
         if (!currentUser) return;
-        const record = getCloudRecord(currentUser.id);
-        accounts = Array.isArray(record.accounts) ? record.accounts : [];
-        trades = Array.isArray(record.trades) ? record.trades.map(stripPsychologyData) : [];
-        selectedAccountId = accounts.some((account) => account.id === record.selectedAccountId)
-          ? record.selectedAccountId
+        const remote = await fetchSupabaseTradingData();
+        accounts = Array.isArray(remote.accounts) ? remote.accounts : [];
+        trades = Array.isArray(remote.trades) ? remote.trades.map(stripPsychologyData) : [];
+        const scopedSelected = safeLocalGet(`${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`);
+        selectedAccountId = accounts.some((account) => account.id === scopedSelected)
+          ? scopedSelected
           : accounts[0]?.id || null;
         usingCloudData = true;
-        persistCloudState();
         renderAccountSelector();
         renderDashboardAccount();
       };
@@ -3428,9 +3376,11 @@
       const detectExistingLocalData = async () => {
         try {
           const [localAccounts, localTrades] = await Promise.all([getAllAccounts(), getAllTrades()]);
-          const hasLocal = (Array.isArray(localAccounts) && localAccounts.length > 0) || (Array.isArray(localTrades) && localTrades.length > 0);
-          const imported = safeLocalGet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`) === '1';
-          importBanner.classList.toggle('visible', hasLocal && !imported);
+          const legacyRecord = getCloudRecord(currentUser.id);
+          const hasIndexedDb = (Array.isArray(localAccounts) && localAccounts.length > 0) || (Array.isArray(localTrades) && localTrades.length > 0);
+          const hasLegacyCloud = (Array.isArray(legacyRecord.accounts) && legacyRecord.accounts.length > 0) || (Array.isArray(legacyRecord.trades) && legacyRecord.trades.length > 0);
+          const imported = safeLocalGet(`${SUPABASE_IMPORT_MARKER_PREFIX}${currentUser.id}`) === '1';
+          importBanner.classList.toggle('visible', (hasIndexedDb || hasLegacyCloud) && !imported);
         } catch (_) {
           importBanner.classList.remove('visible');
         }
@@ -3451,17 +3401,6 @@
         if (tradeSuccessTimer) clearTimeout(tradeSuccessTimer);
         tradeSuccessTimer = setTimeout(() => tradeSuccess.classList.remove('show'), 2500);
       };
-
-      const scheduleScreenshotSyncNoticeHide = () => {
-        if (!notice?.classList.contains('show')) return;
-        if (!/existing screenshot.*synced to cloud/i.test(notice.textContent || '')) return;
-        if (screenshotSyncNoticeTimer) clearTimeout(screenshotSyncNoticeTimer);
-        screenshotSyncNoticeTimer = setTimeout(() => notice.classList.remove('show'), 2500);
-      };
-
-      const screenshotSyncNoticeObserver = new MutationObserver(scheduleScreenshotSyncNoticeHide);
-      screenshotSyncNoticeObserver.observe(notice, { attributes: true, childList: true, characterData: true, subtree: true });
-      scheduleScreenshotSyncNoticeHide();
 
       const formatMoney = (amount, currency) => {
         const numericAmount = Number(amount);
@@ -3938,20 +3877,6 @@
         return `${year}-${month}-${day}`;
       };
 
-      const syncTradeDateDisplay = () => {
-        if (!tradeDateDisplay) return;
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(tradeDate.value || '')) {
-          tradeDateDisplay.textContent = 'Select date';
-          return;
-        }
-        const [year, month, day] = tradeDate.value.split('-').map(Number);
-        tradeDateDisplay.textContent = new Intl.DateTimeFormat('id-ID', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
-        }).format(new Date(year, month - 1, day));
-      };
-
       const parseOptionalNumber = (input) => {
         if (input.value.trim() === '') return null;
         const value = Number(input.value);
@@ -4159,7 +4084,6 @@
         tradeInstrument.value = draft.instrument || '';
         selectedDirection = draft.direction === 'BUY' || draft.direction === 'SELL' ? draft.direction : '';
         tradeDate.value = draft.date || getLocalDateValue();
-        syncTradeDateDisplay();
         tradeSession.value = ['Asian', 'London', 'New York'].includes(draft.session) ? draft.session : 'Asian';
         entryPrice.value = draft.entryPrice ?? '';
         stopLoss.value = draft.stopLoss ?? '';
@@ -4251,67 +4175,23 @@
         setScreenshotUi(slot, null, 'Removed');
       };
 
-      const removeScreenshotImmediately = async (slot) => {
-        const elements = screenshotElements(slot);
-        const trade = editingTradeId
-          ? trades.find((item) => item.id === editingTradeId && item.accountId === selectedAccountId)
-          : null;
+      const screenshotIdFor = (tradeId, slot) => `shot:${currentUser.id}:${tradeId}:${slot}`;
 
-        if (!trade) {
-          markScreenshotRemoved(slot);
-          return;
-        }
-
-        const idKey = slot === 'before' ? 'screenshotBeforeId' : 'screenshotAfterId';
-        const pathKey = slot === 'before' ? 'screenshotBeforePath' : 'screenshotAfterPath';
-        const currentId = trade[idKey] || null;
-        const currentPath = trade[pathKey] || null;
-
-        elements.remove.disabled = true;
-        elements.status.textContent = 'Removing…';
-
+      const findLegacyLocalScreenshot = async (trade, slot) => {
         try {
-          if (currentId) await removeScreenshot(currentId);
-          if (usingCloudData && currentPath) await deleteCloudScreenshot(currentPath);
-          if (usingCloudData) await clearCloudScreenshotTradeRef(trade.id, slot);
-
-          const updatedTrade = {
-            ...trade,
-            [idKey]: null,
-            [pathKey]: null,
-            updatedAt: Date.now()
-          };
-
-          if (!usingCloudData) await saveTrade(updatedTrade);
-          trades = trades.map((item) => item.id === updatedTrade.id ? updatedTrade : item);
-          if (usingCloudData) persistCloudState();
-
-          pendingScreenshots[slot] = null;
-          setScreenshotUi(slot, null, 'Removed');
-          renderDashboardAccount();
-        } catch (error) {
-          elements.status.textContent = error instanceof Error ? error.message : 'Unable to remove image';
-          if (currentPath && usingCloudData) {
-            try {
-              const blob = await downloadCloudScreenshot(currentPath);
-              pendingScreenshots[slot] = { mode: 'existing-cloud', path: currentPath };
-              setScreenshotUi(slot, blob, 'Cloud');
-            } catch (_) {}
-          }
-        } finally {
-          elements.remove.disabled = false;
+          const all = await getAllScreenshots();
+          return all.find((item) => item.tradeId === trade.id && item.accountId === trade.accountId && item.slot === slot) || null;
+        } catch (_) {
+          return null;
         }
       };
-
-      const screenshotIdFor = (tradeId, slot) => `shot:${currentUser.id}:${tradeId}:${slot}`;
 
       const loadTradeScreenshots = async (trade) => {
         resetPendingScreenshots();
         if (!currentUser || !trade) return;
         for (const slot of ['before', 'after']) {
           const cloudPath = slot === 'before' ? trade.screenshotBeforePath : trade.screenshotAfterPath;
-          const id = slot === 'before' ? trade.screenshotBeforeId : trade.screenshotAfterId;
-          if (cloudPath && usingCloudData) {
+          if (usingCloudData && cloudPath) {
             try {
               const blob = await downloadCloudScreenshot(cloudPath);
               pendingScreenshots[slot] = { mode: 'existing-cloud', path: cloudPath };
@@ -4321,17 +4201,18 @@
               screenshotElements(slot).status.textContent = 'Cloud image unavailable';
             }
           }
-          if (!id) continue;
-          try {
-            const screenshot = await getScreenshot(id);
-            if (!screenshot || screenshot.userId !== currentUser.id || screenshot.accountId !== trade.accountId || screenshot.tradeId !== trade.id) continue;
-            pendingScreenshots[slot] = usingCloudData
-              ? { mode: 'legacy-local', id, blob: screenshot.blob, name: screenshot.name, type: screenshot.type }
-              : { mode: 'existing', id };
-            setScreenshotUi(slot, screenshot.blob, usingCloudData ? 'Ready to sync' : 'Saved');
-          } catch (_) {
-            screenshotElements(slot).status.textContent = 'Unable to load';
+
+          const id = slot === 'before' ? trade.screenshotBeforeId : trade.screenshotAfterId;
+          let screenshot = null;
+          if (id) {
+            try { screenshot = await getScreenshot(id); } catch (_) {}
           }
+          if (!screenshot && usingCloudData) screenshot = await findLegacyLocalScreenshot(trade, slot);
+          if (!screenshot) continue;
+          pendingScreenshots[slot] = usingCloudData
+            ? { mode: 'legacy-local', id: screenshot.id, blob: screenshot.blob, name: screenshot.name, type: screenshot.type }
+            : { mode: 'existing', id: screenshot.id };
+          setScreenshotUi(slot, screenshot.blob, usingCloudData ? 'Ready to sync' : 'Saved');
         }
       };
 
@@ -4347,32 +4228,34 @@
           const pending = pendingScreenshots[slot];
           if (!pending || pending.mode === 'existing' || pending.mode === 'existing-cloud') continue;
           const currentId = slot === 'before' ? refs.beforeId : refs.afterId;
-          const refKey = slot === 'before' ? 'beforeId' : 'afterId';
           const currentPath = slot === 'before' ? refs.beforePath : refs.afterPath;
+          const refKey = slot === 'before' ? 'beforeId' : 'afterId';
           const pathKey = slot === 'before' ? 'beforePath' : 'afterPath';
           const elements = screenshotElements(slot);
+
           if (pending.mode === 'remove') {
-            if (currentId) await removeScreenshot(currentId);
             if (usingCloudData && currentPath) await deleteCloudScreenshot(currentPath);
+            if (currentId) {
+              try { await removeScreenshot(currentId); } catch (_) {}
+            }
             refs[refKey] = null;
             refs[pathKey] = null;
             continue;
           }
-          elements.status.textContent = 'Saving image…';
+
+          elements.status.textContent = usingCloudData ? 'Uploading to cloud…' : 'Saving image…';
           if (usingCloudData) {
-            const sourceFile = pending.mode === 'legacy-local'
-              ? new File([pending.blob], pending.name || `${slot}-screenshot`, { type: pending.type || pending.blob?.type || 'application/octet-stream' })
-              : pending.file;
-            const path = await uploadCloudScreenshot(trade.id, slot, sourceFile);
+            const blob = pending.mode === 'legacy-local' ? pending.blob : pending.file;
+            const name = pending.mode === 'legacy-local' ? pending.name : pending.file?.name;
+            const type = pending.mode === 'legacy-local' ? pending.type : pending.file?.type;
+            const path = await uploadCloudScreenshot(trade.id, slot, blob, name || `${slot}-screenshot`, type || blob?.type || 'application/octet-stream');
             if (currentPath && currentPath !== path) await deleteCloudScreenshot(currentPath);
             refs[pathKey] = path;
-            if (currentId) {
-              try { await removeScreenshot(currentId); } catch (_) {}
-              refs[refKey] = null;
-            }
+            refs[refKey] = null;
             elements.status.textContent = 'Cloud saved';
             continue;
           }
+
           const id = screenshotIdFor(trade.id, slot);
           await saveScreenshot({
             id,
@@ -4393,6 +4276,38 @@
         return refs;
       };
 
+      const migrateLegacyScreenshotsToCloud = async () => {
+        if (!usingCloudData || !currentUser?.id || !trades.length) return 0;
+        let localScreenshots;
+        try { localScreenshots = await getAllScreenshots(); } catch (_) { return 0; }
+        if (!Array.isArray(localScreenshots) || !localScreenshots.length) return 0;
+        const changed = [];
+        let migrated = 0;
+        for (const trade of trades) {
+          let changedTrade = null;
+          for (const slot of ['before', 'after']) {
+            const pathKey = slot === 'before' ? 'screenshotBeforePath' : 'screenshotAfterPath';
+            if (trade[pathKey]) continue;
+            const screenshot = localScreenshots.find((item) => item.tradeId === trade.id && item.accountId === trade.accountId && item.slot === slot);
+            if (!screenshot?.blob) continue;
+            try {
+              const path = await uploadCloudScreenshot(trade.id, slot, screenshot.blob, screenshot.name || `${slot}-screenshot`, screenshot.type || screenshot.blob.type || 'application/octet-stream');
+              changedTrade = changedTrade || { ...trade };
+              changedTrade[pathKey] = path;
+              migrated += 1;
+            } catch (_) {}
+          }
+          if (changedTrade) changed.push(changedTrade);
+        }
+        if (changed.length) {
+          await upsertSupabaseTrades(changed);
+          const changedMap = new Map(changed.map((trade) => [trade.id, trade]));
+          trades = trades.map((trade) => changedMap.get(trade.id) || trade);
+          renderDashboardAccount();
+        }
+        return migrated;
+      };
+
       const removeScreenshotsForTrade = async (trade) => {
         if (usingCloudData) {
           for (const path of [trade?.screenshotBeforePath, trade?.screenshotAfterPath].filter(Boolean)) {
@@ -4407,8 +4322,7 @@
       const removeScreenshotsForAccount = async (accountId) => {
         if (!currentUser || !accountId) return;
         if (usingCloudData) {
-          const accountTrades = trades.filter((trade) => trade.accountId === accountId);
-          for (const trade of accountTrades) await removeScreenshotsForTrade(trade);
+          for (const trade of trades.filter((item) => item.accountId === accountId)) await removeScreenshotsForTrade(trade);
           return;
         }
         const all = await getAllScreenshots();
@@ -4573,7 +4487,6 @@
 
       const renderAccountSelector = () => {
         accountSelect.innerHTML = '';
-        accountSelectMenu.innerHTML = '';
         if (accounts.length === 0) {
           const emptyOption = document.createElement('option');
           emptyOption.value = 'none';
@@ -4599,54 +4512,9 @@
         } else {
           accountSelect.value = 'none';
         }
-        accountSelectLabel.textContent = currentAccount()?.name || 'No account selected';
-        accounts.forEach((account) => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.dataset.accountValue = account.id;
-          button.textContent = account.name;
-          button.classList.toggle('selected', account.id === selectedAccountId);
-          accountSelectMenu.appendChild(button);
-        });
-        const createButton = document.createElement('button');
-        createButton.type = 'button';
-        createButton.dataset.accountValue = '__create__';
-        createButton.textContent = '+ Create Account';
-        accountSelectMenu.appendChild(createButton);
         accountMenuBtn.hidden = !currentAccount();
         accountMenu.classList.remove('open');
         accountMenuBtn.setAttribute('aria-expanded', 'false');
-        accountSelectMenu.classList.remove('open');
-        accountSelectBtn.setAttribute('aria-expanded', 'false');
-      };
-
-      const psychologyStates = ['', 'Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'];
-
-      const renderPsychologyMenu = (select, button, menu) => {
-        menu.innerHTML = '';
-        psychologyStates.forEach((state) => {
-          const option = document.createElement('button');
-          option.type = 'button';
-          option.dataset.psychologyValue = state;
-          option.textContent = state || 'Select state';
-          option.classList.toggle('selected', select.value === state);
-          menu.appendChild(option);
-        });
-        button.textContent = select.value || 'Select state';
-      };
-
-      const syncPsychologyUi = () => {
-        renderPsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
-        renderPsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
-      };
-
-      const closeCustomMenus = (except = null) => {
-        [accountSelectMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
-          if (menu !== except) menu.classList.remove('open');
-        });
-        if (accountSelectMenu !== except) accountSelectBtn.setAttribute('aria-expanded', 'false');
-        if (psychologyBeforeMenu !== except) psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
-        if (psychologyAfterMenu !== except) psychologyAfterBtn.setAttribute('aria-expanded', 'false');
       };
 
       const showPage = (page) => {
@@ -4717,8 +4585,6 @@
         tradeFormError.textContent = '';
         const restored = restoreDraft();
         if (!restored && !tradeDate.value) tradeDate.value = getLocalDateValue();
-        syncTradeDateDisplay();
-        syncPsychologyUi();
         tradeInstrument.focus();
       };
 
@@ -4730,7 +4596,6 @@
         tradeInstrument.value = trade.instrument || '';
         selectedDirection = trade.direction || '';
         tradeDate.value = trade.date || getLocalDateValue();
-        syncTradeDateDisplay();
         tradeSession.value = trade.session || 'Asian';
         entryPrice.value = trade.entryPrice ?? '';
         stopLoss.value = trade.stopLoss ?? '';
@@ -4744,7 +4609,6 @@
         tradeMistakes.value = trade.mistakes || '';
         psychologyBefore.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyBefore) ? trade.psychologyBefore : '';
         psychologyAfter.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyAfter) ? trade.psychologyAfter : '';
-        syncPsychologyUi();
         await loadTradeScreenshots(trade);
         updateDirectionButtons();
         calculatePlannedRr();
@@ -4774,11 +4638,7 @@
         selectedDirection = '';
         updateDirectionButtons();
         tradeDate.value = getLocalDateValue();
-        syncTradeDateDisplay();
         tradeSession.value = 'Asian';
-        psychologyBefore.value = '';
-        psychologyAfter.value = '';
-        syncPsychologyUi();
         tradeFormError.classList.remove('show');
         tradeFormError.textContent = '';
       };
@@ -4815,23 +4675,28 @@
             clearRecoveryUrl();
             setAuthStatus(decodeURIComponent(recoveryRedirect.error.replace(/\+/g, ' ')), 'error');
             tradeDate.value = getLocalDateValue();
-            syncTradeDateDisplay();
             return;
           }
           if (recoveryRedirect?.accessToken) {
             showPasswordReset(recoveryRedirect.accessToken);
             clearRecoveryUrl();
             tradeDate.value = getLocalDateValue();
-            syncTradeDateDisplay();
             return;
           }
           const session = await getValidSupabaseSession();
           currentUser = session?.user?.id ? { id: session.user.id, email: session.user.email || '' } : null;
           if (currentUser) {
             migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
-            loadCloudState();
+            await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
+            try {
+              const migratedScreenshots = await migrateLegacyScreenshotsToCloud();
+              if (migratedScreenshots > 0) {
+                notice.textContent = `${migratedScreenshots} existing screenshot${migratedScreenshots === 1 ? '' : 's'} synced to cloud.`;
+                notice.classList.add('show');
+              }
+            } catch (_) {}
           } else {
             accounts = [];
             trades = [];
@@ -4842,7 +4707,6 @@
             showLogin();
           }
           tradeDate.value = getLocalDateValue();
-          syncTradeDateDisplay();
         } catch (error) {
           showLogin();
           setAuthStatus(error instanceof Error ? error.message : 'Unable to initialize eRTrades.', 'error');
@@ -4895,9 +4759,16 @@
             if (!saveSupabaseSession(response)) throw new Error('Unable to persist login session.');
             currentUser = { id: response.user.id, email: response.user.email || email };
             migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
-            loadCloudState();
+            await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
+            try {
+              const migratedScreenshots = await migrateLegacyScreenshotsToCloud();
+              if (migratedScreenshots > 0) {
+                notice.textContent = `${migratedScreenshots} existing screenshot${migratedScreenshots === 1 ? '' : 's'} synced to cloud.`;
+                notice.classList.add('show');
+              }
+            } catch (_) {}
           } else {
             const response = await supabaseRequest('/auth/v1/token?grant_type=password', {
               method: 'POST',
@@ -4907,9 +4778,16 @@
             if (!saveSupabaseSession(response)) throw new Error('Unable to persist login session.');
             currentUser = { id: response.user.id, email: response.user.email || email };
             migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
-            loadCloudState();
+            await loadCloudState();
             showAuthenticatedApp();
             await detectExistingLocalData();
+            try {
+              const migratedScreenshots = await migrateLegacyScreenshotsToCloud();
+              if (migratedScreenshots > 0) {
+                notice.textContent = `${migratedScreenshots} existing screenshot${migratedScreenshots === 1 ? '' : 's'} synced to cloud.`;
+                notice.classList.add('show');
+              }
+            } catch (_) {}
           }
           authForm.reset();
         } catch (error) {
@@ -4986,21 +4864,30 @@
         importLocalBtn.textContent = 'Importing…';
         try {
           const [localAccountsRaw, localTradesRaw] = await Promise.all([getAllAccounts(), getAllTrades()]);
-          const localAccounts = Array.isArray(localAccountsRaw) ? localAccountsRaw : [];
-          const localTrades = Array.isArray(localTradesRaw) ? localTradesRaw.map(stripPsychologyData) : [];
-          const accountIds = new Set(accounts.map((account) => account.id));
-          const tradeIds = new Set(trades.map((trade) => trade.id));
-          const mergedAccounts = accounts.concat(localAccounts.filter((account) => !accountIds.has(account.id)));
-          const mergedTrades = trades.concat(localTrades.filter((trade) => !tradeIds.has(trade.id)));
-          accounts = mergedAccounts;
-          trades = mergedTrades;
-          if (!selectedAccountId || !accounts.some((account) => account.id === selectedAccountId)) selectedAccountId = accounts[0]?.id || null;
-          persistCloudState();
-          safeLocalSet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
+          const legacyRecord = getCloudRecord(currentUser.id);
+          const localAccounts = [
+            ...(Array.isArray(legacyRecord.accounts) ? legacyRecord.accounts : []),
+            ...(Array.isArray(localAccountsRaw) ? localAccountsRaw : [])
+          ];
+          const localTrades = [
+            ...(Array.isArray(legacyRecord.trades) ? legacyRecord.trades.map(stripPsychologyData) : []),
+            ...(Array.isArray(localTradesRaw) ? localTradesRaw.map(stripPsychologyData) : [])
+          ];
+
+          const uniqueAccounts = Array.from(new Map(localAccounts.filter((account) => account?.id).map((account) => [account.id, account])).values());
+          const uniqueTrades = Array.from(new Map(localTrades.filter((trade) => trade?.id && trade?.accountId).map((trade) => [trade.id, trade])).values());
+          const remoteAccountIds = new Set(accounts.map((account) => account.id));
+          const remoteTradeIds = new Set(trades.map((trade) => trade.id));
+          const accountsToImport = uniqueAccounts.filter((account) => !remoteAccountIds.has(account.id));
+          const allAccountIds = new Set([...accounts.map((account) => account.id), ...accountsToImport.map((account) => account.id)]);
+          const tradesToImport = uniqueTrades.filter((trade) => !remoteTradeIds.has(trade.id) && allAccountIds.has(trade.accountId));
+
+          await upsertSupabaseAccounts(accountsToImport);
+          await upsertSupabaseTrades(tradesToImport);
+          await loadCloudState();
+          safeLocalSet(`${SUPABASE_IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
           importBanner.classList.remove('visible');
-          renderAccountSelector();
-          renderDashboardAccount();
-          notice.textContent = 'Existing trading data imported successfully.';
+          notice.textContent = `Supabase sync complete: ${accountsToImport.length} account(s) and ${tradesToImport.length} trade(s) imported.`;
           notice.classList.add('show');
         } catch (error) {
           notice.textContent = error instanceof Error ? error.message : 'Unable to import existing trading data.';
@@ -5012,7 +4899,7 @@
       });
 
       skipImportBtn.addEventListener('click', () => {
-        if (currentUser) safeLocalSet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
+        if (currentUser) safeLocalSet(`${SUPABASE_IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
         importBanner.classList.remove('visible');
       });
 
@@ -5024,9 +4911,6 @@
       });
 
       newTrade.addEventListener('click', openTradeForm);
-
-      tradeDate.addEventListener('input', syncTradeDateDisplay);
-      tradeDate.addEventListener('change', syncTradeDateDisplay);
 
       directionButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -5149,22 +5033,24 @@
         });
       });
 
-      const handleAccountSelection = async (value) => {
+      accountSelect.addEventListener('change', async () => {
+        const value = accountSelect.value;
         if (value === '__create__') {
           openAccountForm();
           return;
         }
         if (value === 'none') {
           selectedAccountId = null;
-          safeLocalRemove(SELECTED_ACCOUNT_LOCAL_KEY);
+          if (usingCloudData && currentUser) safeLocalRemove(`${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`);
+          else safeLocalRemove(SELECTED_ACCOUNT_LOCAL_KEY);
           accountMenuBtn.hidden = true;
           renderDashboardAccount();
           return;
         }
         selectedAccountId = value;
         selectedCalendarDate = null;
-        renderAccountSelector();
-        if (!usingCloudData) safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
+        if (usingCloudData && currentUser) safeLocalSet(`${SELECTED_ACCOUNT_LOCAL_KEY}:${currentUser.id}`, selectedAccountId);
+        else safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
         accountMenuBtn.hidden = false;
         renderDashboardAccount();
         if (tradeFormCard.classList.contains('visible')) restoreDraft();
@@ -5175,49 +5061,7 @@
           notice.textContent = error instanceof Error ? error.message : 'Unable to save account selection.';
           notice.classList.add('show');
         }
-      };
-
-      accountSelect.addEventListener('change', () => handleAccountSelection(accountSelect.value));
-
-      accountSelectBtn.addEventListener('click', () => {
-        const open = !accountSelectMenu.classList.contains('open');
-        closeCustomMenus(open ? accountSelectMenu : null);
-        accountSelectMenu.classList.toggle('open', open);
-        accountSelectBtn.setAttribute('aria-expanded', String(open));
       });
-
-      accountSelectMenu.addEventListener('click', (event) => {
-        const button = event.target.closest('button[data-account-value]');
-        if (!button) return;
-        const value = button.dataset.accountValue || 'none';
-        accountSelect.value = value;
-        accountSelectMenu.classList.remove('open');
-        accountSelectBtn.setAttribute('aria-expanded', 'false');
-        handleAccountSelection(value);
-      });
-
-      const wirePsychologyMenu = (select, button, menu) => {
-        button.addEventListener('click', () => {
-          syncPsychologyUi();
-          const open = !menu.classList.contains('open');
-          closeCustomMenus(open ? menu : null);
-          menu.classList.toggle('open', open);
-          button.setAttribute('aria-expanded', String(open));
-        });
-        menu.addEventListener('click', (event) => {
-          const option = event.target.closest('button[data-psychology-value]');
-          if (!option) return;
-          select.value = option.dataset.psychologyValue || '';
-          menu.classList.remove('open');
-          button.setAttribute('aria-expanded', 'false');
-          syncPsychologyUi();
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-      };
-
-      wirePsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
-      wirePsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
-      syncPsychologyUi();
 
       accountForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -5252,7 +5096,8 @@
           updatedAt: Date.now()
         };
         try {
-          if (!usingCloudData) await saveAccount(account);
+          if (usingCloudData) await upsertSupabaseAccounts([account]);
+          else await saveAccount(account);
           if (existingAccount) {
             accounts = accounts.map((item) => item.id === account.id ? account : item);
           } else {
@@ -5301,7 +5146,9 @@
         const accountTradeIds = trades.filter((trade) => trade.accountId === accountId).map((trade) => trade.id);
         try {
           await removeScreenshotsForAccount(accountId);
-          if (!usingCloudData) {
+          if (usingCloudData) {
+            await deleteSupabaseAccount(accountId);
+          } else {
             for (const tradeId of accountTradeIds) await removeTrade(tradeId);
             await removeAccount(accountId);
           }
@@ -5342,18 +5189,6 @@
         if (!accountMenu.contains(event.target) && event.target !== accountMenuBtn) {
           accountMenu.classList.remove('open');
           accountMenuBtn.setAttribute('aria-expanded', 'false');
-        }
-        if (!accountSelectMenu.contains(event.target) && event.target !== accountSelectBtn) {
-          accountSelectMenu.classList.remove('open');
-          accountSelectBtn.setAttribute('aria-expanded', 'false');
-        }
-        if (!psychologyBeforeMenu.contains(event.target) && event.target !== psychologyBeforeBtn) {
-          psychologyBeforeMenu.classList.remove('open');
-          psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
-        }
-        if (!psychologyAfterMenu.contains(event.target) && event.target !== psychologyAfterBtn) {
-          psychologyAfterMenu.classList.remove('open');
-          psychologyAfterBtn.setAttribute('aria-expanded', 'false');
         }
       });
 
@@ -5458,7 +5293,8 @@
           trade.screenshotAfterId = screenshotRefs.afterId;
           trade.screenshotBeforePath = screenshotRefs.beforePath;
           trade.screenshotAfterPath = screenshotRefs.afterPath;
-          if (!usingCloudData) await saveTrade(trade);
+          if (usingCloudData) await upsertSupabaseTrades([trade]);
+          else await saveTrade(trade);
           if (existingTrade) {
             trades = trades.map((item) => item.id === trade.id ? trade : item);
           } else {
@@ -5495,8 +5331,8 @@
         if (file) chooseScreenshot('after', file);
       });
 
-      beforeScreenshotRemove.addEventListener('click', () => removeScreenshotImmediately('before'));
-      afterScreenshotRemove.addEventListener('click', () => removeScreenshotImmediately('after'));
+      beforeScreenshotRemove.addEventListener('click', () => markScreenshotRemoved('before'));
+      afterScreenshotRemove.addEventListener('click', () => markScreenshotRemoved('after'));
 
       accountFormClose.addEventListener('click', closeAccountForm);
       accountFormCancel.addEventListener('click', closeAccountForm);
@@ -5515,7 +5351,8 @@
         try {
           const tradeToDelete = trades.find((trade) => trade.id === id && trade.accountId === selectedAccountId);
           await removeScreenshotsForTrade(tradeToDelete);
-          if (!usingCloudData) await removeTrade(id);
+          if (usingCloudData) await deleteSupabaseTrade(id);
+          else await removeTrade(id);
           trades = trades.filter((trade) => trade.id !== id);
           if (usingCloudData) persistCloudState();
           detailTradeId = null;
