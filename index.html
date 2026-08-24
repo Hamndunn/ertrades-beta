@@ -2790,6 +2790,7 @@
       let selectedAccountId = null;
       let selectedDirection = '';
       let draftStatusTimer = null;
+      let tradeSuccessTimer = null;
       let editingTradeId = null;
       let detailTradeId = null;
       let editingAccountId = null;
@@ -3333,6 +3334,14 @@
         draftStatus.classList.add('show');
         if (draftStatusTimer) clearTimeout(draftStatusTimer);
         draftStatusTimer = setTimeout(() => draftStatus.classList.remove('show'), 1400);
+      };
+
+      const showTradeSuccess = (message) => {
+        if (!tradeSuccess) return;
+        tradeSuccess.textContent = message;
+        tradeSuccess.classList.add('show');
+        if (tradeSuccessTimer) clearTimeout(tradeSuccessTimer);
+        tradeSuccessTimer = setTimeout(() => tradeSuccess.classList.remove('show'), 2500);
       };
 
       const formatMoney = (amount, currency) => {
@@ -5135,8 +5144,7 @@
           } else {
             showPage('Journal');
           }
-          tradeSuccess.textContent = wasEditing ? 'Trade updated successfully.' : 'Trade saved successfully.';
-          tradeSuccess.classList.add('show');
+          showTradeSuccess(wasEditing ? 'Trade updated successfully.' : 'Trade saved successfully.');
         } catch (error) {
           showTradeError(error instanceof Error ? error.message : 'Unable to save this trade. Your form data has been kept so you can retry.');
         } finally {
@@ -5183,8 +5191,7 @@
           deleteConfirmDialog.close();
           renderDashboardAccount();
           showPage('Journal');
-          tradeSuccess.textContent = 'Trade deleted successfully.';
-          tradeSuccess.classList.add('show');
+          showTradeSuccess('Trade deleted successfully.');
         } catch (error) {
           deleteConfirmDialog.close();
           notice.textContent = error instanceof Error ? error.message : 'Unable to delete this trade.';
