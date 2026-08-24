@@ -2214,11 +2214,16 @@
               <label for="auth-password">Password</label>
               <input id="auth-password" type="password" autocomplete="current-password" minlength="6" placeholder="••••••••" required>
             </div>
+            <div class="field" id="auth-confirm-password-field" style="display:none">
+              <label for="auth-confirm-password">Confirm New Password</label>
+              <input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="6" placeholder="••••••••">
+            </div>
           </div>
           <div class="auth-status" id="auth-status" role="status" aria-live="polite"></div>
           <div class="auth-actions">
             <button class="primary-btn" id="auth-submit" type="submit">Login</button>
             <button class="text-btn" id="forgot-password-btn" type="button">Forgot Password?</button>
+            <button class="text-btn" id="cancel-password-reset-btn" type="button" style="display:none">Back to Login</button>
           </div>
         </form>
       </div>
@@ -3023,8 +3028,11 @@
       const authForm = root.querySelector('#auth-form');
       const authEmail = root.querySelector('#auth-email');
       const authPassword = root.querySelector('#auth-password');
+      const authConfirmPasswordField = root.querySelector('#auth-confirm-password-field');
+      const authConfirmPassword = root.querySelector('#auth-confirm-password');
       const authSubmit = root.querySelector('#auth-submit');
       const forgotPasswordBtn = root.querySelector('#forgot-password-btn');
+      const cancelPasswordResetBtn = root.querySelector('#cancel-password-reset-btn');
       const authStatus = root.querySelector('#auth-status');
       const importBanner = root.querySelector('#import-banner');
       const importLocalBtn = root.querySelector('#import-local-btn');
@@ -3117,6 +3125,7 @@
       let detailTradeId = null;
       let editingAccountId = null;
       let authMode = 'login';
+      let recoveryAccessToken = null;
       let currentUser = null;
       let usingCloudData = false;
       let pendingScreenshots = { before: null, after: null };
@@ -3342,13 +3351,67 @@
       const setAuthMode = (mode) => {
         authMode = mode === 'signup' ? 'signup' : 'login';
         const signingUp = authMode === 'signup';
+        recoveryAccessToken = null;
         loginTab.classList.toggle('active', !signingUp);
         signupTab.classList.toggle('active', signingUp);
+        root.querySelector('.auth-tabs').style.display = 'grid';
         authTitle.textContent = signingUp ? 'Sign Up' : 'Login';
+        root.querySelector('.auth-copy').textContent = 'Use your email and password to access your private trading data.';
         authSubmit.textContent = signingUp ? 'Create Account' : 'Login';
         authPassword.autocomplete = signingUp ? 'new-password' : 'current-password';
+        authConfirmPasswordField.style.display = 'none';
+        authConfirmPassword.required = false;
+        authConfirmPassword.value = '';
         forgotPasswordBtn.style.display = signingUp ? 'none' : 'block';
+        cancelPasswordResetBtn.style.display = 'none';
         clearAuthStatus();
+      };
+
+      const showPasswordReset = (accessToken) => {
+        recoveryAccessToken = accessToken || null;
+        authMode = 'recovery';
+        authPage.classList.add('visible');
+        appWorkspace.style.display = 'none';
+        profileMenu.classList.remove('visible');
+        root.querySelector('.auth-tabs').style.display = 'none';
+        authTitle.textContent = 'Set New Password';
+        root.querySelector('.auth-copy').textContent = 'Enter a new password for your eRTrades account.';
+        authEmail.closest('.field').style.display = 'none';
+        authPassword.closest('.field').querySelector('label').textContent = 'New Password';
+        authPassword.value = '';
+        authPassword.autocomplete = 'new-password';
+        authConfirmPasswordField.style.display = 'grid';
+        authConfirmPassword.required = true;
+        authConfirmPassword.value = '';
+        authSubmit.textContent = 'Update Password';
+        forgotPasswordBtn.style.display = 'none';
+        cancelPasswordResetBtn.style.display = 'block';
+        clearAuthStatus();
+        authPassword.focus();
+      };
+
+      const restoreLoginFields = () => {
+        authEmail.closest('.field').style.display = 'grid';
+        authPassword.closest('.field').querySelector('label').textContent = 'Password';
+        setAuthMode('login');
+      };
+
+      const readRecoveryRedirect = () => {
+        const hash = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+        const query = new URLSearchParams(window.location.search || '');
+        const type = hash.get('type') || query.get('type');
+        const accessToken = hash.get('access_token');
+        const errorDescription = hash.get('error_description') || query.get('error_description');
+        if (errorDescription) return { error: errorDescription };
+        if (type === 'recovery' && accessToken) return { accessToken };
+        return null;
+      };
+
+      const clearRecoveryUrl = () => {
+        try {
+          const clean = `${window.location.pathname}${window.location.search ? window.location.search.replace(/([?&])(type|error|error_code|error_description)=[^&]*/g, '$1').replace(/[?&]$/, '') : ''}`;
+          history.replaceState(null, '', clean || window.location.pathname);
+        } catch (_) {}
       };
 
       const getCloudUsers = () => readJsonLocal(CLOUD_USERS_KEY, []);
@@ -3397,6 +3460,8 @@
         profileMenu.classList.remove('visible');
         importBanner.classList.remove('visible');
         loadTheme();
+        authEmail.closest('.field').style.display = 'grid';
+        authPassword.closest('.field').querySelector('label').textContent = 'Password';
         setAuthMode('login');
       };
 
@@ -5070,6 +5135,20 @@
 
       const initializeData = async () => {
         try {
+          const recoveryRedirect = readRecoveryRedirect();
+          if (recoveryRedirect?.error) {
+            showLogin();
+            clearRecoveryUrl();
+            setAuthStatus(decodeURIComponent(recoveryRedirect.error.replace(/\+/g, ' ')), 'error');
+            tradeDate.value = getLocalDateValue();
+            return;
+          }
+          if (recoveryRedirect?.accessToken) {
+            showPasswordReset(recoveryRedirect.accessToken);
+            clearRecoveryUrl();
+            tradeDate.value = getLocalDateValue();
+            return;
+          }
           const session = await getValidSupabaseSession();
           currentUser = session?.user?.id ? { id: session.user.id, email: session.user.email || '' } : null;
           if (currentUser) {
@@ -5101,8 +5180,26 @@
         clearAuthStatus();
         authSubmit.disabled = true;
         const originalLabel = authSubmit.textContent;
-        authSubmit.textContent = authMode === 'signup' ? 'Creating…' : 'Logging in…';
+        authSubmit.textContent = authMode === 'signup' ? 'Creating…' : authMode === 'recovery' ? 'Updating…' : 'Logging in…';
         try {
+          if (authMode === 'recovery') {
+            const password = authPassword.value;
+            const confirmPassword = authConfirmPassword.value;
+            if (!recoveryAccessToken) throw new Error('This password reset link is invalid or has expired. Request a new one from Forgot Password.');
+            if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+            if (password !== confirmPassword) throw new Error('Passwords do not match.');
+            await supabaseRequest('/auth/v1/user', {
+              method: 'PUT',
+              headers: { Authorization: `Bearer ${recoveryAccessToken}` },
+              body: JSON.stringify({ password })
+            });
+            recoveryAccessToken = null;
+            safeLocalRemove(SUPABASE_SESSION_KEY);
+            restoreLoginFields();
+            authForm.reset();
+            setAuthStatus('Password updated successfully. You can now log in with your new password.', 'success');
+            return;
+          }
           const email = normalizeEmail(authEmail.value);
           const password = authPassword.value;
           if (!email || !email.includes('@')) throw new Error('Enter a valid email address.');
@@ -5153,15 +5250,29 @@
           authEmail.focus();
           return;
         }
+        forgotPasswordBtn.disabled = true;
+        const originalLabel = forgotPasswordBtn.textContent;
+        forgotPasswordBtn.textContent = 'Sending…';
         try {
+          const redirectTo = `${window.location.origin}${window.location.pathname}`;
           await supabaseRequest('/auth/v1/recover', {
             method: 'POST',
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email, redirect_to: redirectTo })
           });
-          setAuthStatus('If an account exists for this email, Supabase has sent a password reset email.', 'success');
+          setAuthStatus('Password reset email sent. Open the newest email from Supabase, tap the reset link, then set your new password in eRTrades.', 'success');
         } catch (error) {
-          setAuthStatus(error instanceof Error ? error.message : 'Unable to request a password reset right now.', 'error');
+          const message = error instanceof Error ? error.message : 'Unable to request a password reset right now.';
+          setAuthStatus(/rate limit/i.test(message) ? 'Too many reset emails were requested. Wait a few minutes, then try Forgot Password again once.' : message, 'error');
+        } finally {
+          forgotPasswordBtn.disabled = false;
+          forgotPasswordBtn.textContent = originalLabel;
         }
+      });
+
+      cancelPasswordResetBtn.addEventListener('click', () => {
+        recoveryAccessToken = null;
+        authForm.reset();
+        restoreLoginFields();
       });
 
       const logout = async () => {
