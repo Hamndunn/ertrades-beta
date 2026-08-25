@@ -2894,6 +2894,13 @@
             </div>
           </div>
           <div class="settings-account-card">
+            <div class="detail-label">Language</div>
+            <div class="theme-options" role="group" aria-label="App language">
+              <button class="theme-option active" id="language-en-btn" type="button">English</button>
+              <button class="theme-option" id="language-id-btn" type="button">Indonesia</button>
+            </div>
+          </div>
+          <div class="settings-account-card">
             <div class="detail-label">Support</div>
             <div class="support-links">
               <a class="support-link" href="https://www.instagram.com/rdtilhamm?igsi=MTQ0emltYXBwaTAxbQ%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">
@@ -3101,6 +3108,8 @@
       const settingsLogoutBtn = root.querySelector('#settings-logout-btn');
       const themeDarkBtn = root.querySelector('#theme-dark-btn');
       const themeLightBtn = root.querySelector('#theme-light-btn');
+      const languageEnBtn = root.querySelector('#language-en-btn');
+      const languageIdBtn = root.querySelector('#language-id-btn');
       const analyticsPage = root.querySelector('#analytics-page');
       const analyticsOverview = root.querySelector('#analytics-overview');
       const analyticsInstrumentList = root.querySelector('#analytics-instrument-list');
@@ -3153,6 +3162,7 @@
       const SUPABASE_SCREENSHOT_BUCKET = 'trade-screenshots';
       const IMPORT_MARKER_PREFIX = 'ertrades-imported-local:';
       const THEME_KEY_PREFIX = 'ertrades-theme:';
+      const LANGUAGE_KEY_PREFIX = 'ertrades-language:';
       let accounts = [];
       let trades = [];
       let selectedAccountId = null;
@@ -3284,6 +3294,114 @@
         applyTheme(theme);
         safeLocalSet(themeKey(), theme === 'light' ? 'light' : 'dark');
       };
+
+      const languageKey = () => `${LANGUAGE_KEY_PREFIX}${currentUser?.id || 'local'}`;
+      let currentLanguage = 'en';
+
+      const ID_TRANSLATIONS = {"Logout":"Keluar","eRTrades Account":"Akun eRTrades","Login":"Masuk","Use your email and password to access your private trading data.":"Gunakan email dan kata sandi untuk mengakses data trading pribadimu.","Sign Up":"Daftar","Email":"Email","Password":"Kata Sandi","Confirm New Password":"Konfirmasi Kata Sandi Baru","Forgot Password?":"Lupa Kata Sandi?","Back to Login":"Kembali ke Masuk","Existing trading data found":"Data trading lama ditemukan","Import to My Account":"Impor ke Akun Saya","Skip":"Lewati","Trading account":"Akun trading","No account added":"Belum ada akun","+ Create Account":"+ Buat Akun","Edit Account":"Edit Akun","Delete Account":"Hapus Akun","New Trade":"Trade Baru","Trading Account":"Akun Trading","Create Account":"Buat Akun","Account Name":"Nama Akun","Starting Balance":"Saldo Awal","Currency":"Mata Uang","Cancel":"Batal","Journal":"Jurnal","Draft saved":"Draft tersimpan","Draft restored":"Draft dipulihkan","Basic Information":"Informasi Dasar","Instrument":"Instrumen","Direction":"Arah","Date":"Tanggal","Session":"Sesi","Trade Setup":"Setup Trade","Entry Price":"Harga Entry","Stop Loss":"Stop Loss","Take Profit":"Take Profit","Lot Size":"Ukuran Lot","Risk %":"Risiko %","Risk Amount":"Jumlah Risiko","Profit / Loss":"Profit / Loss","Result":"Hasil","Select result":"Pilih hasil","Planned RR":"RR Rencana","Realized R":"R Terealisasi","Reason for Entry":"Alasan Entry","Mistakes":"Kesalahan","Trading Psychology":"Psikologi Trading","Before":"Sebelum","Select state":"Pilih kondisi","Confident":"Percaya Diri","Neutral":"Netral","Fomo":"FOMO","Fear":"Takut","Revenge":"Balas Dendam","Disciplined":"Disiplin","Anxious":"Cemas","Excited":"Antusias","After":"Sesudah","Trade Screenshots":"Screenshot Trade","Before / Entry":"Sebelum / Entry","Optional":"Opsional","Choose Image":"Pilih Gambar","Remove":"Hapus","JPG, JPEG, PNG, or HEIC when supported by this device.":"JPG, JPEG, PNG, atau HEIC jika didukung perangkat ini.","After / Exit":"Sesudah / Exit","Images are optional. You can save a trade without screenshots.":"Gambar bersifat opsional. Trade tetap bisa disimpan tanpa screenshot.","Save Trade":"Simpan Trade","Save Changes":"Simpan Perubahan","Saving…":"Menyimpan…","Trade saved successfully.":"Trade berhasil disimpan.","Trade updated successfully.":"Trade berhasil diperbarui.","Trade deleted successfully.":"Trade berhasil dihapus.","Balance":"Saldo","Total P/L":"Total P/L","Win Rate":"Win Rate","Profit Factor":"Profit Factor","Average RR":"Rata-rata RR","Total Trades":"Total Trade","Max Drawdown":"Max Drawdown","Consistency Score":"Consistency Score","Performance":"Performa","Equity Curve":"Kurva Ekuitas","No equity data yet":"Belum ada data ekuitas","Your equity curve will appear after trading data is added.":"Kurva ekuitas akan muncul setelah data trade ditambahkan.","Recent Trades":"Trade Terbaru","No trades recorded":"Belum ada trade","Recent trades will show here once you save a trade.":"Trade terbaru akan muncul setelah kamu menyimpan trade.","Saved Trades":"Trade Tersimpan","All instruments":"Semua instrumen","BUY + SELL":"BUY + SELL","All results":"Semua hasil","All sessions":"Semua sesi","All dates":"Semua tanggal","Last 7 days":"7 hari terakhir","Last 30 days":"30 hari terakhir","Last 3 months":"3 bulan terakhir","Filters only change what is shown. Your saved trades are untouched.":"Filter hanya mengubah tampilan. Trade yang tersimpan tidak berubah.","Clear":"Reset","Use New Trade to add your first journal entry.":"Gunakan Trade Baru untuk menambahkan jurnal pertamamu.","No matching trades":"Tidak ada trade yang cocok","Try changing the search or clearing one of the filters.":"Coba ubah pencarian atau reset salah satu filter.","Trading Calendar":"Kalender Trading","Monthly Performance":"Performa Bulanan","No account":"Tidak ada akun","Monthly P/L":"P/L Bulanan","Trading Days":"Hari Trading","Winning Days":"Hari Profit","Losing Days":"Hari Loss","Best Day":"Hari Terbaik","Worst Day":"Hari Terburuk","Sun":"Min","Mon":"Sen","Tue":"Sel","Wed":"Rab","Thu":"Kam","Fri":"Jum","Sat":"Sab","Selected Date":"Tanggal Dipilih","Choose a date":"Pilih tanggal","Tap a date to view its trades.":"Tap tanggal untuk melihat trade.","Trade Detail":"Detail Trade","Edit Trade":"Edit Trade","Delete Trade":"Hapus Trade","Advanced Analytics":"Analytics Lanjutan","Performance Analytics":"Analytics Performa","Performance by Instrument":"Performa per Instrumen","Performance by Session":"Performa per Sesi","Performance by Trading Day":"Performa per Hari Trading","Win / Loss Distribution":"Distribusi Win / Loss","Daily P/L":"P/L Harian","Best & Worst Insights":"Insight Terbaik & Terburuk","Settings":"Pengaturan","Account Information":"Informasi Akun","Theme":"Tema","Dark":"Gelap","Light":"Terang","Language":"Bahasa","English":"Inggris","Indonesia":"Indonesia","Support":"Dukungan","Delete this trade?":"Hapus trade ini?","This action cannot be undone.":"Tindakan ini tidak dapat dibatalkan.","Delete this trading account?":"Hapus akun trading ini?","Dashboard":"Dashboard","Calendar":"Kalender","Analytics":"Analytics","Before / Entry Screenshot":"Screenshot Sebelum / Entry","After / Exit Screenshot":"Screenshot Sesudah / Exit","Close":"Tutup","Replace Image":"Ganti Gambar","Ready":"Siap","Saved":"Tersimpan","Removed":"Dihapus","Saving image…":"Menyimpan gambar…","Search instrument, notes, mistakes…":"Cari instrumen, catatan, kesalahan…","Search journal":"Cari jurnal","Filter by instrument":"Filter berdasarkan instrumen","Filter by direction":"Filter berdasarkan arah","Filter by result":"Filter berdasarkan hasil","Filter by session":"Filter berdasarkan sesi","Filter by period":"Filter berdasarkan periode","Previous month":"Bulan sebelumnya","Next month":"Bulan berikutnya","Monthly trading summary":"Ringkasan trading bulanan","Back to Journal":"Kembali ke Jurnal","Analytics date range":"Rentang tanggal analytics","App theme":"Tema aplikasi","App language":"Bahasa aplikasi","Primary navigation":"Navigasi utama","Search and filter journal":"Cari dan filter jurnal","Trading metrics":"Metrik trading","Equity curve time filter":"Filter waktu kurva ekuitas","Account equity curve":"Kurva ekuitas akun","Close new trade form":"Tutup form trade baru","Close create account form":"Tutup form buat akun","Select trading account":"Pilih akun trading","Trading account menu":"Menu akun trading","Trade direction":"Arah trade","Describe why you entered this trade...":"Jelaskan kenapa kamu masuk trade ini...","Add any mistakes made during this trade...":"Tambahkan kesalahan yang terjadi pada trade ini..."};
+      const ID_TO_EN_TRANSLATIONS = Object.fromEntries(
+        Object.entries(ID_TRANSLATIONS).map(([english, indonesian]) => [indonesian, english])
+      );
+
+      const translateDynamicString = (value, language) => {
+        const text = String(value || '').trim();
+        if (!text) return value;
+
+        if (language === 'id') {
+          if (ID_TRANSLATIONS[text]) return ID_TRANSLATIONS[text];
+
+          let match = text.match(/^(\d+) of (\d+) trades$/);
+          if (match) return `${match[1]} dari ${match[2]} trade`;
+
+          match = text.match(/^(\d+) trades?$/);
+          if (match) return `${match[1]} trade`;
+
+          match = text.match(/^Existing screenshot(?:s)? synced to cloud\.$/i);
+          if (match) return 'Screenshot lama berhasil disinkronkan ke cloud.';
+
+          return value;
+        }
+
+        if (ID_TO_EN_TRANSLATIONS[text]) return ID_TO_EN_TRANSLATIONS[text];
+        if (/^\d+ dari \d+ trade$/.test(text)) {
+          const parts = text.match(/^(\d+) dari (\d+) trade$/);
+          return `${parts[1]} of ${parts[2]} trades`;
+        }
+        if (/^Screenshot lama berhasil disinkronkan ke cloud\.$/.test(text)) {
+          return 'Existing screenshots synced to cloud.';
+        }
+        return value;
+      };
+
+      const translateTextNode = (node, language) => {
+        if (!node || node.nodeType !== Node.TEXT_NODE) return;
+        const raw = node.nodeValue || '';
+        const trimmed = raw.trim();
+        if (!trimmed) return;
+        const translated = translateDynamicString(trimmed, language);
+        if (translated === trimmed) return;
+        const leading = raw.match(/^\s*/)?.[0] || '';
+        const trailing = raw.match(/\s*$/)?.[0] || '';
+        node.nodeValue = `${leading}${translated}${trailing}`;
+      };
+
+      const translateElement = (element, language) => {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return;
+
+        Array.from(element.childNodes).forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, language);
+        });
+
+        ['placeholder', 'aria-label', 'title'].forEach((attribute) => {
+          if (!element.hasAttribute(attribute)) return;
+          const value = element.getAttribute(attribute);
+          const translated = translateDynamicString(value, language);
+          if (translated !== value) element.setAttribute(attribute, translated);
+        });
+
+        element.querySelectorAll('*').forEach((child) => {
+          Array.from(child.childNodes).forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, language);
+          });
+          ['placeholder', 'aria-label', 'title'].forEach((attribute) => {
+            if (!child.hasAttribute(attribute)) return;
+            const value = child.getAttribute(attribute);
+            const translated = translateDynamicString(value, language);
+            if (translated !== value) child.setAttribute(attribute, translated);
+          });
+        });
+      };
+
+      const applyLanguage = (language) => {
+        currentLanguage = language === 'id' ? 'id' : 'en';
+        root.dataset.language = currentLanguage;
+        root.setAttribute('lang', currentLanguage);
+        languageEnBtn.classList.toggle('active', currentLanguage === 'en');
+        languageIdBtn.classList.toggle('active', currentLanguage === 'id');
+        translateElement(root, currentLanguage);
+      };
+
+      const loadLanguage = () => {
+        const savedLanguage = safeLocalGet(languageKey());
+        applyLanguage(savedLanguage === 'id' ? 'id' : 'en');
+      };
+
+      const saveLanguage = (language) => {
+        const selected = language === 'id' ? 'id' : 'en';
+        safeLocalSet(languageKey(), selected);
+        applyLanguage(selected);
+      };
+
+      const languageObserver = new MutationObserver((mutations) => {
+        if (currentLanguage !== 'id') return;
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, currentLanguage);
+            if (node.nodeType === Node.ELEMENT_NODE) translateElement(node, currentLanguage);
+          });
+        });
+      });
+      languageObserver.observe(root, { childList: true, subtree: true });
 
       const readJsonLocal = (key, fallback) => {
         const raw = safeLocalGet(key);
@@ -3730,6 +3848,7 @@
         profileEmail.textContent = currentUser?.email || '';
         settingsEmail.textContent = currentUser?.email || '—';
         loadTheme();
+        loadLanguage();
         showPage('Dashboard');
       };
 
@@ -3739,6 +3858,7 @@
         profileMenu.classList.remove('visible');
         importBanner.classList.remove('visible');
         loadTheme();
+        loadLanguage();
         authEmail.closest('.field').style.display = 'grid';
         authPassword.closest('.field').querySelector('label').textContent = 'Password';
         setAuthMode('login');
@@ -5440,6 +5560,8 @@
       settingsLogoutBtn.addEventListener('click', logout);
       themeDarkBtn.addEventListener('click', () => saveTheme('dark'));
       themeLightBtn.addEventListener('click', () => saveTheme('light'));
+      languageEnBtn.addEventListener('click', () => saveLanguage('en'));
+      languageIdBtn.addEventListener('click', () => saveLanguage('id'));
 
       importLocalBtn.addEventListener('click', async () => {
         if (!currentUser) return;
