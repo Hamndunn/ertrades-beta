@@ -942,6 +942,90 @@
       gap: 12px;
     }
 
+    #ertrades-app .journal-filter-panel {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      gap: 9px;
+      background: rgba(255,255,255,.012);
+    }
+
+    #ertrades-app .journal-search {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a1013;
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+      outline: none;
+    }
+
+    #ertrades-app .journal-search::placeholder { color: var(--muted); }
+
+    #ertrades-app .journal-search:focus,
+    #ertrades-app .journal-filter-select:focus {
+      border-color: rgba(184,255,79,.55);
+      box-shadow: 0 0 0 2px rgba(184,255,79,.08);
+    }
+
+    #ertrades-app .journal-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    #ertrades-app .journal-filter-select {
+      width: 100%;
+      min-width: 0;
+      min-height: 42px;
+      padding: 0 30px 0 11px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #0a1013;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      outline: none;
+    }
+
+    #ertrades-app .journal-filter-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    #ertrades-app .journal-filter-hint {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    #ertrades-app .journal-clear-filters {
+      flex: 0 0 auto;
+      min-height: 36px;
+      padding: 0 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--soft);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #ertrades-app .journal-clear-filters:disabled {
+      opacity: .38;
+      cursor: default;
+    }
+
     #ertrades-app .journal-list,
     #ertrades-app .recent-list {
       display: grid;
@@ -1617,7 +1701,9 @@
     }
 
     #ertrades-app.theme-light .popup-menu,
-    #ertrades-app.theme-light .custom-select-btn {
+    #ertrades-app.theme-light .custom-select-btn,
+    #ertrades-app.theme-light .journal-search,
+    #ertrades-app.theme-light .journal-filter-select {
       background: #ffffff;
     }
 
@@ -2594,6 +2680,50 @@
           </div>
           <span class="section-meta" id="journal-count">0 trades</span>
         </div>
+        <div class="journal-filter-panel" aria-label="Search and filter journal">
+          <input
+            class="journal-search"
+            id="journal-search"
+            type="search"
+            inputmode="search"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Search instrument, notes, mistakes…"
+            aria-label="Search journal"
+          />
+          <div class="journal-filter-grid">
+            <select class="journal-filter-select" id="journal-instrument-filter" aria-label="Filter by instrument">
+              <option value="ALL">All instruments</option>
+            </select>
+            <select class="journal-filter-select" id="journal-direction-filter" aria-label="Filter by direction">
+              <option value="ALL">BUY + SELL</option>
+              <option value="BUY">BUY</option>
+              <option value="SELL">SELL</option>
+            </select>
+            <select class="journal-filter-select" id="journal-result-filter" aria-label="Filter by result">
+              <option value="ALL">All results</option>
+              <option value="WIN">WIN</option>
+              <option value="LOSS">LOSS</option>
+              <option value="BREAK EVEN">BREAK EVEN</option>
+            </select>
+            <select class="journal-filter-select" id="journal-session-filter" aria-label="Filter by session">
+              <option value="ALL">All sessions</option>
+              <option value="Asian">Asian</option>
+              <option value="London">London</option>
+              <option value="New York">New York</option>
+            </select>
+            <select class="journal-filter-select" id="journal-period-filter" aria-label="Filter by period">
+              <option value="ALL">All dates</option>
+              <option value="7D">Last 7 days</option>
+              <option value="30D">Last 30 days</option>
+              <option value="3M">Last 3 months</option>
+            </select>
+          </div>
+          <div class="journal-filter-footer">
+            <span class="journal-filter-hint">Filters only change what is shown. Your saved trades are untouched.</span>
+            <button class="journal-clear-filters" id="journal-clear-filters" type="button" disabled>Clear</button>
+          </div>
+        </div>
         <div class="journal-empty" id="journal-empty">
           <div class="empty-state">
             <div class="empty-icon" aria-hidden="true">
@@ -2602,8 +2732,8 @@
                 <path d="M5 3.5h14a1 1 0 011 1v15a1 1 0 01-1 1H5a1 1 0 01-1-1v-15a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/>
               </svg>
             </div>
-            <div class="empty-title">No trades recorded</div>
-            <div class="empty-copy">Use New Trade to add your first journal entry.</div>
+            <div class="empty-title" id="journal-empty-title">No trades recorded</div>
+            <div class="empty-copy" id="journal-empty-copy">Use New Trade to add your first journal entry.</div>
           </div>
         </div>
         <div class="journal-list" id="journal-list"></div>
@@ -2890,7 +3020,16 @@
       const equityFilters = Array.from(root.querySelectorAll('.equity-filter'));
       const journalList = root.querySelector('#journal-list');
       const journalEmpty = root.querySelector('#journal-empty');
+      const journalEmptyTitle = root.querySelector('#journal-empty-title');
+      const journalEmptyCopy = root.querySelector('#journal-empty-copy');
       const journalCount = root.querySelector('#journal-count');
+      const journalSearch = root.querySelector('#journal-search');
+      const journalInstrumentFilter = root.querySelector('#journal-instrument-filter');
+      const journalDirectionFilter = root.querySelector('#journal-direction-filter');
+      const journalResultFilter = root.querySelector('#journal-result-filter');
+      const journalSessionFilter = root.querySelector('#journal-session-filter');
+      const journalPeriodFilter = root.querySelector('#journal-period-filter');
+      const journalClearFilters = root.querySelector('#journal-clear-filters');
       const recentList = root.querySelector('#recent-list');
       const recentEmpty = root.querySelector('#recent-empty');
       const recentTradesCount = root.querySelector('#recent-trades-count');
@@ -4651,18 +4790,118 @@
         );
       };
 
+      const journalFiltersActive = () => (
+        Boolean((journalSearch.value || '').trim()) ||
+        journalInstrumentFilter.value !== 'ALL' ||
+        journalDirectionFilter.value !== 'ALL' ||
+        journalResultFilter.value !== 'ALL' ||
+        journalSessionFilter.value !== 'ALL' ||
+        journalPeriodFilter.value !== 'ALL'
+      );
+
+      const syncJournalInstrumentFilter = (items) => {
+        const selected = journalInstrumentFilter.value || 'ALL';
+        const instruments = Array.from(new Set(
+          items.map((trade) => String(trade.instrument || '').trim()).filter(Boolean)
+        )).sort((a, b) => a.localeCompare(b));
+
+        journalInstrumentFilter.innerHTML = '';
+        const allOption = document.createElement('option');
+        allOption.value = 'ALL';
+        allOption.textContent = 'All instruments';
+        journalInstrumentFilter.appendChild(allOption);
+
+        instruments.forEach((instrument) => {
+          const option = document.createElement('option');
+          option.value = instrument;
+          option.textContent = instrument;
+          journalInstrumentFilter.appendChild(option);
+        });
+
+        journalInstrumentFilter.value = instruments.includes(selected) ? selected : 'ALL';
+      };
+
+      const journalPeriodStart = (period) => {
+        if (period === 'ALL') return null;
+        const start = new Date();
+        start.setHours(0, 0, 0, 0);
+        if (period === '7D') start.setDate(start.getDate() - 6);
+        else if (period === '30D') start.setDate(start.getDate() - 29);
+        else if (period === '3M') start.setMonth(start.getMonth() - 3);
+        else return null;
+        return start;
+      };
+
+      const journalFilteredTrades = (items) => {
+        const query = (journalSearch.value || '').trim().toLowerCase();
+        const instrument = journalInstrumentFilter.value || 'ALL';
+        const direction = journalDirectionFilter.value || 'ALL';
+        const result = journalResultFilter.value || 'ALL';
+        const session = journalSessionFilter.value || 'ALL';
+        const periodStart = journalPeriodStart(journalPeriodFilter.value || 'ALL');
+
+        return items.filter((trade) => {
+          if (instrument !== 'ALL' && trade.instrument !== instrument) return false;
+          if (direction !== 'ALL' && trade.direction !== direction) return false;
+          if (result !== 'ALL' && trade.result !== result) return false;
+          if (session !== 'ALL' && trade.session !== session) return false;
+
+          if (periodStart) {
+            const dateText = /^\d{4}-\d{2}-\d{2}$/.test(trade.date || '') ? trade.date : '';
+            if (!dateText) return false;
+            const tradeDate = new Date(`${dateText}T00:00:00`);
+            if (!Number.isFinite(tradeDate.getTime()) || tradeDate < periodStart) return false;
+          }
+
+          if (query) {
+            const haystack = [
+              trade.instrument,
+              trade.direction,
+              trade.result,
+              trade.session,
+              trade.date,
+              trade.notes,
+              trade.mistakes,
+              trade.psychologyBefore,
+              trade.psychologyAfter
+            ].map((value) => String(value || '').toLowerCase()).join(' ');
+            if (!haystack.includes(query)) return false;
+          }
+
+          return true;
+        });
+      };
+
       const renderTrades = () => {
         const account = currentAccount();
         const accountTrades = currentTrades();
         const currency = account?.currency || 'USD';
+        syncJournalInstrumentFilter(accountTrades);
+        const filteredTrades = journalFilteredTrades(accountTrades);
+        const filtersActive = journalFiltersActive();
+
         journalList.innerHTML = '';
         recentList.innerHTML = '';
-        journalCount.textContent = `${accountTrades.length} ${accountTrades.length === 1 ? 'trade' : 'trades'}`;
+
+        journalCount.textContent = filtersActive
+          ? `${filteredTrades.length} of ${accountTrades.length} trades`
+          : `${accountTrades.length} ${accountTrades.length === 1 ? 'trade' : 'trades'}`;
+
         recentTradesCount.textContent = `${accountTrades.length} ${accountTrades.length === 1 ? 'trade' : 'trades'}`;
-        journalEmpty.style.display = accountTrades.length ? 'none' : 'grid';
+        journalClearFilters.disabled = !filtersActive;
+
+        journalEmpty.style.display = filteredTrades.length ? 'none' : 'grid';
+        if (!accountTrades.length) {
+          journalEmptyTitle.textContent = 'No trades recorded';
+          journalEmptyCopy.textContent = 'Use New Trade to add your first journal entry.';
+        } else if (!filteredTrades.length) {
+          journalEmptyTitle.textContent = 'No matching trades';
+          journalEmptyCopy.textContent = 'Try changing the search or clearing one of the filters.';
+        }
+
         recentEmpty.style.display = accountTrades.length ? 'none' : 'grid';
 
-        accountTrades.forEach((trade) => journalList.appendChild(makeTradeRow(trade, currency)));
+        filteredTrades.forEach((trade) => journalList.appendChild(makeTradeRow(trade, currency)));
         accountTrades.slice(0, 3).forEach((trade) => recentList.appendChild(makeTradeRow(trade, currency)));
       };
 
@@ -5233,6 +5472,26 @@
         renderTradeDetail();
         showPage('Trade Detail');
       };
+
+      journalSearch.addEventListener('input', renderTrades);
+      [
+        journalInstrumentFilter,
+        journalDirectionFilter,
+        journalResultFilter,
+        journalSessionFilter,
+        journalPeriodFilter
+      ].forEach((filter) => filter.addEventListener('change', renderTrades));
+
+      journalClearFilters.addEventListener('click', () => {
+        journalSearch.value = '';
+        journalInstrumentFilter.value = 'ALL';
+        journalDirectionFilter.value = 'ALL';
+        journalResultFilter.value = 'ALL';
+        journalSessionFilter.value = 'ALL';
+        journalPeriodFilter.value = 'ALL';
+        renderTrades();
+        journalSearch.focus();
+      });
 
       [journalList, recentList].forEach((list) => {
         list.addEventListener('click', (event) => {
