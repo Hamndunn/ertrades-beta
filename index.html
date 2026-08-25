@@ -750,7 +750,16 @@
       left: 0;
       top: calc(100% + 7px);
       width: 100%;
+      max-height: 286px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
       z-index: 120;
+    }
+
+    #ertrades-app .trade-form-card.psychology-menu-open {
+      overflow-y: hidden;
     }
 
     #ertrades-app .trade-form-card .field {
@@ -2433,7 +2442,7 @@
               <div class="field">
                 <label for="trade-session">Session</label>
                 <select id="trade-session">
-                  <option value="Asian">Asian</option>
+                  <option value="Asia">Asia</option>
                   <option value="London">London</option>
                   <option value="New York">New York</option>
                 </select>
@@ -2729,7 +2738,7 @@
             </select>
             <select class="journal-filter-select" id="journal-session-filter" aria-label="Filter by session">
               <option value="ALL">All sessions</option>
-              <option value="Asian">Asian</option>
+              <option value="Asia">Asia</option>
               <option value="London">London</option>
               <option value="New York">New York</option>
             </select>
@@ -3407,7 +3416,7 @@
         instrument: row.instrument || '',
         direction: row.direction || '',
         date: row.trade_date || '',
-        session: row.session || '',
+        session: row.session === 'Asian' ? 'Asia' : (row.session || ''),
         entryPrice: row.entry_price,
         stopLoss: row.stop_loss,
         takeProfit: row.take_profit,
@@ -4247,8 +4256,15 @@
         else instruments.forEach((entry) => analyticsInstrumentList.appendChild(makeAnalyticsRow(entry.name, entry.stats, currency, true)));
 
         analyticsSessionList.innerHTML = '';
-        const sessions = ['Asian', 'London', 'New York'];
-        const sessionStats = sessions.map((name) => ({ name, stats: analyticsGroupStats(items.filter((trade) => trade.session === name)) }));
+        const sessions = [
+          { name: 'Asia', matches: ['Asia', 'Asian'] },
+          { name: 'London', matches: ['London'] },
+          { name: 'New York', matches: ['New York'] }
+        ];
+        const sessionStats = sessions.map((session) => ({
+          name: session.name,
+          stats: analyticsGroupStats(items.filter((trade) => session.matches.includes(trade.session)))
+        }));
         sessionStats.forEach((entry) => analyticsSessionList.appendChild(makeAnalyticsRow(entry.name, entry.stats, currency, true)));
 
         analyticsDayList.innerHTML = '';
@@ -4525,7 +4541,9 @@
         selectedDirection = draft.direction === 'BUY' || draft.direction === 'SELL' ? draft.direction : '';
         tradeDate.value = draft.date || getLocalDateValue();
         syncTradeDateDisplay();
-        tradeSession.value = ['Asian', 'London', 'New York'].includes(draft.session) ? draft.session : 'Asian';
+        tradeSession.value = draft.session === 'Asian'
+          ? 'Asia'
+          : (['Asia', 'London', 'New York'].includes(draft.session) ? draft.session : 'Asia');
         entryPrice.value = draft.entryPrice ?? '';
         stopLoss.value = draft.stopLoss ?? '';
         takeProfit.value = draft.takeProfit ?? '';
@@ -4770,7 +4788,7 @@
         result.textContent = trade.result;
         const meta = document.createElement('div');
         meta.style.marginTop = '7px';
-        meta.textContent = `${trade.date} · ${trade.session}`;
+        meta.textContent = `${trade.date} · ${trade.session === 'Asian' ? 'Asia' : trade.session}`;
         left.append(result, meta);
 
         const stats = document.createElement('div');
@@ -4819,7 +4837,7 @@
           detailField('Instrument', trade.instrument),
           detailField('Direction', trade.direction),
           detailField('Date', trade.date),
-          detailField('Session', trade.session),
+          detailField('Session', trade.session === 'Asian' ? 'Asia' : trade.session),
           detailField('Entry Price', trade.entryPrice ?? '—'),
           detailField('Stop Loss', trade.stopLoss ?? '—'),
           detailField('Take Profit', trade.takeProfit ?? '—'),
@@ -4891,7 +4909,8 @@
           if (instrument !== 'ALL' && trade.instrument !== instrument) return false;
           if (direction !== 'ALL' && trade.direction !== direction) return false;
           if (result !== 'ALL' && trade.result !== result) return false;
-          if (session !== 'ALL' && trade.session !== session) return false;
+          const normalizedSession = trade.session === 'Asian' ? 'Asia' : trade.session;
+          if (session !== 'ALL' && normalizedSession !== session) return false;
 
           if (periodStart) {
             const dateText = /^\d{4}-\d{2}-\d{2}$/.test(trade.date || '') ? trade.date : '';
@@ -5060,6 +5079,13 @@
         renderPsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
       };
 
+      const syncPsychologyMenuScrollLock = () => {
+        const psychologyOpen =
+          psychologyBeforeMenu.classList.contains('open') ||
+          psychologyAfterMenu.classList.contains('open');
+        tradeForm.classList.toggle('psychology-menu-open', psychologyOpen);
+      };
+
       const closeCustomMenus = (except = null) => {
         [accountSelectMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
           if (menu !== except) menu.classList.remove('open');
@@ -5067,6 +5093,7 @@
         if (accountSelectMenu !== except) accountSelectBtn.setAttribute('aria-expanded', 'false');
         if (psychologyBeforeMenu !== except) psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
         if (psychologyAfterMenu !== except) psychologyAfterBtn.setAttribute('aria-expanded', 'false');
+        syncPsychologyMenuScrollLock();
       };
 
       const showPage = (page) => {
@@ -5151,7 +5178,7 @@
         selectedDirection = trade.direction || '';
         tradeDate.value = trade.date || getLocalDateValue();
         syncTradeDateDisplay();
-        tradeSession.value = trade.session || 'Asian';
+        tradeSession.value = trade.session === 'Asian' ? 'Asia' : (trade.session || 'Asia');
         entryPrice.value = trade.entryPrice ?? '';
         stopLoss.value = trade.stopLoss ?? '';
         takeProfit.value = trade.takeProfit ?? '';
@@ -5195,7 +5222,7 @@
         updateDirectionButtons();
         tradeDate.value = getLocalDateValue();
         syncTradeDateDisplay();
-        tradeSession.value = 'Asian';
+        tradeSession.value = 'Asia';
         psychologyBefore.value = '';
         psychologyAfter.value = '';
         syncPsychologyUi();
@@ -5658,6 +5685,7 @@
           closeCustomMenus(open ? menu : null);
           menu.classList.toggle('open', open);
           button.setAttribute('aria-expanded', String(open));
+          syncPsychologyMenuScrollLock();
         });
         menu.addEventListener('click', (event) => {
           const option = event.target.closest('button[data-psychology-value]');
@@ -5665,6 +5693,7 @@
           select.value = option.dataset.psychologyValue || '';
           menu.classList.remove('open');
           button.setAttribute('aria-expanded', 'false');
+          syncPsychologyMenuScrollLock();
           syncPsychologyUi();
           select.dispatchEvent(new Event('change', { bubbles: true }));
         });
@@ -5815,6 +5844,7 @@
           psychologyAfterMenu.classList.remove('open');
           psychologyAfterBtn.setAttribute('aria-expanded', 'false');
         }
+        syncPsychologyMenuScrollLock();
       });
 
       tradeForm.addEventListener('submit', async (event) => {
