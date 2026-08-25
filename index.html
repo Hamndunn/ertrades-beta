@@ -1645,6 +1645,22 @@
 
     #ertrades-app .settings-logout {
       width: 100%;
+      border-color: rgba(255, 91, 110, .55);
+      background: rgba(255, 91, 110, .10);
+      color: #ff6678;
+    }
+
+    #ertrades-app .settings-logout:focus-visible {
+      outline: 2px solid rgba(255, 91, 110, .75);
+      outline-offset: 2px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      #ertrades-app .settings-logout:hover {
+        border-color: rgba(255, 91, 110, .78);
+        background: rgba(255, 91, 110, .16);
+        color: #ff7383;
+      }
     }
 
     #ertrades-app .theme-options {
@@ -1727,6 +1743,12 @@
     #ertrades-app.theme-light .journal-search,
     #ertrades-app.theme-light .journal-filter-select {
       background: #ffffff;
+    }
+
+    #ertrades-app.theme-light .settings-logout {
+      border-color: rgba(205, 45, 67, .42);
+      background: rgba(205, 45, 67, .08);
+      color: #c92f45;
     }
 
     #ertrades-app.theme-light .summary-card {
