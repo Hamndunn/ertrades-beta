@@ -2615,6 +2615,10 @@
                 <div class="metric-label">Max Drawdown</div>
                 <div class="metric-value muted-value" id="max-drawdown-value">0.00%</div>
               </article>
+              <article class="metric" title="Best profitable day ÷ total net profit × 100">
+                <div class="metric-label">Consistency Score</div>
+                <div class="metric-value muted-value" id="consistency-score-value">—</div>
+              </article>
             </section>
           </div>
 
@@ -3014,6 +3018,7 @@
       const averageRrValue = root.querySelector('#average-rr-value');
       const totalTradesValue = root.querySelector('#total-trades-value');
       const maxDrawdownValue = root.querySelector('#max-drawdown-value');
+      const consistencyScoreValue = root.querySelector('#consistency-score-value');
       const equityChartWrap = root.querySelector('#equity-chart-wrap');
       const equitySvg = root.querySelector('#equity-svg');
       const equityEmpty = root.querySelector('#equity-empty');
@@ -3844,6 +3849,31 @@
           }
         });
         return maximum;
+      };
+
+      const calculateConsistencyScore = () => {
+        const accountTrades = currentTrades();
+        if (!accountTrades.length) return null;
+
+        const netProfit = accountTrades.reduce(
+          (sum, trade) => sum + (Number(trade.profitLoss) || 0),
+          0
+        );
+        if (!(netProfit > 0)) return null;
+
+        const dailyProfit = new Map();
+        accountTrades.forEach((trade) => {
+          const date = String(trade.date || '').trim();
+          if (!date) return;
+          dailyProfit.set(date, (dailyProfit.get(date) || 0) + (Number(trade.profitLoss) || 0));
+        });
+
+        const profitableDays = Array.from(dailyProfit.values()).filter((value) => value > 0);
+        if (!profitableDays.length) return null;
+
+        const bestDayProfit = Math.max(...profitableDays);
+        const score = (bestDayProfit / netProfit) * 100;
+        return Number.isFinite(score) ? score : null;
       };
 
       const filteredEquityHistory = () => {
@@ -4936,6 +4966,8 @@
         averageRrValue.textContent = averageRr.toFixed(2);
         totalTradesValue.textContent = String(accountTrades.length);
         maxDrawdownValue.textContent = `${calculateMaxDrawdown().toFixed(2)}%`;
+        const consistencyScore = calculateConsistencyScore();
+        consistencyScoreValue.textContent = consistencyScore === null ? '—' : `${consistencyScore.toFixed(2)}%`;
         renderEquityCurve();
         renderCalendar();
         renderAnalytics();
