@@ -782,6 +782,19 @@
       line-height: 1.5;
     }
 
+    #ertrades-app .field-note {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    #ertrades-app .field-note strong {
+      color: var(--soft);
+      font-weight: 800;
+    }
+
     #ertrades-app .field input:focus,
     #ertrades-app .field select:focus,
     #ertrades-app .field textarea:focus {
@@ -2458,6 +2471,10 @@
               <div class="field">
                 <label for="profit-loss">Profit / Loss</label>
                 <input id="profit-loss" type="text" inputmode="text" autocomplete="off" placeholder="0.00">
+                <div class="field-note">
+                  Enter <strong>net P/L after commission and fees</strong> so Balance &amp; Analytics stay accurate.
+                  Example: +$10 profit − $1.20 commission → enter <strong>8.80</strong>.
+                </div>
               </div>
               <div class="field">
                 <label for="trade-result">Result</label>
