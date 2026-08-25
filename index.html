@@ -762,11 +762,11 @@
     #ertrades-app .trade-form-card .field.psychology-field {
       overflow: visible;
       position: relative;
-      z-index: 4;
+      z-index: 2;
     }
 
     #ertrades-app .trade-form-card .field.psychology-field + .field.psychology-field {
-      z-index: 3;
+      z-index: 1;
     }
 
     #ertrades-app .field select {
@@ -1937,8 +1937,9 @@
     #ertrades-app .trade-form-card .section-head {
       position: sticky;
       top: 0;
-      z-index: 3;
+      z-index: 200;
       background: var(--panel);
+      isolation: isolate;
     }
 
     #ertrades-app .trade-form-card .section-head > div:first-child {
