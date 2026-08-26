@@ -2433,8 +2433,8 @@
       <dialog class="trade-form-card" id="trade-form-card" aria-labelledby="trade-form-title">
         <div class="section-head">
           <div>
-            <div class="section-kicker" data-no-translate="true">Journal</div>
-            <div class="section-title" id="trade-form-title" data-no-translate="true">New Trade</div>
+            <div class="section-kicker" data-language-lock="true">Journal</div>
+            <div class="section-title" id="trade-form-title" data-language-lock="true">New Trade</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <span class="draft-status" id="draft-status" role="status" aria-live="polite">Draft saved</span>
@@ -3359,7 +3359,7 @@
 
       const translateTextNode = (node, language) => {
         if (!node || node.nodeType !== Node.TEXT_NODE) return;
-        if (node.parentElement?.closest('[data-no-translate="true"]')) return;
+        if (node.parentElement?.closest('[data-language-lock="true"]')) return;
         const raw = node.nodeValue || '';
         const trimmed = raw.trim();
         if (!trimmed) return;
@@ -3372,6 +3372,7 @@
 
       const translateElement = (element, language) => {
         if (!element || element.nodeType !== Node.ELEMENT_NODE) return;
+        if (element.closest('[data-language-lock="true"]')) return;
 
         Array.from(element.childNodes).forEach((node) => {
           if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, language);
@@ -3385,6 +3386,7 @@
         });
 
         element.querySelectorAll('*').forEach((child) => {
+          if (child.closest('[data-language-lock="true"]')) return;
           Array.from(child.childNodes).forEach((node) => {
             if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, language);
           });
@@ -3404,6 +3406,12 @@
         languageEnBtn.classList.toggle('active', currentLanguage === 'en');
         languageIdBtn.classList.toggle('active', currentLanguage === 'id');
         translateElement(root, currentLanguage);
+
+        const tradeHeaderKicker = root.querySelector('#trade-form-card .section-kicker[data-language-lock="true"]');
+        if (tradeHeaderKicker) tradeHeaderKicker.textContent = 'Journal';
+        if (tradeFormTitle?.matches('[data-language-lock="true"]')) {
+          tradeFormTitle.textContent = editingTradeId ? 'Edit Trade' : 'New Trade';
+        }
       };
 
       const loadLanguage = () => {
@@ -3421,6 +3429,9 @@
         if (currentLanguage !== 'id') return;
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach((node) => {
+            const parentLocked = mutation.target?.nodeType === Node.ELEMENT_NODE
+              && mutation.target.closest?.('[data-language-lock="true"]');
+            if (parentLocked) return;
             if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, currentLanguage);
             if (node.nodeType === Node.ELEMENT_NODE) translateElement(node, currentLanguage);
           });
