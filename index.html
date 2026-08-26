@@ -2288,6 +2288,217 @@
       #ertrades-app .analytics-insights { grid-template-columns: repeat(5,minmax(0,1fr)); }
     }
 
+
+    /* v73 — Sticky top controls + cleaner Journal / Analytics layout.
+       Presentation only: no Supabase, auth, database, screenshot, or analytics logic changes. */
+
+    /* Keep the exact existing colors while the brand + account controls stay visible on scroll. */
+    #ertrades-app .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      background: var(--bg);
+      isolation: isolate;
+    }
+
+    #ertrades-app .control-row {
+      position: sticky;
+      top: 62px;
+      z-index: 115;
+      background: var(--bg);
+      isolation: isolate;
+    }
+
+    /* Journal: clearer hierarchy and balanced filter layout. */
+    #ertrades-app #journal-page .journal-head {
+      padding: 14px;
+      gap: 10px;
+    }
+
+    #ertrades-app #journal-page #journal-count {
+      flex: 0 0 auto;
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #0a1013;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    #ertrades-app #journal-page .journal-filter-panel {
+      padding: 12px;
+      gap: 10px;
+    }
+
+    #ertrades-app #journal-page .journal-filter-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    #ertrades-app #journal-page #journal-period-filter {
+      grid-column: 1 / -1;
+    }
+
+    #ertrades-app #journal-page .journal-filter-footer {
+      align-items: center;
+      gap: 8px;
+    }
+
+    #ertrades-app #journal-page .journal-filter-hint {
+      flex: 1 1 auto;
+    }
+
+    #ertrades-app #journal-page #journal-list {
+      padding: 10px;
+      gap: 8px;
+    }
+
+    #ertrades-app #journal-page #journal-list .trade-row {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a1013;
+      padding: 12px;
+    }
+
+    #ertrades-app #journal-page #journal-list .trade-row:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Analytics: heading, period filters, cards, lists, and charts line up consistently. */
+    #ertrades-app #analytics-page > .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    #ertrades-app #analytics-page .analytics-filters {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+      justify-content: stretch;
+    }
+
+    #ertrades-app #analytics-page .analytics-filter {
+      width: 100%;
+      min-height: 38px;
+      padding: 0 6px;
+      font-size: 10px;
+    }
+
+    #ertrades-app #analytics-page .analytics-body {
+      padding: 12px;
+      gap: 12px;
+    }
+
+    #ertrades-app #analytics-page .analytics-overview {
+      gap: 8px;
+    }
+
+    #ertrades-app #analytics-page .analytics-stat {
+      min-height: 82px;
+      padding: 12px;
+    }
+
+    #ertrades-app #analytics-page .analytics-section {
+      border-radius: 13px;
+    }
+
+    #ertrades-app #analytics-page .analytics-section-head {
+      padding: 12px 13px;
+    }
+
+    #ertrades-app #analytics-page .analytics-row {
+      padding: 12px 13px;
+    }
+
+    #ertrades-app #analytics-page .analytics-row-head {
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    #ertrades-app #analytics-page .analytics-row-meta {
+      margin-top: 7px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    #ertrades-app #analytics-page .analytics-chart {
+      min-height: 180px;
+      padding: 12px 8px 8px;
+      overflow: hidden;
+    }
+
+    #ertrades-app #analytics-page .analytics-insights {
+      gap: 8px;
+      padding: 10px;
+    }
+
+    @media (max-width: 520px) {
+      #ertrades-app .control-row {
+        top: 58px;
+      }
+
+      #ertrades-app #journal-page .journal-head {
+        align-items: center;
+      }
+
+      #ertrades-app #journal-page .journal-filter-footer {
+        align-items: flex-start;
+      }
+
+      #ertrades-app #journal-page .journal-clear-filters {
+        min-height: 38px;
+      }
+
+      #ertrades-app #analytics-page .analytics-stat strong {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      #ertrades-app #journal-page .journal-filter-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      #ertrades-app #journal-page #journal-period-filter {
+        grid-column: auto;
+      }
+
+      #ertrades-app #journal-page .journal-filter-footer {
+        flex-direction: column;
+      }
+
+      #ertrades-app #journal-page .journal-clear-filters {
+        width: 100%;
+      }
+    }
+
+    @media (min-width: 700px) {
+      #ertrades-app #journal-page .journal-filter-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      #ertrades-app #journal-page #journal-period-filter {
+        grid-column: auto;
+      }
+
+      #ertrades-app #analytics-page > .section-head {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+      }
+
+      #ertrades-app #analytics-page .analytics-filters {
+        width: auto;
+        grid-template-columns: repeat(4, 52px);
+      }
+    }
+
     @media (hover:hover) and (pointer:fine) {
       #ertrades-app .new-trade:hover { filter: brightness(.94); }
       #ertrades-app .nav-btn:hover:not(.active) { color: #b1bdc2; background: #11191c; }
