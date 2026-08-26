@@ -2433,8 +2433,8 @@
       <dialog class="trade-form-card" id="trade-form-card" aria-labelledby="trade-form-title">
         <div class="section-head">
           <div>
-            <div class="section-kicker">Journal</div>
-            <div class="section-title" id="trade-form-title">New Trade</div>
+            <div class="section-kicker" data-no-translate="true">Journal</div>
+            <div class="section-title" id="trade-form-title" data-no-translate="true">New Trade</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <span class="draft-status" id="draft-status" role="status" aria-live="polite">Draft saved</span>
@@ -3359,6 +3359,7 @@
 
       const translateTextNode = (node, language) => {
         if (!node || node.nodeType !== Node.TEXT_NODE) return;
+        if (node.parentElement?.closest('[data-no-translate="true"]')) return;
         const raw = node.nodeValue || '';
         const trimmed = raw.trim();
         if (!trimmed) return;
