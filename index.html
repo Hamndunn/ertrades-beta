@@ -2069,6 +2069,95 @@
       color: #ff6678;
     }
 
+    #ertrades-app .settings-danger-card {
+      padding: 14px;
+      border: 1px solid rgba(255, 91, 110, .34);
+      border-radius: 14px;
+      background: rgba(255, 91, 110, .045);
+    }
+
+    #ertrades-app .danger-zone-label {
+      color: #ff6678;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .danger-zone-title {
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 850;
+      letter-spacing: -.02em;
+    }
+
+    #ertrades-app .danger-zone-copy {
+      margin: 7px 0 12px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    #ertrades-app .settings-delete-user {
+      width: 100%;
+      border-color: rgba(255, 91, 110, .48);
+      background: rgba(255, 91, 110, .08);
+      color: #ff6678;
+    }
+
+    #ertrades-app .settings-delete-user:focus-visible {
+      outline: 2px solid rgba(255, 91, 110, .72);
+      outline-offset: 2px;
+    }
+
+    #ertrades-app .delete-user-dialog {
+      width: min(92%, 440px);
+    }
+
+    #ertrades-app .delete-user-body {
+      display: grid;
+      gap: 13px;
+    }
+
+    #ertrades-app .delete-user-body h3,
+    #ertrades-app .delete-user-body p {
+      margin: 0;
+    }
+
+    #ertrades-app .delete-user-warning {
+      padding: 11px 12px;
+      border: 1px solid rgba(255, 91, 110, .25);
+      border-radius: 11px;
+      background: rgba(255, 91, 110, .055);
+      color: #ff8996;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .delete-user-field {
+      gap: 7px;
+    }
+
+    #ertrades-app .delete-user-status {
+      min-height: 0;
+      margin: 0;
+    }
+
+    #ertrades-app #delete-user-confirm-btn:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      #ertrades-app .settings-delete-user:hover:not(:disabled),
+      #ertrades-app #delete-user-confirm-btn:hover:not(:disabled) {
+        border-color: rgba(255, 91, 110, .78);
+        background: rgba(255, 91, 110, .14);
+      }
+    }
+
     #ertrades-app .settings-logout:focus-visible {
       outline: 2px solid rgba(255, 91, 110, .75);
       outline-offset: 2px;
@@ -3411,8 +3500,44 @@
             </div>
           </div>
           <button class="secondary-btn settings-logout" id="settings-logout-btn" type="button">Logout</button>
+
+          <div class="settings-danger-card">
+            <div class="danger-zone-label">Danger Zone</div>
+            <div class="danger-zone-title">Delete My Account</div>
+            <p class="danger-zone-copy">Permanently delete your eRTrades account, trading accounts, journal entries, and cloud screenshots. This action cannot be undone.</p>
+            <button class="danger-btn settings-delete-user" id="settings-delete-user-btn" type="button">Delete My Account</button>
+          </div>
         </div>
       </section>
+
+      <dialog class="confirm-dialog delete-user-dialog" id="delete-user-dialog">
+        <form class="confirm-body delete-user-body" id="delete-user-form">
+          <div class="danger-zone-label">Danger Zone</div>
+          <h3>Delete your eRTrades account?</h3>
+          <p>This permanently deletes your account, trading accounts, journal entries, and cloud screenshots. This action cannot be undone.</p>
+
+          <div class="delete-user-warning">
+            You will be signed out immediately and this account cannot be restored.
+          </div>
+
+          <div class="field delete-user-field">
+            <label for="delete-user-password">Current password</label>
+            <input id="delete-user-password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          </div>
+
+          <div class="field delete-user-field">
+            <label for="delete-user-confirm-text">Type DELETE to confirm</label>
+            <input id="delete-user-confirm-text" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="DELETE" required>
+          </div>
+
+          <div class="auth-status delete-user-status" id="delete-user-status" aria-live="polite"></div>
+
+          <div class="confirm-actions">
+            <button class="secondary-btn" id="delete-user-cancel-btn" type="button">Cancel</button>
+            <button class="danger-btn" id="delete-user-confirm-btn" type="submit" disabled>Delete Account Permanently</button>
+          </div>
+        </form>
+      </dialog>
 
       <dialog class="confirm-dialog" id="delete-confirm-dialog">
         <div class="confirm-body">
@@ -3617,6 +3742,14 @@
       const settingsPage = root.querySelector('#settings-page');
       const settingsEmail = root.querySelector('#settings-email');
       const settingsLogoutBtn = root.querySelector('#settings-logout-btn');
+      const settingsDeleteUserBtn = root.querySelector('#settings-delete-user-btn');
+      const deleteUserDialog = root.querySelector('#delete-user-dialog');
+      const deleteUserForm = root.querySelector('#delete-user-form');
+      const deleteUserPassword = root.querySelector('#delete-user-password');
+      const deleteUserConfirmText = root.querySelector('#delete-user-confirm-text');
+      const deleteUserStatus = root.querySelector('#delete-user-status');
+      const deleteUserCancelBtn = root.querySelector('#delete-user-cancel-btn');
+      const deleteUserConfirmBtn = root.querySelector('#delete-user-confirm-btn');
       const themeDarkBtn = root.querySelector('#theme-dark-btn');
       const themeLightBtn = root.querySelector('#theme-light-btn');
       const analyticsPage = root.querySelector('#analytics-page');
@@ -6150,6 +6283,112 @@
         restoreLoginFields();
       });
 
+      const setDeleteUserStatus = (message = '', type = '') => {
+        deleteUserStatus.textContent = message;
+        deleteUserStatus.classList.remove('error', 'success');
+        if (type) deleteUserStatus.classList.add(type);
+      };
+
+      const syncDeleteUserConfirmState = () => {
+        const confirmationMatches = deleteUserConfirmText.value.trim().toUpperCase() === 'DELETE';
+        const hasPassword = deleteUserPassword.value.length > 0;
+        deleteUserConfirmBtn.disabled = !(confirmationMatches && hasPassword);
+      };
+
+      const clearDeletedUserLocalState = async (userId) => {
+        if (!userId) return;
+
+        try {
+          const map = getCloudDataMap();
+          if (map && Object.prototype.hasOwnProperty.call(map, userId)) {
+            delete map[userId];
+            saveCloudDataMap(map);
+          }
+        } catch (_) {}
+
+        try {
+          const users = getCloudUsers().filter((user) => user?.id !== userId);
+          saveCloudUsers(users);
+        } catch (_) {}
+
+        try {
+          const keysToRemove = [];
+          for (let index = 0; index < localStorage.length; index += 1) {
+            const key = localStorage.key(index);
+            if (!key) continue;
+            if (
+              key.startsWith(`${DRAFT_PREFIX}${userId}:`) ||
+              key === `${THEME_KEY_PREFIX}${userId}` ||
+              key === `${IMPORT_MARKER_PREFIX}${userId}` ||
+              key === lastActiveKey(userId)
+            ) {
+              keysToRemove.push(key);
+            }
+          }
+          keysToRemove.forEach(safeLocalRemove);
+          safeLocalRemove(SELECTED_ACCOUNT_LOCAL_KEY);
+        } catch (_) {}
+
+        try {
+          const screenshots = await getAllScreenshots();
+          const ownScreenshots = screenshots.filter((item) => item?.userId === userId);
+          await Promise.all(ownScreenshots.map((item) => removeScreenshot(item.id).catch(() => {})));
+        } catch (_) {}
+      };
+
+      const verifyDeleteUserPassword = async (password) => {
+        if (!currentUser?.id || !currentUser?.email) throw new Error('Sign in again before deleting your account.');
+        const response = await supabaseRequest('/auth/v1/token?grant_type=password', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: currentUser.email,
+            password
+          })
+        });
+        if (!response?.user?.id || response.user.id !== currentUser.id) {
+          throw new Error('Password verification failed.');
+        }
+        return true;
+      };
+
+      const invokeDeleteAccountFunction = async () => {
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || !currentUser?.id) {
+          throw new Error('Your session expired. Sign in again and retry.');
+        }
+
+        let response;
+        try {
+          response = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
+            method: 'POST',
+            headers: {
+              apikey: SUPABASE_PUBLISHABLE_KEY,
+              Authorization: `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ confirmation: 'DELETE' })
+          });
+        } catch (_) {
+          throw new Error('Unable to reach the secure account deletion service. Check your connection and try again.');
+        }
+
+        const text = await response.text();
+        let payload = {};
+        if (text) {
+          try { payload = JSON.parse(text); } catch (_) { payload = { message: text }; }
+        }
+
+        if (!response.ok) {
+          throw new Error(payload?.message || payload?.error || 'Account deletion failed.');
+        }
+
+        if (!payload?.ok) {
+          throw new Error('Account deletion did not complete.');
+        }
+
+        return payload;
+      };
+
       const logout = async () => {
         const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
         const logoutUserId = currentUser?.id || session?.user?.id || null;
@@ -6173,6 +6412,84 @@
         renderDashboardAccount();
         showLogin();
       };
+
+      settingsDeleteUserBtn.addEventListener('click', () => {
+        deleteUserForm.reset();
+        setDeleteUserStatus('');
+        syncDeleteUserConfirmState();
+        if (typeof deleteUserDialog.showModal === 'function') {
+          deleteUserDialog.showModal();
+        } else {
+          deleteUserDialog.setAttribute('open', '');
+        }
+        setTimeout(() => deleteUserPassword.focus(), 0);
+      });
+
+      deleteUserPassword.addEventListener('input', syncDeleteUserConfirmState);
+      deleteUserConfirmText.addEventListener('input', syncDeleteUserConfirmState);
+
+      deleteUserCancelBtn.addEventListener('click', () => {
+        if (deleteUserConfirmBtn.disabled === false && deleteUserConfirmBtn.dataset.deleting === 'true') return;
+        deleteUserDialog.close();
+        deleteUserForm.reset();
+        setDeleteUserStatus('');
+      });
+
+      deleteUserDialog.addEventListener('cancel', (event) => {
+        if (deleteUserConfirmBtn.dataset.deleting === 'true') {
+          event.preventDefault();
+        }
+      });
+
+      deleteUserForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (deleteUserConfirmText.value.trim().toUpperCase() !== 'DELETE') {
+          setDeleteUserStatus('Type DELETE exactly to continue.', 'error');
+          deleteUserConfirmText.focus();
+          return;
+        }
+
+        const password = deleteUserPassword.value;
+        if (!password) {
+          setDeleteUserStatus('Enter your current password.', 'error');
+          deleteUserPassword.focus();
+          return;
+        }
+
+        const deletingUserId = currentUser?.id || null;
+        const originalLabel = deleteUserConfirmBtn.textContent;
+        deleteUserConfirmBtn.dataset.deleting = 'true';
+        deleteUserConfirmBtn.disabled = true;
+        deleteUserCancelBtn.disabled = true;
+        settingsDeleteUserBtn.disabled = true;
+        deleteUserConfirmBtn.textContent = 'Deleting…';
+        setDeleteUserStatus('Verifying password…');
+
+        try {
+          await verifyDeleteUserPassword(password);
+          setDeleteUserStatus('Deleting account and cloud data…');
+          await invokeDeleteAccountFunction();
+
+          await clearDeletedUserLocalState(deletingUserId);
+
+          deleteUserDialog.close();
+          deleteUserForm.reset();
+
+          await logout();
+          setAuthStatus('Your eRTrades account and cloud trading data were permanently deleted.', 'success');
+        } catch (error) {
+          setDeleteUserStatus(
+            error instanceof Error ? error.message : 'Unable to delete your account.',
+            'error'
+          );
+        } finally {
+          deleteUserConfirmBtn.dataset.deleting = 'false';
+          deleteUserCancelBtn.disabled = false;
+          settingsDeleteUserBtn.disabled = false;
+          deleteUserConfirmBtn.textContent = originalLabel;
+          syncDeleteUserConfirmState();
+        }
+      });
 
       logoutBtn.addEventListener('click', logout);
       settingsLogoutBtn.addEventListener('click', logout);
