@@ -140,6 +140,11 @@
       display: grid;
     }
 
+    #ertrades-app.authenticated .top-nav-shell {
+      opacity: 1;
+      visibility: visible;
+    }
+
     #ertrades-app.authenticated .top-nav-shell .control-row {
       gap: 6px;
     }
@@ -6129,6 +6134,34 @@
         if (focusTarget) focusTarget.focus();
       };
 
+      const bootstrapCachedAuthenticatedView = () => {
+        try {
+          const recoveryRedirect = readRecoveryRedirect();
+          if (recoveryRedirect?.error || recoveryRedirect?.accessToken) return false;
+
+          const storedSession = readJsonLocal(SUPABASE_SESSION_KEY, null);
+          const storedUser = storedSession?.user;
+          if (!storedSession?.access_token || !storedUser?.id) return false;
+
+          const lastActive = readLastActive(storedUser.id);
+          if (lastActive && Date.now() - lastActive >= INACTIVITY_TIMEOUT_MS) return false;
+
+          currentUser = {
+            id: storedUser.id,
+            email: storedUser.email || ''
+          };
+
+          migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
+          loadCloudState();
+          renderAccountSelector();
+          renderDashboardAccount();
+          showAuthenticatedApp();
+          return true;
+        } catch (_) {
+          return false;
+        }
+      };
+
       const initializeData = async () => {
         try {
           const recoveryRedirect = readRecoveryRedirect();
@@ -6152,13 +6185,20 @@
           currentUser = session?.user?.id ? { id: session.user.id, email: session.user.email || '' } : null;
           if (currentUser) {
             migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
+
+            // Load cached account/trade state immediately if it wasn't already
+            // bootstrapped, then refresh from Supabase in the background.
             loadCloudState();
+            renderAccountSelector();
+            renderDashboardAccount();
+            showAuthenticatedApp();
+
             try { await restoreAccountsFromSupabase(); } catch (_) {}
             try { await restoreTradesFromSupabase(); } catch (_) {}
             persistCloudState();
             renderAccountSelector();
             renderDashboardAccount();
-            showAuthenticatedApp();
+            requestAnimationFrame(updateTopNavSpace);
             await detectExistingLocalData();
           } else {
             accounts = [];
@@ -7236,6 +7276,7 @@
         }
       });
 
+      bootstrapCachedAuthenticatedView();
       initializeData();
     })();
   </script>
