@@ -2150,6 +2150,16 @@
       cursor: not-allowed;
     }
 
+    #ertrades-app #delete-user-confirm-btn[data-deleting="true"] {
+      opacity: .72;
+      cursor: wait;
+    }
+
+    #ertrades-app .delete-user-status.show {
+      display: block;
+      margin-top: 2px;
+    }
+
     @media (hover: hover) and (pointer: fine) {
       #ertrades-app .settings-delete-user:hover:not(:disabled),
       #ertrades-app #delete-user-confirm-btn:hover:not(:disabled) {
@@ -3534,7 +3544,7 @@
 
           <div class="confirm-actions">
             <button class="secondary-btn" id="delete-user-cancel-btn" type="button">Cancel</button>
-            <button class="danger-btn" id="delete-user-confirm-btn" type="submit" disabled>Delete Account Permanently</button>
+            <button class="danger-btn" id="delete-user-confirm-btn" type="button" disabled>Delete Account Permanently</button>
           </div>
         </form>
       </dialog>
@@ -6285,7 +6295,8 @@
 
       const setDeleteUserStatus = (message = '', type = '') => {
         deleteUserStatus.textContent = message;
-        deleteUserStatus.classList.remove('error', 'success');
+        deleteUserStatus.className = 'auth-status delete-user-status';
+        if (message) deleteUserStatus.classList.add('show');
         if (type) deleteUserStatus.classList.add(type);
       };
 
@@ -6359,16 +6370,26 @@
 
         let response;
         try {
-          response = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
-            method: 'POST',
-            headers: {
-              apikey: SUPABASE_PUBLISHABLE_KEY,
-              Authorization: `Bearer ${session.access_token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ confirmation: 'DELETE' })
-          });
-        } catch (_) {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
+          try {
+            response = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
+              method: 'POST',
+              headers: {
+                apikey: SUPABASE_PUBLISHABLE_KEY,
+                Authorization: `Bearer ${session.access_token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ confirmation: 'DELETE' }),
+              signal: controller.signal
+            });
+          } finally {
+            clearTimeout(timeoutId);
+          }
+        } catch (error) {
+          if (error?.name === 'AbortError') {
+            throw new Error('Account deletion service timed out. Please try again.');
+          }
           throw new Error('Unable to reach the secure account deletion service. Check your connection and try again.');
         }
 
@@ -6441,8 +6462,9 @@
         }
       });
 
-      deleteUserForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
+      const deleteCurrentUserAccount = async () => {
+        if (deleteUserConfirmBtn.dataset.deleting === 'true') return;
+
         if (deleteUserConfirmText.value.trim().toUpperCase() !== 'DELETE') {
           setDeleteUserStatus('Type DELETE exactly to continue.', 'error');
           deleteUserConfirmText.focus();
@@ -6458,6 +6480,7 @@
 
         const deletingUserId = currentUser?.id || null;
         const originalLabel = deleteUserConfirmBtn.textContent;
+
         deleteUserConfirmBtn.dataset.deleting = 'true';
         deleteUserConfirmBtn.disabled = true;
         deleteUserCancelBtn.disabled = true;
@@ -6467,9 +6490,11 @@
 
         try {
           await verifyDeleteUserPassword(password);
-          setDeleteUserStatus('Deleting account and cloud data…');
+
+          setDeleteUserStatus('Password verified. Deleting cloud data…');
           await invokeDeleteAccountFunction();
 
+          setDeleteUserStatus('Account deleted. Clearing this device…', 'success');
           await clearDeletedUserLocalState(deletingUserId);
 
           deleteUserDialog.close();
@@ -6478,6 +6503,7 @@
           await logout();
           setAuthStatus('Your eRTrades account and cloud trading data were permanently deleted.', 'success');
         } catch (error) {
+          console.error('Delete account failed:', error);
           setDeleteUserStatus(
             error instanceof Error ? error.message : 'Unable to delete your account.',
             'error'
@@ -6489,6 +6515,13 @@
           deleteUserConfirmBtn.textContent = originalLabel;
           syncDeleteUserConfirmState();
         }
+      };
+
+      deleteUserConfirmBtn.addEventListener('click', deleteCurrentUserAccount);
+
+      deleteUserForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        deleteCurrentUserAccount();
       });
 
       logoutBtn.addEventListener('click', logout);
