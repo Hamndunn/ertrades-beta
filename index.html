@@ -843,6 +843,102 @@
       text-align: center;
     }
 
+    #ertrades-app .emotion-section {
+      overflow: visible;
+    }
+
+    #ertrades-app .emotion-choice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    #ertrades-app .emotion-choice {
+      min-width: 0;
+      min-height: 50px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a1013;
+      color: var(--soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: border-color .16s ease, color .16s ease, background .16s ease;
+    }
+
+    #ertrades-app .emotion-choice.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    #ertrades-app .emotion-choice:focus-visible,
+    #ertrades-app .rating-star:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+
+    #ertrades-app .rating-field {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    #ertrades-app .rating-label {
+      color: var(--soft);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 9px;
+    }
+
+    #ertrades-app .rating-stars {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 46px;
+    }
+
+    #ertrades-app .rating-star {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 35px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    #ertrades-app .rating-star.active {
+      color: var(--accent);
+    }
+
+    #ertrades-app .emotion-compat {
+      display: none !important;
+    }
+
+    #ertrades-app.theme-light .emotion-choice {
+      background: #f7fafb;
+    }
+
+    @media (max-width: 420px) {
+      #ertrades-app .emotion-choice-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     #ertrades-app .psychology-select-wrap {
       position: relative;
       min-width: 0;
@@ -2658,49 +2754,50 @@
             </div>
           </section>
 
-          <section class="trade-section">
+          <section class="trade-section emotion-section">
             <div class="trade-section-title">Emotion</div>
-            <div class="trade-grid two-col">
-              <div class="field psychology-field">
-                <label for="psychology-before">Before</label>
-                <div class="psychology-select-wrap">
-                  <button class="custom-select-btn" id="psychology-before-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select emotion</button>
-                  <select class="native-select-hidden" id="psychology-before" tabindex="-1">
-                    <option value="">Select emotion</option>
-                    <option value="Calm">Calm</option>
-                    <option value="Confident">Confident</option>
-                    <option value="Neutral">Neutral</option>
-                    <option value="Anxious">Anxious</option>
-                    <option value="Frustrated">Frustrated</option>
-                    <option value="Excited">Excited</option>
-                    <option value="Fomo" hidden>Fomo</option>
-                    <option value="Fear" hidden>Fear</option>
-                    <option value="Revenge" hidden>Revenge</option>
-                    <option value="Disciplined" hidden>Disciplined</option>
-                  </select>
-                  <div class="popup-menu psychology-popup" id="psychology-before-menu" role="menu"></div>
-                </div>
+            <div class="emotion-choice-grid" id="emotion-choice-grid" role="group" aria-label="Trade emotion">
+              <button class="emotion-choice" type="button" data-emotion-value="Calm" aria-pressed="false">Calm</button>
+              <button class="emotion-choice" type="button" data-emotion-value="Confident" aria-pressed="false">Confident</button>
+              <button class="emotion-choice" type="button" data-emotion-value="Neutral" aria-pressed="false">Neutral</button>
+              <button class="emotion-choice" type="button" data-emotion-value="Anxious" aria-pressed="false">Anxious</button>
+              <button class="emotion-choice" type="button" data-emotion-value="Frustrated" aria-pressed="false">Frustrated</button>
+              <button class="emotion-choice" type="button" data-emotion-value="Excited" aria-pressed="false">Excited</button>
+            </div>
+
+            <div class="rating-field">
+              <div class="rating-label">Rating for the day</div>
+              <div class="rating-stars" id="trade-rating-stars" role="radiogroup" aria-label="Rating for the day from 1 to 5 stars">
+                <button class="rating-star" type="button" data-rating-value="1" role="radio" aria-checked="false" aria-label="1 star">☆</button>
+                <button class="rating-star" type="button" data-rating-value="2" role="radio" aria-checked="false" aria-label="2 stars">☆</button>
+                <button class="rating-star" type="button" data-rating-value="3" role="radio" aria-checked="false" aria-label="3 stars">☆</button>
+                <button class="rating-star" type="button" data-rating-value="4" role="radio" aria-checked="false" aria-label="4 stars">☆</button>
+                <button class="rating-star" type="button" data-rating-value="5" role="radio" aria-checked="false" aria-label="5 stars">☆</button>
               </div>
-              <div class="field psychology-field">
-                <label for="psychology-after">After</label>
-                <div class="psychology-select-wrap">
-                  <button class="custom-select-btn" id="psychology-after-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select emotion</button>
-                  <select class="native-select-hidden" id="psychology-after" tabindex="-1">
-                    <option value="">Select emotion</option>
-                    <option value="Calm">Calm</option>
-                    <option value="Confident">Confident</option>
-                    <option value="Neutral">Neutral</option>
-                    <option value="Anxious">Anxious</option>
-                    <option value="Frustrated">Frustrated</option>
-                    <option value="Excited">Excited</option>
-                    <option value="Fomo" hidden>Fomo</option>
-                    <option value="Fear" hidden>Fear</option>
-                    <option value="Revenge" hidden>Revenge</option>
-                    <option value="Disciplined" hidden>Disciplined</option>
-                  </select>
-                  <div class="popup-menu psychology-popup" id="psychology-after-menu" role="menu"></div>
-                </div>
-              </div>
+            </div>
+
+            <select class="native-select-hidden" id="psychology-before" tabindex="-1" aria-hidden="true">
+              <option value=""></option>
+              <option value="Calm">Calm</option>
+              <option value="Confident">Confident</option>
+              <option value="Neutral">Neutral</option>
+              <option value="Anxious">Anxious</option>
+              <option value="Frustrated">Frustrated</option>
+              <option value="Excited">Excited</option>
+              <option value="Fomo">Fomo</option>
+              <option value="Fear">Fear</option>
+              <option value="Revenge">Revenge</option>
+              <option value="Disciplined">Disciplined</option>
+            </select>
+            <input id="psychology-after" type="hidden">
+            <input id="trade-rating" type="hidden" value="0">
+
+            <!-- compatibility nodes kept hidden so historical menu code cannot regress -->
+            <div class="emotion-compat" aria-hidden="true">
+              <button id="psychology-before-btn" type="button" tabindex="-1"></button>
+              <div id="psychology-before-menu"></div>
+              <button id="psychology-after-btn" type="button" tabindex="-1"></button>
+              <div id="psychology-after-menu"></div>
             </div>
           </section>
 
@@ -3172,6 +3269,11 @@
       const tradeMistakes = root.querySelector('#trade-mistakes');
       const psychologyBefore = root.querySelector('#psychology-before');
       const psychologyAfter = root.querySelector('#psychology-after');
+      const tradeRating = root.querySelector('#trade-rating');
+      const emotionChoiceGrid = root.querySelector('#emotion-choice-grid');
+      const emotionChoiceButtons = [...root.querySelectorAll('.emotion-choice[data-emotion-value]')];
+      const tradeRatingStars = root.querySelector('#trade-rating-stars');
+      const ratingStarButtons = [...root.querySelectorAll('.rating-star[data-rating-value]')];
       const psychologyBeforeBtn = root.querySelector('#psychology-before-btn');
       const psychologyAfterBtn = root.querySelector('#psychology-after-btn');
       const psychologyBeforeMenu = root.querySelector('#psychology-before-menu');
@@ -4672,6 +4774,7 @@
           mistakes: tradeMistakes.value,
           psychologyBefore: psychologyBefore.value,
           psychologyAfter: psychologyAfter.value,
+          rating: selectedRating,
           plannedRr: rrResult.valid && Number.isFinite(rrResult.value) ? rrResult.value : null,
           realizedR: updateRealizedRPreview(),
           updatedAt: Date.now()
@@ -4694,7 +4797,8 @@
           (draft.notes || '').trim() ||
           (draft.mistakes || '').trim() ||
           draft.psychologyBefore ||
-          draft.psychologyAfter
+          draft.psychologyAfter ||
+          Number(draft.rating) > 0
         );
       };
 
@@ -4752,7 +4856,10 @@
         tradeNotes.value = draft.notes || '';
         tradeMistakes.value = draft.mistakes || '';
         psychologyBefore.value = typeof draft.psychologyBefore === 'string' ? draft.psychologyBefore : '';
-        psychologyAfter.value = typeof draft.psychologyAfter === 'string' ? draft.psychologyAfter : '';
+        const draftStoredAfter = typeof draft.psychologyAfter === 'string' ? draft.psychologyAfter : '';
+        psychologyAfter.value = draftStoredAfter;
+        selectedRating = Number(draft.rating) || parseStoredRating(draftStoredAfter);
+        syncPsychologyUi();
         updateDirectionButtons();
         calculatePlannedRr();
         updateRealizedRPreview();
@@ -5047,8 +5154,8 @@
           detailField('Realized R', formatRealizedR(calculateTradeRealizedR(trade))),
           detailField('Reason for Entry', trade.notes || '—', true),
           detailField('Mistakes', trade.mistakes || '—', true),
-          detailField('Emotion Before', trade.psychologyBefore || '—'),
-          detailField('Emotion After', trade.psychologyAfter || '—')
+          detailField('Emotion', trade.psychologyBefore || '—'),
+          detailField('Rating', formatTradeRating(parseStoredRating(trade.psychologyAfter)))
         );
       };
 
@@ -5125,8 +5232,7 @@
               trade.date,
               trade.notes,
               trade.mistakes,
-              trade.psychologyBefore,
-              trade.psychologyAfter
+              trade.psychologyBefore
             ].map((value) => String(value || '').toLowerCase()).join(' ');
             if (!haystack.includes(query)) return false;
           }
@@ -5318,6 +5424,46 @@
         tradeForm.classList.toggle('psychology-menu-open', pickerOpen);
       };
 
+      const parseStoredRating = (value) => {
+        const match = String(value || '').match(/^rating:([1-5])$/i);
+        return match ? Number(match[1]) : 0;
+      };
+
+      let selectedRating = 0;
+
+      const syncEmotionChoiceUi = () => {
+        const value = psychologyBefore.value || '';
+        emotionChoiceButtons.forEach((button) => {
+          const active = button.dataset.emotionValue === value;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        });
+      };
+
+      const syncRatingUi = () => {
+        tradeRating.value = selectedRating ? String(selectedRating) : '0';
+        ratingStarButtons.forEach((button) => {
+          const starValue = Number(button.dataset.ratingValue) || 0;
+          const active = selectedRating >= starValue && selectedRating > 0;
+          button.classList.toggle('active', active);
+          button.textContent = active ? '★' : '☆';
+          button.setAttribute('aria-checked', String(selectedRating === starValue));
+        });
+      };
+
+      const setTradeRating = (value, { saveDraft = false } = {}) => {
+        const next = Math.max(0, Math.min(5, Number(value) || 0));
+        selectedRating = next;
+        psychologyAfter.value = next ? `rating:${next}` : '';
+        syncRatingUi();
+        if (saveDraft) saveDraftNow();
+      };
+
+      const formatTradeRating = (value) => {
+        const rating = Number(value) || 0;
+        return rating ? `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} (${rating}/5)` : '—';
+      };
+
       const psychologyStates = ['', 'Calm', 'Confident', 'Neutral', 'Anxious', 'Frustrated', 'Excited'];
 
       const renderPsychologyMenu = (select, button, menu) => {
@@ -5336,6 +5482,8 @@
       const syncPsychologyUi = () => {
         renderPsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
         renderPsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
+        syncEmotionChoiceUi();
+        syncRatingUi();
       };
 
       const syncPsychologyMenuScrollLock = () => {
@@ -5420,6 +5568,11 @@
         tradeFormError.classList.remove('show');
         tradeFormError.textContent = '';
         const restored = restoreDraft();
+        if (!restored) {
+          selectedRating = 0;
+          psychologyBefore.value = '';
+          psychologyAfter.value = '';
+        }
         if (!restored && !tradeDate.value) tradeDate.value = getLocalDateValue();
         syncTradeDateDisplay();
         syncPsychologyUi();
@@ -5450,6 +5603,7 @@
         tradeMistakes.value = trade.mistakes || '';
         psychologyBefore.value = typeof trade.psychologyBefore === 'string' ? trade.psychologyBefore : '';
         psychologyAfter.value = typeof trade.psychologyAfter === 'string' ? trade.psychologyAfter : '';
+        selectedRating = parseStoredRating(trade.psychologyAfter);
         syncPsychologyUi();
         await loadTradeScreenshots(trade);
         updateDirectionButtons();
@@ -5476,6 +5630,10 @@
         tradeForm.reset();
         tradeInstrument.value = '';
         syncInstrumentUi();
+        psychologyBefore.value = '';
+        psychologyAfter.value = '';
+        selectedRating = 0;
+        syncPsychologyUi();
         resetPendingScreenshots();
         editingTradeId = null;
         tradeFormTitle.textContent = 'New Trade';
@@ -5487,6 +5645,7 @@
         tradeSession.value = 'Asia';
         psychologyBefore.value = '';
         psychologyAfter.value = '';
+        selectedRating = 0;
         syncPsychologyUi();
         tradeFormError.classList.remove('show');
         tradeFormError.textContent = '';
@@ -5814,7 +5973,8 @@
         tradeNotes,
         tradeMistakes,
         psychologyBefore,
-        psychologyAfter
+        psychologyAfter,
+        tradeRating
       ].forEach((field) => {
         field.addEventListener('input', () => saveDraftNow());
         field.addEventListener('change', () => saveDraftNow());
@@ -5993,6 +6153,22 @@
         instrumentSelectBtn.setAttribute('aria-expanded', 'false');
         syncInstrumentMenuScrollLock();
         tradeInstrument.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      emotionChoiceGrid.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-emotion-value]');
+        if (!button) return;
+        const value = button.dataset.emotionValue || '';
+        psychologyBefore.value = psychologyBefore.value === value ? '' : value;
+        syncEmotionChoiceUi();
+        psychologyBefore.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      tradeRatingStars.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-rating-value]');
+        if (!button) return;
+        const value = Number(button.dataset.ratingValue) || 0;
+        setTradeRating(selectedRating === value ? 0 : value, { saveDraft: true });
       });
 
       const wirePsychologyMenu = (select, button, menu) => {
@@ -6247,7 +6423,9 @@
           notes: tradeNotes.value.trim(),
           mistakes: tradeMistakes.value.trim(),
           psychologyBefore: psychologyBefore.value,
-          psychologyAfter: psychologyAfter.value,
+          psychologyAfter: selectedRating
+            ? `rating:${selectedRating}`
+            : (existingTrade && !parseStoredRating(existingTrade.psychologyAfter) ? (existingTrade.psychologyAfter || '') : ''),
           plannedRr: rrResult.value,
           realizedR: calculateRealizedRFromValues({
             profitLossValue: parseOptionalNumber(profitLoss) ?? 0,
