@@ -63,6 +63,56 @@
       padding: 4px 2px 20px;
     }
 
+    #ertrades-app .top-nav-shell {
+      position: relative;
+      z-index: 55;
+    }
+
+    #ertrades-app .top-nav-shell > .control-row {
+      display: none;
+    }
+
+    #ertrades-app.authenticated .top-nav-shell {
+      position: sticky;
+      top: max(8px, env(safe-area-inset-top));
+      z-index: 70;
+      margin-bottom: 14px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: rgba(10,16,19,.98);
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    #ertrades-app.authenticated .top-nav-shell > .topbar {
+      padding: 5px 7px 8px;
+    }
+
+    #ertrades-app.authenticated .top-nav-shell > .control-row {
+      display: grid;
+    }
+
+    #ertrades-app.authenticated .top-nav-shell .control-row {
+      gap: 6px;
+    }
+
+    #ertrades-app.authenticated .top-nav-shell .selector-wrap .custom-select-btn,
+    #ertrades-app.authenticated .top-nav-shell .account-menu-btn,
+    #ertrades-app.authenticated .top-nav-shell .new-trade {
+      border-radius: 12px;
+    }
+
+    #ertrades-app.authenticated .top-nav-shell .selector-wrap .custom-select-btn,
+    #ertrades-app.authenticated .top-nav-shell .account-menu-btn {
+      background: transparent;
+    }
+
+    #ertrades-app.authenticated .top-nav-shell .new-trade {
+      box-shadow: none;
+    }
+
     #ertrades-app .brand-wrap {
       display: flex;
       align-items: center;
@@ -741,6 +791,47 @@
       left: 0;
       top: calc(100% + 7px);
       width: 100%;
+    }
+
+    #ertrades-app .form-picker-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #ertrades-app .trade-form-card .field.form-picker-field {
+      overflow: visible;
+      position: relative;
+      z-index: 3;
+    }
+
+    #ertrades-app .form-picker-popup {
+      left: 0;
+      top: calc(100% + 7px);
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+      max-height: 260px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      z-index: 135;
+    }
+
+    #ertrades-app .form-picker-popup button {
+      position: relative;
+      min-height: 48px;
+      padding-right: 36px;
+      font-size: 14px;
+    }
+
+    #ertrades-app .form-picker-popup button.selected::after {
+      content: "✓";
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-weight: 900;
     }
 
     #ertrades-app .instrument-select-wrap {
@@ -2314,6 +2405,26 @@
         padding-bottom: 16px;
       }
 
+      #ertrades-app.authenticated .top-nav-shell {
+        top: max(6px, env(safe-area-inset-top));
+        margin-left: -3px;
+        margin-right: -3px;
+        padding: 5px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell > .topbar {
+        padding: 4px 5px 7px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell .logo {
+        width: 34px;
+        height: 34px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell .brand {
+        font-size: 18px;
+      }
+
       #ertrades-app .control-row {
         grid-template-columns: minmax(0,1fr) 44px auto;
         gap: 8px;
@@ -2503,6 +2614,7 @@
   </style>
 
   <div class="shell">
+    <div class="top-nav-shell" id="top-nav-shell">
     <header class="topbar">
       <div class="brand-wrap">
         <div class="logo" aria-hidden="true">
@@ -2521,6 +2633,7 @@
         <button class="logout-btn" id="logout-btn" type="button">Logout</button>
       </div>
     </header>
+    </div>
 
     <section class="auth-page" id="auth-page" aria-labelledby="auth-title">
       <div class="auth-card">
@@ -2673,13 +2786,21 @@
                   <span class="date-input-display" id="trade-date-display">—</span>
                 </div>
               </div>
-              <div class="field">
-                <label for="trade-session">Session</label>
-                <select id="trade-session">
-                  <option value="Asia">Asia</option>
-                  <option value="London">London</option>
-                  <option value="New York">New York</option>
-                </select>
+              <div class="field form-picker-field">
+                <label for="trade-session-btn">Session</label>
+                <div class="form-picker-wrap">
+                  <button class="custom-select-btn" id="trade-session-btn" type="button" aria-haspopup="menu" aria-expanded="false">Asia</button>
+                  <select class="native-select-hidden" id="trade-session" tabindex="-1" aria-label="Trade session">
+                    <option value="Asia">Asia</option>
+                    <option value="London">London</option>
+                    <option value="New York">New York</option>
+                  </select>
+                  <div class="popup-menu form-picker-popup" id="trade-session-menu" role="menu">
+                    <button type="button" data-session-value="Asia">Asia</button>
+                    <button type="button" data-session-value="London">London</button>
+                    <button type="button" data-session-value="New York">New York</button>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -2719,14 +2840,23 @@
                   Example: +$10 profit − $1.20 commission → enter <strong>8.80</strong>.
                 </div>
               </div>
-              <div class="field">
-                <label for="trade-result">Result</label>
-                <select id="trade-result" required>
-                  <option value="">Select result</option>
-                  <option value="WIN">WIN</option>
-                  <option value="LOSS">LOSS</option>
-                  <option value="BREAK EVEN">BREAK EVEN</option>
-                </select>
+              <div class="field form-picker-field">
+                <label for="trade-result-btn">Result</label>
+                <div class="form-picker-wrap">
+                  <button class="custom-select-btn" id="trade-result-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select result</button>
+                  <select class="native-select-hidden" id="trade-result" required tabindex="-1" aria-label="Trade result">
+                    <option value="">Select result</option>
+                    <option value="WIN">WIN</option>
+                    <option value="LOSS">LOSS</option>
+                    <option value="BREAK EVEN">BREAK EVEN</option>
+                  </select>
+                  <div class="popup-menu form-picker-popup" id="trade-result-menu" role="menu">
+                    <button type="button" data-result-value="">Select result</button>
+                    <button type="button" data-result-value="WIN">WIN</button>
+                    <button type="button" data-result-value="LOSS">LOSS</button>
+                    <button type="button" data-result-value="BREAK EVEN">BREAK EVEN</button>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="rr-box" id="rr-box" style="margin-top:12px">
@@ -3257,6 +3387,8 @@
       const tradeDate = root.querySelector('#trade-date');
       const tradeDateDisplay = root.querySelector('#trade-date-display');
       const tradeSession = root.querySelector('#trade-session');
+      const tradeSessionBtn = root.querySelector('#trade-session-btn');
+      const tradeSessionMenu = root.querySelector('#trade-session-menu');
       const entryPrice = root.querySelector('#entry-price');
       const stopLoss = root.querySelector('#stop-loss');
       const takeProfit = root.querySelector('#take-profit');
@@ -3265,6 +3397,8 @@
       const riskAmount = root.querySelector('#risk-amount');
       const profitLoss = root.querySelector('#profit-loss');
       const tradeResult = root.querySelector('#trade-result');
+      const tradeResultBtn = root.querySelector('#trade-result-btn');
+      const tradeResultMenu = root.querySelector('#trade-result-menu');
       const tradeNotes = root.querySelector('#trade-notes');
       const tradeMistakes = root.querySelector('#trade-mistakes');
       const psychologyBefore = root.querySelector('#psychology-before');
@@ -4022,6 +4156,7 @@
 
       const showAuthenticatedApp = () => {
         markCurrentUserActive();
+        root.classList.add('authenticated');
         authPage.classList.remove('visible');
         appWorkspace.style.display = 'grid';
         profileMenu.classList.add('visible');
@@ -4032,6 +4167,7 @@
       };
 
       const showLogin = () => {
+        root.classList.remove('authenticated');
         authPage.classList.add('visible');
         appWorkspace.style.display = 'none';
         profileMenu.classList.remove('visible');
@@ -4845,6 +4981,7 @@
         tradeSession.value = draft.session === 'Asian'
           ? 'Asia'
           : (['Asia', 'London', 'New York'].includes(draft.session) ? draft.session : 'Asia');
+        syncTradeSessionUi();
         entryPrice.value = draft.entryPrice ?? '';
         stopLoss.value = draft.stopLoss ?? '';
         takeProfit.value = draft.takeProfit ?? '';
@@ -4853,6 +4990,7 @@
         riskAmount.value = draft.riskAmount ?? '';
         profitLoss.value = draft.profitLoss ?? '';
         tradeResult.value = ['WIN', 'LOSS', 'BREAK EVEN'].includes(draft.result) ? draft.result : '';
+        syncTradeResultUi();
         tradeNotes.value = draft.notes || '';
         tradeMistakes.value = draft.mistakes || '';
         psychologyBefore.value = typeof draft.psychologyBefore === 'string' ? draft.psychologyBefore : '';
@@ -5416,9 +5554,27 @@
         });
       };
 
+      const syncTradeSessionUi = () => {
+        const value = tradeSession.value || 'Asia';
+        tradeSessionBtn.textContent = value;
+        tradeSessionMenu.querySelectorAll('button[data-session-value]').forEach((button) => {
+          button.classList.toggle('selected', button.dataset.sessionValue === value);
+        });
+      };
+
+      const syncTradeResultUi = () => {
+        const value = tradeResult.value || '';
+        tradeResultBtn.textContent = value || 'Select result';
+        tradeResultMenu.querySelectorAll('button[data-result-value]').forEach((button) => {
+          button.classList.toggle('selected', button.dataset.resultValue === value);
+        });
+      };
+
       const syncInstrumentMenuScrollLock = () => {
         const pickerOpen =
           instrumentMenu.classList.contains('open') ||
+          tradeSessionMenu.classList.contains('open') ||
+          tradeResultMenu.classList.contains('open') ||
           psychologyBeforeMenu.classList.contains('open') ||
           psychologyAfterMenu.classList.contains('open');
         tradeForm.classList.toggle('psychology-menu-open', pickerOpen);
@@ -5491,11 +5647,13 @@
       };
 
       const closeCustomMenus = (except = null) => {
-        [accountSelectMenu, instrumentMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
+        [accountSelectMenu, instrumentMenu, tradeSessionMenu, tradeResultMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
           if (menu !== except) menu.classList.remove('open');
         });
         if (accountSelectMenu !== except) accountSelectBtn.setAttribute('aria-expanded', 'false');
         if (instrumentMenu !== except) instrumentSelectBtn.setAttribute('aria-expanded', 'false');
+        if (tradeSessionMenu !== except) tradeSessionBtn.setAttribute('aria-expanded', 'false');
+        if (tradeResultMenu !== except) tradeResultBtn.setAttribute('aria-expanded', 'false');
         if (psychologyBeforeMenu !== except) psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
         if (psychologyAfterMenu !== except) psychologyAfterBtn.setAttribute('aria-expanded', 'false');
         syncInstrumentMenuScrollLock();
@@ -5575,6 +5733,8 @@
         }
         if (!restored && !tradeDate.value) tradeDate.value = getLocalDateValue();
         syncTradeDateDisplay();
+        syncTradeSessionUi();
+        syncTradeResultUi();
         syncPsychologyUi();
         syncInstrumentUi();
         instrumentSelectBtn.focus();
@@ -5591,6 +5751,7 @@
         tradeDate.value = trade.date || getLocalDateValue();
         syncTradeDateDisplay();
         tradeSession.value = trade.session === 'Asian' ? 'Asia' : (trade.session || 'Asia');
+        syncTradeSessionUi();
         entryPrice.value = trade.entryPrice ?? '';
         stopLoss.value = trade.stopLoss ?? '';
         takeProfit.value = trade.takeProfit ?? '';
@@ -5599,6 +5760,7 @@
         riskAmount.value = trade.riskAmount ?? '';
         profitLoss.value = trade.profitLoss ?? '';
         tradeResult.value = trade.result || '';
+        syncTradeResultUi();
         tradeNotes.value = trade.notes || '';
         tradeMistakes.value = trade.mistakes || '';
         psychologyBefore.value = typeof trade.psychologyBefore === 'string' ? trade.psychologyBefore : '';
@@ -5630,6 +5792,8 @@
         tradeForm.reset();
         tradeInstrument.value = '';
         syncInstrumentUi();
+        syncTradeSessionUi();
+        syncTradeResultUi();
         psychologyBefore.value = '';
         psychologyAfter.value = '';
         selectedRating = 0;
@@ -6155,6 +6319,44 @@
         tradeInstrument.dispatchEvent(new Event('change', { bubbles: true }));
       });
 
+      const wireSimpleFormPicker = ({ select, button, menu, attributeName, sync }) => {
+        button.addEventListener('click', () => {
+          sync();
+          const open = !menu.classList.contains('open');
+          closeCustomMenus(open ? menu : null);
+          menu.classList.toggle('open', open);
+          button.setAttribute('aria-expanded', String(open));
+          syncInstrumentMenuScrollLock();
+        });
+
+        menu.addEventListener('click', (event) => {
+          const option = event.target.closest(`button[${attributeName}]`);
+          if (!option) return;
+          select.value = option.getAttribute(attributeName) || '';
+          menu.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+          sync();
+          syncInstrumentMenuScrollLock();
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      };
+
+      wireSimpleFormPicker({
+        select: tradeSession,
+        button: tradeSessionBtn,
+        menu: tradeSessionMenu,
+        attributeName: 'data-session-value',
+        sync: syncTradeSessionUi
+      });
+
+      wireSimpleFormPicker({
+        select: tradeResult,
+        button: tradeResultBtn,
+        menu: tradeResultMenu,
+        attributeName: 'data-result-value',
+        sync: syncTradeResultUi
+      });
+
       emotionChoiceGrid.addEventListener('click', (event) => {
         const button = event.target.closest('button[data-emotion-value]');
         if (!button) return;
@@ -6196,6 +6398,8 @@
       wirePsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
       syncInstrumentUi();
       renderInstrumentResults('');
+      syncTradeSessionUi();
+      syncTradeResultUi();
       syncPsychologyUi();
 
       accountForm.addEventListener('submit', async (event) => {
@@ -6334,6 +6538,14 @@
         if (!instrumentMenu.contains(event.target) && event.target !== instrumentSelectBtn) {
           instrumentMenu.classList.remove('open');
           instrumentSelectBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (!tradeSessionMenu.contains(event.target) && event.target !== tradeSessionBtn) {
+          tradeSessionMenu.classList.remove('open');
+          tradeSessionBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (!tradeResultMenu.contains(event.target) && event.target !== tradeResultBtn) {
+          tradeResultMenu.classList.remove('open');
+          tradeResultBtn.setAttribute('aria-expanded', 'false');
         }
         if (!psychologyBeforeMenu.contains(event.target) && event.target !== psychologyBeforeBtn) {
           psychologyBeforeMenu.classList.remove('open');
