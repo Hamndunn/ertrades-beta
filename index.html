@@ -3178,6 +3178,8 @@
       const DRAFT_PREFIX = 'ertrades-new-trade-draft:';
       const SELECTED_ACCOUNT_LOCAL_KEY = 'ertrades-selected-account-id';
       const AUTH_SESSION_KEY = 'ertrades-auth-session-v1';
+      const INACTIVITY_TIMEOUT_MS = 12 * 60 * 60 * 1000;
+      const LAST_ACTIVE_KEY_PREFIX = 'ertrades-last-active-v1:';
       const CLOUD_USERS_KEY = 'ertrades-cloud-users-v1';
       const CLOUD_DATA_KEY = 'ertrades-cloud-data-v1';
       const SUPABASE_URL = 'https://vpigfdbkosyspbuxkbdy.supabase.co';
@@ -3743,6 +3745,53 @@
         try { return await refreshSupabaseSession(session); } catch (_) { return null; }
       };
 
+      const lastActiveKey = (userId) => userId ? `${LAST_ACTIVE_KEY_PREFIX}${userId}` : null;
+
+      const readLastActive = (userId) => {
+        const key = lastActiveKey(userId);
+        if (!key) return 0;
+        const value = Number(safeLocalGet(key));
+        return Number.isFinite(value) && value > 0 ? value : 0;
+      };
+
+      const writeLastActive = (userId, timestamp = Date.now()) => {
+        const key = lastActiveKey(userId);
+        if (!key) return false;
+        return safeLocalSet(key, String(timestamp));
+      };
+
+      const markCurrentUserActive = () => {
+        if (currentUser?.id) writeLastActive(currentUser.id);
+      };
+
+      const isSessionInactiveTooLong = (session) => {
+        const userId = session?.user?.id;
+        if (!userId) return false;
+        const lastActive = readLastActive(userId);
+        if (!lastActive) {
+          writeLastActive(userId);
+          return false;
+        }
+        return Date.now() - lastActive >= INACTIVITY_TIMEOUT_MS;
+      };
+
+      const expireStoredSessionForInactivity = async () => {
+        const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
+        if (!session?.user?.id || !isSessionInactiveTooLong(session)) return false;
+        if (session.access_token) {
+          try {
+            await supabaseRequest('/auth/v1/logout', {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${session.access_token}` }
+            });
+          } catch (_) {}
+        }
+        safeLocalRemove(SUPABASE_SESSION_KEY);
+        safeLocalRemove(AUTH_SESSION_KEY);
+        safeLocalRemove(lastActiveKey(session.user.id));
+        return true;
+      };
+
       const migrateLegacyCloudForEmail = (email, newUserId) => {
         const legacyUsers = getCloudUsers();
         const legacyUser = legacyUsers.find((user) => normalizeEmail(user.email || '') === normalizeEmail(email || ''));
@@ -3878,6 +3927,7 @@
       };
 
       const showAuthenticatedApp = () => {
+        markCurrentUserActive();
         authPage.classList.remove('visible');
         appWorkspace.style.display = 'grid';
         profileMenu.classList.add('visible');
@@ -5428,6 +5478,7 @@
             syncTradeDateDisplay();
             return;
           }
+          const inactivityExpired = await expireStoredSessionForInactivity();
           const session = await getValidSupabaseSession();
           currentUser = session?.user?.id ? { id: session.user.id, email: session.user.email || '' } : null;
           if (currentUser) {
@@ -5448,6 +5499,9 @@
             renderAccountSelector();
             renderDashboardAccount();
             showLogin();
+            if (inactivityExpired) {
+              setAuthStatus('For your security, you were signed out after 12 hours of inactivity. Please log in again.', 'error');
+            }
           }
           tradeDate.value = getLocalDateValue();
           syncTradeDateDisplay();
@@ -5572,6 +5626,7 @@
 
       const logout = async () => {
         const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
+        const logoutUserId = currentUser?.id || session?.user?.id || null;
         if (session?.access_token) {
           try {
             await supabaseRequest('/auth/v1/logout', {
@@ -5582,6 +5637,7 @@
         }
         safeLocalRemove(SUPABASE_SESSION_KEY);
         safeLocalRemove(AUTH_SESSION_KEY);
+        if (logoutUserId) safeLocalRemove(lastActiveKey(logoutUserId));
         currentUser = null;
         usingCloudData = false;
         accounts = [];
@@ -5594,6 +5650,27 @@
 
       logoutBtn.addEventListener('click', logout);
       settingsLogoutBtn.addEventListener('click', logout);
+
+      const handleAppVisibility = async () => {
+        if (!currentUser?.id) return;
+        if (document.visibilityState === 'hidden') {
+          markCurrentUserActive();
+          return;
+        }
+        if (document.visibilityState !== 'visible') return;
+
+        const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
+        if (session?.user?.id === currentUser.id && isSessionInactiveTooLong(session)) {
+          await logout();
+          setAuthStatus('For your security, you were signed out after 12 hours of inactivity. Please log in again.', 'error');
+          return;
+        }
+        markCurrentUserActive();
+      };
+
+      document.addEventListener('visibilitychange', handleAppVisibility);
+      window.addEventListener('pagehide', markCurrentUserActive);
+
       themeDarkBtn.addEventListener('click', () => saveTheme('dark'));
       themeLightBtn.addEventListener('click', () => saveTheme('light'));
       languageEnBtn.addEventListener('click', () => saveLanguage('en'));
