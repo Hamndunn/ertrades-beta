@@ -73,10 +73,14 @@
     }
 
     #ertrades-app.authenticated .top-nav-shell {
-      position: sticky;
+      position: fixed;
+      left: 50%;
       top: max(8px, env(safe-area-inset-top));
       z-index: 70;
-      margin-bottom: 14px;
+      width: calc(100% - 30px);
+      max-width: 1090px;
+      margin: 0;
+      transform: translateX(-50%);
       padding: 6px;
       border: 1px solid var(--border);
       border-radius: 17px;
@@ -84,6 +88,10 @@
       box-shadow: 0 12px 30px rgba(0,0,0,.35);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
+    }
+
+    #ertrades-app.authenticated .workspace {
+      padding-top: var(--top-nav-space, 126px);
     }
 
     #ertrades-app.authenticated .top-nav-shell > .topbar {
@@ -2407,8 +2415,7 @@
 
       #ertrades-app.authenticated .top-nav-shell {
         top: max(6px, env(safe-area-inset-top));
-        margin-left: -3px;
-        margin-right: -3px;
+        width: calc(100% - 24px);
         padding: 5px;
       }
 
@@ -2633,6 +2640,32 @@
         <button class="logout-btn" id="logout-btn" type="button">Logout</button>
       </div>
     </header>
+      <div class="control-row">
+        <div class="selector-wrap">
+          <label class="selector-label" for="account-select">Trading account</label>
+          <button class="custom-select-btn" id="account-select-btn" type="button" aria-haspopup="menu" aria-expanded="false">
+            <span id="account-select-label">No account added</span>
+          </button>
+          <select class="native-select-hidden" id="account-select" aria-label="Select trading account" tabindex="-1">
+            <option value="none">No account added</option>
+            <option value="__create__">+ Create Account</option>
+          </select>
+          <div class="popup-menu selector-popup" id="account-select-menu" role="menu"></div>
+        </div>
+        <div class="account-menu-wrap">
+          <button class="account-menu-btn" id="account-menu-btn" type="button" aria-label="Trading account menu" aria-expanded="false" hidden>⋯</button>
+          <div class="account-menu" id="account-menu" role="menu">
+            <button id="edit-account-btn" type="button" role="menuitem">Edit Account</button>
+            <button class="danger" id="delete-account-btn" type="button" role="menuitem">Delete Account</button>
+          </div>
+        </div>
+        <button class="new-trade" id="new-trade" type="button" aria-describedby="frontend-notice">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          New Trade
+        </button>
+      </div>
     </div>
 
     <section class="auth-page" id="auth-page" aria-labelledby="auth-title">
@@ -2678,33 +2711,6 @@
           <button class="secondary-btn" id="skip-import-btn" type="button">Skip</button>
         </div>
       </section>
-      <div class="control-row">
-        <div class="selector-wrap">
-          <label class="selector-label" for="account-select">Trading account</label>
-          <button class="custom-select-btn" id="account-select-btn" type="button" aria-haspopup="menu" aria-expanded="false">
-            <span id="account-select-label">No account added</span>
-          </button>
-          <select class="native-select-hidden" id="account-select" aria-label="Select trading account" tabindex="-1">
-            <option value="none">No account added</option>
-            <option value="__create__">+ Create Account</option>
-          </select>
-          <div class="popup-menu selector-popup" id="account-select-menu" role="menu"></div>
-        </div>
-        <div class="account-menu-wrap">
-          <button class="account-menu-btn" id="account-menu-btn" type="button" aria-label="Trading account menu" aria-expanded="false" hidden>⋯</button>
-          <div class="account-menu" id="account-menu" role="menu">
-            <button id="edit-account-btn" type="button" role="menuitem">Edit Account</button>
-            <button class="danger" id="delete-account-btn" type="button" role="menuitem">Delete Account</button>
-          </div>
-        </div>
-        <button class="new-trade" id="new-trade" type="button" aria-describedby="frontend-notice">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          New Trade
-        </button>
-      </div>
-
       <section class="account-form-card" id="account-form-card" aria-labelledby="account-form-title">
         <div class="account-form-head">
           <div>
@@ -3460,6 +3466,7 @@
       const deleteAccountConfirmBtn = root.querySelector('#delete-account-confirm-btn');
       const authPage = root.querySelector('#auth-page');
       const appWorkspace = root.querySelector('#app-workspace');
+      const topNavShell = root.querySelector('#top-nav-shell');
       const profileMenu = root.querySelector('#profile-menu');
       const profileEmail = root.querySelector('#profile-email');
       const logoutBtn = root.querySelector('#logout-btn');
@@ -4154,6 +4161,15 @@
         });
       };
 
+      const updateTopNavSpace = () => {
+        if (!root.classList.contains('authenticated')) {
+          root.style.removeProperty('--top-nav-space');
+          return;
+        }
+        const navHeight = Math.ceil(topNavShell.getBoundingClientRect().height || 0);
+        root.style.setProperty('--top-nav-space', `${Math.max(112, navHeight + 14)}px`);
+      };
+
       const showAuthenticatedApp = () => {
         markCurrentUserActive();
         root.classList.add('authenticated');
@@ -4164,10 +4180,12 @@
         settingsEmail.textContent = currentUser?.email || '—';
         loadTheme();
         showPage('Dashboard');
+        requestAnimationFrame(updateTopNavSpace);
       };
 
       const showLogin = () => {
         root.classList.remove('authenticated');
+        root.style.removeProperty('--top-nav-space');
         authPage.classList.add('visible');
         appWorkspace.style.display = 'none';
         profileMenu.classList.remove('visible');
@@ -6049,6 +6067,10 @@
 
       document.addEventListener('visibilitychange', handleAppVisibility);
       window.addEventListener('pagehide', markCurrentUserActive);
+      window.addEventListener('resize', updateTopNavSpace);
+      window.addEventListener('orientationchange', () => {
+        setTimeout(updateTopNavSpace, 80);
+      });
 
       themeDarkBtn.addEventListener('click', () => saveTheme('dark'));
       themeLightBtn.addEventListener('click', () => saveTheme('light'));
