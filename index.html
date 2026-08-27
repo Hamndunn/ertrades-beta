@@ -84,13 +84,13 @@
       padding: 6px;
       border: 1px solid var(--border);
       border-radius: 17px;
-      background: rgba(10,16,19,.98);
-      box-shadow: 0 12px 30px rgba(0,0,0,.35);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(10,16,19,.84);
+      box-shadow: 0 12px 30px rgba(0,0,0,.28);
+      backdrop-filter: blur(10px) saturate(115%);
+      -webkit-backdrop-filter: blur(10px) saturate(115%);
     }
 
-    #ertrades-app.authenticated .workspace {
+    #ertrades-app.authenticated #app-workspace {
       padding-top: var(--top-nav-space, 126px);
     }
 
@@ -502,11 +502,13 @@
       transform: translateX(-50%);
       border: 1px solid var(--border);
       border-radius: 17px;
-      background: #0a1013;
+      background: rgba(10,16,19,.84);
       padding: 6px;
       overflow-x: auto;
       scrollbar-width: none;
-      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      box-shadow: 0 12px 30px rgba(0,0,0,.28);
+      backdrop-filter: blur(10px) saturate(115%);
+      -webkit-backdrop-filter: blur(10px) saturate(115%);
     }
 
     #ertrades-app .nav-shell::-webkit-scrollbar { display: none; }
@@ -1031,6 +1033,13 @@
     #ertrades-app.theme-light .emotion-choice {
       background: #f7fafb;
     }
+
+    #ertrades-app.theme-light.authenticated .top-nav-shell,
+    #ertrades-app.theme-light .nav-shell {
+      background: rgba(247,250,251,.84);
+      box-shadow: 0 12px 30px rgba(31,42,46,.14);
+    }
+
 
     @media (max-width: 420px) {
       #ertrades-app .emotion-choice-grid {
