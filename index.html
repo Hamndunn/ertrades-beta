@@ -743,6 +743,106 @@
       width: 100%;
     }
 
+    #ertrades-app .instrument-select-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #ertrades-app .trade-form-card .field.instrument-field {
+      overflow: visible;
+      position: relative;
+      z-index: 4;
+    }
+
+    #ertrades-app .instrument-popup {
+      left: 0;
+      top: calc(100% + 7px);
+      width: min(420px, calc(100vw - 56px));
+      max-height: 330px;
+      overflow: hidden;
+      z-index: 140;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    #ertrades-app .instrument-search-wrap {
+      padding: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #ertrades-app .instrument-search-wrap input {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #0a1013;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 650;
+    }
+
+    #ertrades-app .instrument-search-wrap input:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    #ertrades-app .instrument-results {
+      min-height: 0;
+      max-height: 268px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      padding-top: 4px;
+    }
+
+    #ertrades-app .instrument-category {
+      padding: 9px 12px 5px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .instrument-results .instrument-option {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(78px, auto) minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+    }
+
+    #ertrades-app .instrument-symbol {
+      color: var(--text);
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    #ertrades-app .instrument-name {
+      min-width: 0;
+      color: var(--soft);
+      font-size: 11px;
+      font-weight: 650;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #ertrades-app .instrument-option.selected .instrument-symbol,
+    #ertrades-app .instrument-option.selected .instrument-name {
+      color: var(--accent);
+    }
+
+    #ertrades-app .instrument-empty {
+      padding: 18px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
     #ertrades-app .psychology-select-wrap {
       position: relative;
       min-width: 0;
@@ -1723,6 +1823,11 @@
     #ertrades-app.theme-light .field input,
     #ertrades-app.theme-light .field select,
     #ertrades-app.theme-light .field textarea,
+    #ertrades-app.theme-light .instrument-search-wrap input {
+      background: #f7fafb;
+      color: var(--text);
+    }
+
     #ertrades-app.theme-light .field .custom-select-btn,
     #ertrades-app.theme-light .direction-btn,
     #ertrades-app.theme-light .rr-box,
@@ -2433,8 +2538,8 @@
       <dialog class="trade-form-card" id="trade-form-card" aria-labelledby="trade-form-title">
         <div class="section-head">
           <div>
-            <div class="section-kicker" data-language-lock="true">Journal</div>
-            <div class="section-title" id="trade-form-title" data-language-lock="true">New Trade</div>
+            <div class="section-kicker">Journal</div>
+            <div class="section-title" id="trade-form-title">New Trade</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <span class="draft-status" id="draft-status" role="status" aria-live="polite">Draft saved</span>
@@ -2445,9 +2550,18 @@
           <section class="trade-section">
             <div class="trade-section-title">Basic Information</div>
             <div class="trade-grid two-col">
-              <div class="field">
-                <label for="trade-instrument">Instrument</label>
-                <input id="trade-instrument" type="text" maxlength="30" placeholder="XAUUSD" autocomplete="off" required>
+              <div class="field instrument-field">
+                <label for="instrument-select-btn">Instrument</label>
+                <div class="instrument-select-wrap">
+                  <input id="trade-instrument" type="hidden" required>
+                  <button class="custom-select-btn" id="instrument-select-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select instrument</button>
+                  <div class="popup-menu instrument-popup" id="instrument-menu" role="menu">
+                    <div class="instrument-search-wrap">
+                      <input id="instrument-search" type="search" inputmode="search" autocomplete="off" placeholder="Search XAUUSD, EURUSD, US100...">
+                    </div>
+                    <div class="instrument-results" id="instrument-results"></div>
+                  </div>
+                </div>
               </div>
               <div class="field">
                 <label>Direction</label>
@@ -2545,22 +2659,24 @@
           </section>
 
           <section class="trade-section">
-            <div class="trade-section-title">Trading Psychology</div>
+            <div class="trade-section-title">Emotion</div>
             <div class="trade-grid two-col">
               <div class="field psychology-field">
                 <label for="psychology-before">Before</label>
                 <div class="psychology-select-wrap">
-                  <button class="custom-select-btn" id="psychology-before-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
+                  <button class="custom-select-btn" id="psychology-before-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select emotion</button>
                   <select class="native-select-hidden" id="psychology-before" tabindex="-1">
-                    <option value="">Select state</option>
+                    <option value="">Select emotion</option>
+                    <option value="Calm">Calm</option>
                     <option value="Confident">Confident</option>
                     <option value="Neutral">Neutral</option>
-                    <option value="Fomo">Fomo</option>
-                    <option value="Fear">Fear</option>
-                    <option value="Revenge">Revenge</option>
-                    <option value="Disciplined">Disciplined</option>
                     <option value="Anxious">Anxious</option>
+                    <option value="Frustrated">Frustrated</option>
                     <option value="Excited">Excited</option>
+                    <option value="Fomo" hidden>Fomo</option>
+                    <option value="Fear" hidden>Fear</option>
+                    <option value="Revenge" hidden>Revenge</option>
+                    <option value="Disciplined" hidden>Disciplined</option>
                   </select>
                   <div class="popup-menu psychology-popup" id="psychology-before-menu" role="menu"></div>
                 </div>
@@ -2568,17 +2684,19 @@
               <div class="field psychology-field">
                 <label for="psychology-after">After</label>
                 <div class="psychology-select-wrap">
-                  <button class="custom-select-btn" id="psychology-after-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select state</button>
+                  <button class="custom-select-btn" id="psychology-after-btn" type="button" aria-haspopup="menu" aria-expanded="false">Select emotion</button>
                   <select class="native-select-hidden" id="psychology-after" tabindex="-1">
-                    <option value="">Select state</option>
+                    <option value="">Select emotion</option>
+                    <option value="Calm">Calm</option>
                     <option value="Confident">Confident</option>
                     <option value="Neutral">Neutral</option>
-                    <option value="Fomo">Fomo</option>
-                    <option value="Fear">Fear</option>
-                    <option value="Revenge">Revenge</option>
-                    <option value="Disciplined">Disciplined</option>
                     <option value="Anxious">Anxious</option>
+                    <option value="Frustrated">Frustrated</option>
                     <option value="Excited">Excited</option>
+                    <option value="Fomo" hidden>Fomo</option>
+                    <option value="Fear" hidden>Fear</option>
+                    <option value="Revenge" hidden>Revenge</option>
+                    <option value="Disciplined" hidden>Disciplined</option>
                   </select>
                   <div class="popup-menu psychology-popup" id="psychology-after-menu" role="menu"></div>
                 </div>
@@ -2918,13 +3036,6 @@
             </div>
           </div>
           <div class="settings-account-card">
-            <div class="detail-label">Language</div>
-            <div class="theme-options" role="group" aria-label="App language">
-              <button class="theme-option active" id="language-en-btn" type="button">English</button>
-              <button class="theme-option" id="language-id-btn" type="button">Indonesia</button>
-            </div>
-          </div>
-          <div class="settings-account-card">
             <div class="detail-label">Support</div>
             <div class="support-links">
               <a class="support-link" href="https://www.instagram.com/rdtilhamm?igsi=MTQ0emltYXBwaTAxbQ%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">
@@ -3042,6 +3153,10 @@
       const tradeFormCancel = root.querySelector('#trade-form-cancel');
       const tradeFormError = root.querySelector('#trade-form-error');
       const tradeInstrument = root.querySelector('#trade-instrument');
+      const instrumentSelectBtn = root.querySelector('#instrument-select-btn');
+      const instrumentMenu = root.querySelector('#instrument-menu');
+      const instrumentSearch = root.querySelector('#instrument-search');
+      const instrumentResults = root.querySelector('#instrument-results');
       const tradeDate = root.querySelector('#trade-date');
       const tradeDateDisplay = root.querySelector('#trade-date-display');
       const tradeSession = root.querySelector('#trade-session');
@@ -3132,8 +3247,6 @@
       const settingsLogoutBtn = root.querySelector('#settings-logout-btn');
       const themeDarkBtn = root.querySelector('#theme-dark-btn');
       const themeLightBtn = root.querySelector('#theme-light-btn');
-      const languageEnBtn = root.querySelector('#language-en-btn');
-      const languageIdBtn = root.querySelector('#language-id-btn');
       const analyticsPage = root.querySelector('#analytics-page');
       const analyticsOverview = root.querySelector('#analytics-overview');
       const analyticsInstrumentList = root.querySelector('#analytics-instrument-list');
@@ -3188,7 +3301,6 @@
       const SUPABASE_SCREENSHOT_BUCKET = 'trade-screenshots';
       const IMPORT_MARKER_PREFIX = 'ertrades-imported-local:';
       const THEME_KEY_PREFIX = 'ertrades-theme:';
-      const LANGUAGE_KEY_PREFIX = 'ertrades-language:';
       let accounts = [];
       let trades = [];
       let selectedAccountId = null;
@@ -3320,126 +3432,6 @@
         applyTheme(theme);
         safeLocalSet(themeKey(), theme === 'light' ? 'light' : 'dark');
       };
-
-      const languageKey = () => `${LANGUAGE_KEY_PREFIX}${currentUser?.id || 'local'}`;
-      let currentLanguage = 'en';
-
-      const ID_TRANSLATIONS = {"Logout":"Keluar","eRTrades Account":"Akun eRTrades","Login":"Masuk","Use your email and password to access your private trading data.":"Gunakan email dan kata sandi untuk mengakses data trading pribadimu.","Sign Up":"Daftar","Email":"Email","Password":"Kata Sandi","Confirm New Password":"Konfirmasi Kata Sandi Baru","Forgot Password?":"Lupa Kata Sandi?","Back to Login":"Kembali ke Masuk","Existing trading data found":"Data trading lama ditemukan","Import to My Account":"Impor ke Akun Saya","Skip":"Lewati","Trading account":"Akun trading","No account added":"Belum ada akun","+ Create Account":"+ Buat Akun","Edit Account":"Edit Akun","Delete Account":"Hapus Akun","New Trade":"Trade Baru","Trading Account":"Akun Trading","Create Account":"Buat Akun","Account Name":"Nama Akun","Starting Balance":"Saldo Awal","Currency":"Mata Uang","Cancel":"Batal","Journal":"Jurnal","Draft saved":"Draft tersimpan","Draft restored":"Draft dipulihkan","Basic Information":"Informasi Dasar","Instrument":"Instrumen","Direction":"Arah","Date":"Tanggal","Session":"Sesi","Trade Setup":"Setup Trade","Entry Price":"Harga Entry","Stop Loss":"Stop Loss","Take Profit":"Take Profit","Lot Size":"Ukuran Lot","Risk %":"Risiko %","Risk Amount":"Jumlah Risiko","Profit / Loss":"Profit / Loss","Result":"Hasil","Select result":"Pilih hasil","Planned RR":"RR Rencana","Realized R":"R Terealisasi","Reason for Entry":"Alasan Entry","Mistakes":"Kesalahan","Trading Psychology":"Psikologi Trading","Before":"Sebelum","Select state":"Pilih kondisi","Confident":"Percaya Diri","Neutral":"Netral","Fomo":"FOMO","Fear":"Takut","Revenge":"Balas Dendam","Disciplined":"Disiplin","Anxious":"Cemas","Excited":"Antusias","After":"Sesudah","Trade Screenshots":"Screenshot Trade","Before / Entry":"Sebelum / Entry","Optional":"Opsional","Choose Image":"Pilih Gambar","Remove":"Hapus","JPG, JPEG, PNG, or HEIC when supported by this device.":"JPG, JPEG, PNG, atau HEIC jika didukung perangkat ini.","After / Exit":"Sesudah / Exit","Images are optional. You can save a trade without screenshots.":"Gambar bersifat opsional. Trade tetap bisa disimpan tanpa screenshot.","Save Trade":"Simpan Trade","Save Changes":"Simpan Perubahan","Saving…":"Menyimpan…","Trade saved successfully.":"Trade berhasil disimpan.","Trade updated successfully.":"Trade berhasil diperbarui.","Trade deleted successfully.":"Trade berhasil dihapus.","Balance":"Saldo","Total P/L":"Total P/L","Win Rate":"Win Rate","Profit Factor":"Profit Factor","Average RR":"Rata-rata RR","Total Trades":"Total Trade","Max Drawdown":"Max Drawdown","Consistency Score":"Consistency Score","Performance":"Performa","Equity Curve":"Kurva Ekuitas","No equity data yet":"Belum ada data ekuitas","Your equity curve will appear after trading data is added.":"Kurva ekuitas akan muncul setelah data trade ditambahkan.","Recent Trades":"Trade Terbaru","No trades recorded":"Belum ada trade","Recent trades will show here once you save a trade.":"Trade terbaru akan muncul setelah kamu menyimpan trade.","Saved Trades":"Trade Tersimpan","All instruments":"Semua instrumen","BUY + SELL":"BUY + SELL","All results":"Semua hasil","All sessions":"Semua sesi","All dates":"Semua tanggal","Last 7 days":"7 hari terakhir","Last 30 days":"30 hari terakhir","Last 3 months":"3 bulan terakhir","Filters only change what is shown. Your saved trades are untouched.":"Filter hanya mengubah tampilan. Trade yang tersimpan tidak berubah.","Clear":"Reset","Use New Trade to add your first journal entry.":"Gunakan Trade Baru untuk menambahkan jurnal pertamamu.","No matching trades":"Tidak ada trade yang cocok","Try changing the search or clearing one of the filters.":"Coba ubah pencarian atau reset salah satu filter.","Trading Calendar":"Kalender Trading","Monthly Performance":"Performa Bulanan","No account":"Tidak ada akun","Monthly P/L":"P/L Bulanan","Trading Days":"Hari Trading","Winning Days":"Hari Profit","Losing Days":"Hari Loss","Best Day":"Hari Terbaik","Worst Day":"Hari Terburuk","Sun":"Min","Mon":"Sen","Tue":"Sel","Wed":"Rab","Thu":"Kam","Fri":"Jum","Sat":"Sab","Selected Date":"Tanggal Dipilih","Choose a date":"Pilih tanggal","Tap a date to view its trades.":"Tap tanggal untuk melihat trade.","Trade Detail":"Detail Trade","Edit Trade":"Edit Trade","Delete Trade":"Hapus Trade","Advanced Analytics":"Analytics Lanjutan","Performance Analytics":"Analytics Performa","Performance by Instrument":"Performa per Instrumen","Performance by Session":"Performa per Sesi","Performance by Trading Day":"Performa per Hari Trading","Win / Loss Distribution":"Distribusi Win / Loss","Daily P/L":"P/L Harian","Best & Worst Insights":"Insight Terbaik & Terburuk","Settings":"Pengaturan","Account Information":"Informasi Akun","Theme":"Tema","Dark":"Gelap","Light":"Terang","Language":"Bahasa","English":"Inggris","Indonesia":"Indonesia","Support":"Dukungan","Delete this trade?":"Hapus trade ini?","This action cannot be undone.":"Tindakan ini tidak dapat dibatalkan.","Delete this trading account?":"Hapus akun trading ini?","Dashboard":"Dashboard","Calendar":"Kalender","Analytics":"Analytics","Before / Entry Screenshot":"Screenshot Sebelum / Entry","After / Exit Screenshot":"Screenshot Sesudah / Exit","Close":"Tutup","Replace Image":"Ganti Gambar","Ready":"Siap","Saved":"Tersimpan","Removed":"Dihapus","Saving image…":"Menyimpan gambar…","Search instrument, notes, mistakes…":"Cari instrumen, catatan, kesalahan…","Search journal":"Cari jurnal","Filter by instrument":"Filter berdasarkan instrumen","Filter by direction":"Filter berdasarkan arah","Filter by result":"Filter berdasarkan hasil","Filter by session":"Filter berdasarkan sesi","Filter by period":"Filter berdasarkan periode","Previous month":"Bulan sebelumnya","Next month":"Bulan berikutnya","Monthly trading summary":"Ringkasan trading bulanan","Back to Journal":"Kembali ke Jurnal","Analytics date range":"Rentang tanggal analytics","App theme":"Tema aplikasi","App language":"Bahasa aplikasi","Primary navigation":"Navigasi utama","Search and filter journal":"Cari dan filter jurnal","Trading metrics":"Metrik trading","Equity curve time filter":"Filter waktu kurva ekuitas","Account equity curve":"Kurva ekuitas akun","Close new trade form":"Tutup form trade baru","Close create account form":"Tutup form buat akun","Select trading account":"Pilih akun trading","Trading account menu":"Menu akun trading","Trade direction":"Arah trade","Describe why you entered this trade...":"Jelaskan kenapa kamu masuk trade ini...","Add any mistakes made during this trade...":"Tambahkan kesalahan yang terjadi pada trade ini...","Password reset email sent. Open the newest email from eRTrades, tap the reset link, then set your new password in eRTrades.":"Email reset kata sandi telah dikirim. Buka email terbaru dari eRTrades, ketuk tautan reset, lalu atur kata sandi baru di eRTrades."};
-      const ID_TO_EN_TRANSLATIONS = Object.fromEntries(
-        Object.entries(ID_TRANSLATIONS).map(([english, indonesian]) => [indonesian, english])
-      );
-
-      const translateDynamicString = (value, language) => {
-        const text = String(value || '').trim();
-        if (!text) return value;
-
-        if (language === 'id') {
-          if (ID_TRANSLATIONS[text]) return ID_TRANSLATIONS[text];
-
-          let match = text.match(/^(\d+) of (\d+) trades$/);
-          if (match) return `${match[1]} dari ${match[2]} trade`;
-
-          match = text.match(/^(\d+) trades?$/);
-          if (match) return `${match[1]} trade`;
-
-          match = text.match(/^Existing screenshot(?:s)? synced to cloud\.$/i);
-          if (match) return 'Screenshot lama berhasil disinkronkan ke cloud.';
-
-          return value;
-        }
-
-        if (ID_TO_EN_TRANSLATIONS[text]) return ID_TO_EN_TRANSLATIONS[text];
-        if (/^\d+ dari \d+ trade$/.test(text)) {
-          const parts = text.match(/^(\d+) dari (\d+) trade$/);
-          return `${parts[1]} of ${parts[2]} trades`;
-        }
-        if (/^Screenshot lama berhasil disinkronkan ke cloud\.$/.test(text)) {
-          return 'Existing screenshots synced to cloud.';
-        }
-        return value;
-      };
-
-      const translateTextNode = (node, language) => {
-        if (!node || node.nodeType !== Node.TEXT_NODE) return;
-        if (node.parentElement?.closest('[data-language-lock="true"]')) return;
-        const raw = node.nodeValue || '';
-        const trimmed = raw.trim();
-        if (!trimmed) return;
-        const translated = translateDynamicString(trimmed, language);
-        if (translated === trimmed) return;
-        const leading = raw.match(/^\s*/)?.[0] || '';
-        const trailing = raw.match(/\s*$/)?.[0] || '';
-        node.nodeValue = `${leading}${translated}${trailing}`;
-      };
-
-      const translateElement = (element, language) => {
-        if (!element || element.nodeType !== Node.ELEMENT_NODE) return;
-        if (element.closest('[data-language-lock="true"]')) return;
-
-        Array.from(element.childNodes).forEach((node) => {
-          if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, language);
-        });
-
-        ['placeholder', 'aria-label', 'title'].forEach((attribute) => {
-          if (!element.hasAttribute(attribute)) return;
-          const value = element.getAttribute(attribute);
-          const translated = translateDynamicString(value, language);
-          if (translated !== value) element.setAttribute(attribute, translated);
-        });
-
-        element.querySelectorAll('*').forEach((child) => {
-          if (child.closest('[data-language-lock="true"]')) return;
-          Array.from(child.childNodes).forEach((node) => {
-            if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, language);
-          });
-          ['placeholder', 'aria-label', 'title'].forEach((attribute) => {
-            if (!child.hasAttribute(attribute)) return;
-            const value = child.getAttribute(attribute);
-            const translated = translateDynamicString(value, language);
-            if (translated !== value) child.setAttribute(attribute, translated);
-          });
-        });
-      };
-
-      const applyLanguage = (language) => {
-        currentLanguage = language === 'id' ? 'id' : 'en';
-        root.dataset.language = currentLanguage;
-        root.setAttribute('lang', currentLanguage);
-        languageEnBtn.classList.toggle('active', currentLanguage === 'en');
-        languageIdBtn.classList.toggle('active', currentLanguage === 'id');
-        translateElement(root, currentLanguage);
-
-        const tradeHeaderKicker = root.querySelector('#trade-form-card .section-kicker[data-language-lock="true"]');
-        if (tradeHeaderKicker) tradeHeaderKicker.textContent = 'Journal';
-        if (tradeFormTitle?.matches('[data-language-lock="true"]')) {
-          tradeFormTitle.textContent = editingTradeId ? 'Edit Trade' : 'New Trade';
-        }
-      };
-
-      const loadLanguage = () => {
-        const savedLanguage = safeLocalGet(languageKey());
-        applyLanguage(savedLanguage === 'id' ? 'id' : 'en');
-      };
-
-      const saveLanguage = (language) => {
-        const selected = language === 'id' ? 'id' : 'en';
-        safeLocalSet(languageKey(), selected);
-        applyLanguage(selected);
-      };
-
-      const languageObserver = new MutationObserver((mutations) => {
-        if (currentLanguage !== 'id') return;
-        mutations.forEach((mutation) => {
-          mutation.addedNodes.forEach((node) => {
-            const parentLocked = mutation.target?.nodeType === Node.ELEMENT_NODE
-              && mutation.target.closest?.('[data-language-lock="true"]');
-            if (parentLocked) return;
-            if (node.nodeType === Node.TEXT_NODE) translateTextNode(node, currentLanguage);
-            if (node.nodeType === Node.ELEMENT_NODE) translateElement(node, currentLanguage);
-          });
-        });
-      });
-      languageObserver.observe(root, { childList: true, subtree: true });
 
       const readJsonLocal = (key, fallback) => {
         const raw = safeLocalGet(key);
@@ -3934,7 +3926,6 @@
         profileEmail.textContent = currentUser?.email || '';
         settingsEmail.textContent = currentUser?.email || '—';
         loadTheme();
-        loadLanguage();
         showPage('Dashboard');
       };
 
@@ -3944,7 +3935,6 @@
         profileMenu.classList.remove('visible');
         importBanner.classList.remove('visible');
         loadTheme();
-        loadLanguage();
         authEmail.closest('.field').style.display = 'grid';
         authPassword.closest('.field').querySelector('label').textContent = 'Password';
         setAuthMode('login');
@@ -4743,7 +4733,8 @@
       const restoreDraft = () => {
         const draft = readDraft();
         if (!draft) return false;
-        tradeInstrument.value = draft.instrument || '';
+        tradeInstrument.value = (draft.instrument || '').trim().toUpperCase();
+        syncInstrumentUi();
         selectedDirection = draft.direction === 'BUY' || draft.direction === 'SELL' ? draft.direction : '';
         tradeDate.value = draft.date || getLocalDateValue();
         syncTradeDateDisplay();
@@ -4760,8 +4751,8 @@
         tradeResult.value = ['WIN', 'LOSS', 'BREAK EVEN'].includes(draft.result) ? draft.result : '';
         tradeNotes.value = draft.notes || '';
         tradeMistakes.value = draft.mistakes || '';
-        psychologyBefore.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(draft.psychologyBefore) ? draft.psychologyBefore : '';
-        psychologyAfter.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(draft.psychologyAfter) ? draft.psychologyAfter : '';
+        psychologyBefore.value = typeof draft.psychologyBefore === 'string' ? draft.psychologyBefore : '';
+        psychologyAfter.value = typeof draft.psychologyAfter === 'string' ? draft.psychologyAfter : '';
         updateDirectionButtons();
         calculatePlannedRr();
         updateRealizedRPreview();
@@ -5056,8 +5047,8 @@
           detailField('Realized R', formatRealizedR(calculateTradeRealizedR(trade))),
           detailField('Reason for Entry', trade.notes || '—', true),
           detailField('Mistakes', trade.mistakes || '—', true),
-          detailField('Psychology Before', trade.psychologyBefore || '—'),
-          detailField('Psychology After', trade.psychologyAfter || '—')
+          detailField('Emotion Before', trade.psychologyBefore || '—'),
+          detailField('Emotion After', trade.psychologyAfter || '—')
         );
       };
 
@@ -5265,7 +5256,69 @@
         accountSelectBtn.setAttribute('aria-expanded', 'false');
       };
 
-      const psychologyStates = ['', 'Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'];
+      const instrumentCatalog = [{"category":"Forex","symbol":"EURUSD","name":"Euro / US Dollar"},{"category":"Forex","symbol":"GBPUSD","name":"British Pound / US Dollar"},{"category":"Forex","symbol":"USDJPY","name":"US Dollar / Japanese Yen"},{"category":"Forex","symbol":"USDCHF","name":"US Dollar / Swiss Franc"},{"category":"Forex","symbol":"USDCAD","name":"US Dollar / Canadian Dollar"},{"category":"Forex","symbol":"AUDUSD","name":"Australian Dollar / US Dollar"},{"category":"Forex","symbol":"NZDUSD","name":"New Zealand Dollar / US Dollar"},{"category":"Forex","symbol":"EURGBP","name":"Euro / British Pound"},{"category":"Forex","symbol":"EURJPY","name":"Euro / Japanese Yen"},{"category":"Forex","symbol":"EURCHF","name":"Euro / Swiss Franc"},{"category":"Forex","symbol":"EURCAD","name":"Euro / Canadian Dollar"},{"category":"Forex","symbol":"EURAUD","name":"Euro / Australian Dollar"},{"category":"Forex","symbol":"EURNZD","name":"Euro / New Zealand Dollar"},{"category":"Forex","symbol":"GBPJPY","name":"British Pound / Japanese Yen"},{"category":"Forex","symbol":"GBPCHF","name":"British Pound / Swiss Franc"},{"category":"Forex","symbol":"GBPCAD","name":"British Pound / Canadian Dollar"},{"category":"Forex","symbol":"GBPAUD","name":"British Pound / Australian Dollar"},{"category":"Forex","symbol":"GBPNZD","name":"British Pound / New Zealand Dollar"},{"category":"Forex","symbol":"AUDJPY","name":"Australian Dollar / Japanese Yen"},{"category":"Forex","symbol":"AUDCHF","name":"Australian Dollar / Swiss Franc"},{"category":"Forex","symbol":"AUDCAD","name":"Australian Dollar / Canadian Dollar"},{"category":"Forex","symbol":"AUDNZD","name":"Australian Dollar / New Zealand Dollar"},{"category":"Forex","symbol":"NZDJPY","name":"New Zealand Dollar / Japanese Yen"},{"category":"Forex","symbol":"NZDCHF","name":"New Zealand Dollar / Swiss Franc"},{"category":"Forex","symbol":"NZDCAD","name":"New Zealand Dollar / Canadian Dollar"},{"category":"Forex","symbol":"CADJPY","name":"Canadian Dollar / Japanese Yen"},{"category":"Forex","symbol":"CADCHF","name":"Canadian Dollar / Swiss Franc"},{"category":"Forex","symbol":"CHFJPY","name":"Swiss Franc / Japanese Yen"},{"category":"Forex","symbol":"USDSEK","name":"US Dollar / Swedish Krona"},{"category":"Forex","symbol":"USDNOK","name":"US Dollar / Norwegian Krone"},{"category":"Forex","symbol":"USDDKK","name":"US Dollar / Danish Krone"},{"category":"Forex","symbol":"USDPLN","name":"US Dollar / Polish Zloty"},{"category":"Forex","symbol":"USDHUF","name":"US Dollar / Hungarian Forint"},{"category":"Forex","symbol":"USDCZK","name":"US Dollar / Czech Koruna"},{"category":"Forex","symbol":"USDTRY","name":"US Dollar / Turkish Lira"},{"category":"Forex","symbol":"USDZAR","name":"US Dollar / South African Rand"},{"category":"Forex","symbol":"USDMXN","name":"US Dollar / Mexican Peso"},{"category":"Forex","symbol":"USDSGD","name":"US Dollar / Singapore Dollar"},{"category":"Forex","symbol":"USDHKD","name":"US Dollar / Hong Kong Dollar"},{"category":"Forex","symbol":"USDCNH","name":"US Dollar / Offshore Chinese Yuan"},{"category":"Forex","symbol":"USDTHB","name":"US Dollar / Thai Baht"},{"category":"Forex","symbol":"USDILS","name":"US Dollar / Israeli Shekel"},{"category":"Forex","symbol":"USDINR","name":"US Dollar / Indian Rupee"},{"category":"Forex","symbol":"EURSEK","name":"Euro / Swedish Krona"},{"category":"Forex","symbol":"EURNOK","name":"Euro / Norwegian Krone"},{"category":"Forex","symbol":"EURDKK","name":"Euro / Danish Krone"},{"category":"Forex","symbol":"EURPLN","name":"Euro / Polish Zloty"},{"category":"Forex","symbol":"EURHUF","name":"Euro / Hungarian Forint"},{"category":"Forex","symbol":"EURCZK","name":"Euro / Czech Koruna"},{"category":"Forex","symbol":"EURTRY","name":"Euro / Turkish Lira"},{"category":"Forex","symbol":"EURZAR","name":"Euro / South African Rand"},{"category":"Forex","symbol":"EURSGD","name":"Euro / Singapore Dollar"},{"category":"Forex","symbol":"EURHKD","name":"Euro / Hong Kong Dollar"},{"category":"Forex","symbol":"GBPSEK","name":"British Pound / Swedish Krona"},{"category":"Forex","symbol":"GBPNOK","name":"British Pound / Norwegian Krone"},{"category":"Forex","symbol":"GBPPLN","name":"British Pound / Polish Zloty"},{"category":"Forex","symbol":"GBPTRY","name":"British Pound / Turkish Lira"},{"category":"Forex","symbol":"GBPZAR","name":"British Pound / South African Rand"},{"category":"Forex","symbol":"GBPSGD","name":"British Pound / Singapore Dollar"},{"category":"Forex","symbol":"AUDSGD","name":"Australian Dollar / Singapore Dollar"},{"category":"Forex","symbol":"AUDHKD","name":"Australian Dollar / Hong Kong Dollar"},{"category":"Forex","symbol":"NZDSGD","name":"New Zealand Dollar / Singapore Dollar"},{"category":"Forex","symbol":"SGDJPY","name":"Singapore Dollar / Japanese Yen"},{"category":"Metals","symbol":"XAUUSD","name":"Gold / US Dollar"},{"category":"Metals","symbol":"XAGUSD","name":"Silver / US Dollar"},{"category":"Metals","symbol":"XPTUSD","name":"Platinum / US Dollar"},{"category":"Metals","symbol":"XPDUSD","name":"Palladium / US Dollar"},{"category":"Metals","symbol":"XAUEUR","name":"Gold / Euro"},{"category":"Metals","symbol":"XAUGBP","name":"Gold / British Pound"},{"category":"Metals","symbol":"XAUJPY","name":"Gold / Japanese Yen"},{"category":"Metals","symbol":"XAUAUD","name":"Gold / Australian Dollar"},{"category":"Metals","symbol":"XAUCAD","name":"Gold / Canadian Dollar"},{"category":"Metals","symbol":"XAUCHF","name":"Gold / Swiss Franc"},{"category":"Metals","symbol":"XAGEUR","name":"Silver / Euro"},{"category":"Metals","symbol":"XAGGBP","name":"Silver / British Pound"},{"category":"Indices","symbol":"US30","name":"Dow Jones 30"},{"category":"Indices","symbol":"DJ30","name":"Dow Jones 30 alias"},{"category":"Indices","symbol":"US100","name":"Nasdaq 100"},{"category":"Indices","symbol":"NAS100","name":"Nasdaq 100 alias"},{"category":"Indices","symbol":"USTEC","name":"Nasdaq 100 alias"},{"category":"Indices","symbol":"US500","name":"S&P 500"},{"category":"Indices","symbol":"SPX500","name":"S&P 500 alias"},{"category":"Indices","symbol":"SP500","name":"S&P 500 alias"},{"category":"Indices","symbol":"US2000","name":"Russell 2000"},{"category":"Indices","symbol":"RUS2000","name":"Russell 2000 alias"},{"category":"Indices","symbol":"VIX","name":"CBOE Volatility Index"},{"category":"Indices","symbol":"GER40","name":"Germany 40 / DAX"},{"category":"Indices","symbol":"DE40","name":"Germany 40 alias"},{"category":"Indices","symbol":"DAX40","name":"Germany 40 alias"},{"category":"Indices","symbol":"UK100","name":"FTSE 100"},{"category":"Indices","symbol":"FTSE100","name":"FTSE 100 alias"},{"category":"Indices","symbol":"FRA40","name":"France 40 / CAC"},{"category":"Indices","symbol":"CAC40","name":"France 40 alias"},{"category":"Indices","symbol":"EU50","name":"Euro Stoxx 50"},{"category":"Indices","symbol":"STOXX50","name":"Euro Stoxx 50 alias"},{"category":"Indices","symbol":"JPN225","name":"Japan 225 / Nikkei"},{"category":"Indices","symbol":"JP225","name":"Japan 225 alias"},{"category":"Indices","symbol":"NIKKEI225","name":"Japan 225 alias"},{"category":"Indices","symbol":"HK50","name":"Hong Kong 50 / Hang Seng"},{"category":"Indices","symbol":"HKG50","name":"Hong Kong 50 alias"},{"category":"Indices","symbol":"AUS200","name":"Australia 200"},{"category":"Indices","symbol":"ASX200","name":"Australia 200 alias"},{"category":"Indices","symbol":"CHINA50","name":"China A50"},{"category":"Indices","symbol":"CN50","name":"China A50 alias"},{"category":"Indices","symbol":"SPA35","name":"Spain 35"},{"category":"Indices","symbol":"IBEX35","name":"Spain 35 alias"},{"category":"Indices","symbol":"ITA40","name":"Italy 40"},{"category":"Indices","symbol":"SWI20","name":"Switzerland 20"},{"category":"Indices","symbol":"SMI20","name":"Switzerland 20 alias"},{"category":"Indices","symbol":"NETH25","name":"Netherlands 25"},{"category":"Indices","symbol":"AEX25","name":"Netherlands 25 alias"},{"category":"Indices","symbol":"SING30","name":"Singapore 30"},{"category":"Indices","symbol":"INDIA50","name":"India 50 / Nifty"},{"category":"Indices","symbol":"NIFTY50","name":"India 50 alias"},{"category":"Energies","symbol":"USOIL","name":"WTI Crude Oil"},{"category":"Energies","symbol":"WTI","name":"WTI Crude Oil alias"},{"category":"Energies","symbol":"WTICOUSD","name":"WTI Crude Oil alias"},{"category":"Energies","symbol":"UKOIL","name":"Brent Crude Oil"},{"category":"Energies","symbol":"BRENT","name":"Brent Crude Oil alias"},{"category":"Energies","symbol":"BRN","name":"Brent Crude Oil alias"},{"category":"Energies","symbol":"NATGAS","name":"Natural Gas"},{"category":"Energies","symbol":"XNGUSD","name":"Natural Gas alias"},{"category":"Energies","symbol":"GASOIL","name":"Low Sulphur Gasoil"},{"category":"Commodities","symbol":"COPPER","name":"Copper"},{"category":"Commodities","symbol":"XCUUSD","name":"Copper alias"},{"category":"Commodities","symbol":"COCOA","name":"Cocoa"},{"category":"Commodities","symbol":"COFFEE","name":"Coffee"},{"category":"Commodities","symbol":"CORN","name":"Corn"},{"category":"Commodities","symbol":"COTTON","name":"Cotton"},{"category":"Commodities","symbol":"SUGAR","name":"Sugar"},{"category":"Commodities","symbol":"WHEAT","name":"Wheat"},{"category":"Commodities","symbol":"SOYBEAN","name":"Soybeans"},{"category":"Commodities","symbol":"SOYBEANS","name":"Soybeans alias"},{"category":"Commodities","symbol":"OATS","name":"Oats"},{"category":"Commodities","symbol":"RICE","name":"Rough Rice"},{"category":"Commodities","symbol":"LUMBER","name":"Lumber"},{"category":"Commodities","symbol":"ORANGEJUICE","name":"Orange Juice"},{"category":"Crypto","symbol":"BTCUSD","name":"Bitcoin / US Dollar"},{"category":"Crypto","symbol":"ETHUSD","name":"Ethereum / US Dollar"},{"category":"Crypto","symbol":"SOLUSD","name":"Solana / US Dollar"},{"category":"Crypto","symbol":"XRPUSD","name":"XRP / US Dollar"},{"category":"Crypto","symbol":"BNBUSD","name":"BNB / US Dollar"},{"category":"Crypto","symbol":"ADAUSD","name":"Cardano / US Dollar"},{"category":"Crypto","symbol":"DOGEUSD","name":"Dogecoin / US Dollar"},{"category":"Crypto","symbol":"LTCUSD","name":"Litecoin / US Dollar"},{"category":"Crypto","symbol":"BCHUSD","name":"Bitcoin Cash / US Dollar"},{"category":"Crypto","symbol":"DOTUSD","name":"Polkadot / US Dollar"},{"category":"Crypto","symbol":"LINKUSD","name":"Chainlink / US Dollar"},{"category":"Crypto","symbol":"AVAXUSD","name":"Avalanche / US Dollar"},{"category":"Crypto","symbol":"TRXUSD","name":"TRON / US Dollar"},{"category":"Crypto","symbol":"UNIUSD","name":"Uniswap / US Dollar"},{"category":"Crypto","symbol":"XLMUSD","name":"Stellar / US Dollar"},{"category":"Crypto","symbol":"ATOMUSD","name":"Cosmos / US Dollar"},{"category":"Crypto","symbol":"AAVEUSD","name":"Aave / US Dollar"},{"category":"Crypto","symbol":"ETCUSD","name":"Ethereum Classic / US Dollar"},{"category":"Crypto","symbol":"FILUSD","name":"Filecoin / US Dollar"},{"category":"Crypto","symbol":"ICPUSD","name":"Internet Computer / US Dollar"},{"category":"Crypto","symbol":"NEARUSD","name":"NEAR / US Dollar"},{"category":"Crypto","symbol":"SUIUSD","name":"Sui / US Dollar"},{"category":"Crypto","symbol":"TONUSD","name":"Toncoin / US Dollar"},{"category":"Crypto","symbol":"HBARUSD","name":"Hedera / US Dollar"},{"category":"Crypto","symbol":"SHIBUSD","name":"Shiba Inu / US Dollar"},{"category":"Crypto","symbol":"PEPEUSD","name":"Pepe / US Dollar"},{"category":"Crypto","symbol":"POLUSD","name":"Polygon / US Dollar"},{"category":"Crypto","symbol":"MATICUSD","name":"Polygon legacy symbol / US Dollar"},{"category":"Crypto","symbol":"APTUSD","name":"Aptos / US Dollar"},{"category":"Crypto","symbol":"ARBUSD","name":"Arbitrum / US Dollar"},{"category":"Crypto","symbol":"OPUSD","name":"Optimism / US Dollar"},{"category":"Crypto","symbol":"INJUSD","name":"Injective / US Dollar"},{"category":"Crypto","symbol":"RENDERUSD","name":"Render / US Dollar"},{"category":"Crypto","symbol":"FETUSD","name":"Artificial Superintelligence Alliance / US Dollar"},{"category":"Crypto","symbol":"RUNEUSD","name":"THORChain / US Dollar"},{"category":"Crypto","symbol":"ALGOUSD","name":"Algorand / US Dollar"},{"category":"Crypto","symbol":"EOSUSD","name":"EOS / US Dollar"},{"category":"Crypto","symbol":"XTZUSD","name":"Tezos / US Dollar"},{"category":"Crypto","symbol":"MKRUSD","name":"Maker / US Dollar"},{"category":"Crypto","symbol":"COMPUSD","name":"Compound / US Dollar"},{"category":"Stocks","symbol":"AAPL","name":"Apple"},{"category":"Stocks","symbol":"MSFT","name":"Microsoft"},{"category":"Stocks","symbol":"NVDA","name":"NVIDIA"},{"category":"Stocks","symbol":"AMZN","name":"Amazon"},{"category":"Stocks","symbol":"META","name":"Meta Platforms"},{"category":"Stocks","symbol":"TSLA","name":"Tesla"},{"category":"Stocks","symbol":"GOOGL","name":"Alphabet Class A"},{"category":"Stocks","symbol":"GOOG","name":"Alphabet Class C"},{"category":"Stocks","symbol":"NFLX","name":"Netflix"},{"category":"Stocks","symbol":"AMD","name":"AMD"},{"category":"Stocks","symbol":"INTC","name":"Intel"},{"category":"Stocks","symbol":"AVGO","name":"Broadcom"},{"category":"Stocks","symbol":"ORCL","name":"Oracle"},{"category":"Stocks","symbol":"CRM","name":"Salesforce"},{"category":"Stocks","symbol":"ADBE","name":"Adobe"},{"category":"Stocks","symbol":"QCOM","name":"Qualcomm"},{"category":"Stocks","symbol":"MU","name":"Micron"},{"category":"Stocks","symbol":"ARM","name":"Arm Holdings"},{"category":"Stocks","symbol":"SMCI","name":"Super Micro Computer"},{"category":"Stocks","symbol":"PLTR","name":"Palantir"},{"category":"Stocks","symbol":"COIN","name":"Coinbase"},{"category":"Stocks","symbol":"MSTR","name":"Strategy / MicroStrategy"},{"category":"Stocks","symbol":"HOOD","name":"Robinhood"},{"category":"Stocks","symbol":"JPM","name":"JPMorgan Chase"},{"category":"Stocks","symbol":"BAC","name":"Bank of America"},{"category":"Stocks","symbol":"GS","name":"Goldman Sachs"},{"category":"Stocks","symbol":"MS","name":"Morgan Stanley"},{"category":"Stocks","symbol":"V","name":"Visa"},{"category":"Stocks","symbol":"MA","name":"Mastercard"},{"category":"Stocks","symbol":"PYPL","name":"PayPal"},{"category":"Stocks","symbol":"AXP","name":"American Express"},{"category":"Stocks","symbol":"WMT","name":"Walmart"},{"category":"Stocks","symbol":"COST","name":"Costco"},{"category":"Stocks","symbol":"HD","name":"Home Depot"},{"category":"Stocks","symbol":"NKE","name":"Nike"},{"category":"Stocks","symbol":"MCD","name":"McDonald's"},{"category":"Stocks","symbol":"KO","name":"Coca-Cola"},{"category":"Stocks","symbol":"PEP","name":"PepsiCo"},{"category":"Stocks","symbol":"DIS","name":"Walt Disney"},{"category":"Stocks","symbol":"SBUX","name":"Starbucks"},{"category":"Stocks","symbol":"UBER","name":"Uber"},{"category":"Stocks","symbol":"ABNB","name":"Airbnb"},{"category":"Stocks","symbol":"BA","name":"Boeing"},{"category":"Stocks","symbol":"CAT","name":"Caterpillar"},{"category":"Stocks","symbol":"GE","name":"GE Aerospace"},{"category":"Stocks","symbol":"XOM","name":"Exxon Mobil"},{"category":"Stocks","symbol":"CVX","name":"Chevron"},{"category":"Stocks","symbol":"OXY","name":"Occidental Petroleum"},{"category":"Stocks","symbol":"LLY","name":"Eli Lilly"},{"category":"Stocks","symbol":"JNJ","name":"Johnson & Johnson"},{"category":"Stocks","symbol":"PFE","name":"Pfizer"},{"category":"Stocks","symbol":"MRK","name":"Merck"},{"category":"Stocks","symbol":"UNH","name":"UnitedHealth"},{"category":"Stocks","symbol":"T","name":"AT&T"},{"category":"Stocks","symbol":"VZ","name":"Verizon"},{"category":"Stocks","symbol":"IBM","name":"IBM"}];
+
+      const syncInstrumentUi = () => {
+        const value = (tradeInstrument.value || '').trim().toUpperCase();
+        instrumentSelectBtn.textContent = value || 'Select instrument';
+      };
+
+      const renderInstrumentResults = (query = '') => {
+        const normalizedQuery = String(query || '').trim().toUpperCase();
+        const matches = instrumentCatalog.filter((item) => {
+          if (!normalizedQuery) return true;
+          return item.symbol.includes(normalizedQuery)
+            || item.name.toUpperCase().includes(normalizedQuery)
+            || item.category.toUpperCase().includes(normalizedQuery);
+        });
+
+        instrumentResults.innerHTML = '';
+        if (!matches.length) {
+          const empty = document.createElement('div');
+          empty.className = 'instrument-empty';
+          empty.textContent = 'No matching instrument. Try another symbol or name.';
+          instrumentResults.appendChild(empty);
+          return;
+        }
+
+        let currentCategory = '';
+        matches.forEach((item) => {
+          if (item.category !== currentCategory) {
+            currentCategory = item.category;
+            const heading = document.createElement('div');
+            heading.className = 'instrument-category';
+            heading.textContent = currentCategory;
+            instrumentResults.appendChild(heading);
+          }
+
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.className = 'instrument-option';
+          option.dataset.instrumentValue = item.symbol;
+          option.classList.toggle('selected', tradeInstrument.value === item.symbol);
+
+          const symbol = document.createElement('span');
+          symbol.className = 'instrument-symbol';
+          symbol.textContent = item.symbol;
+
+          const name = document.createElement('span');
+          name.className = 'instrument-name';
+          name.textContent = item.name;
+
+          option.append(symbol, name);
+          instrumentResults.appendChild(option);
+        });
+      };
+
+      const syncInstrumentMenuScrollLock = () => {
+        const pickerOpen =
+          instrumentMenu.classList.contains('open') ||
+          psychologyBeforeMenu.classList.contains('open') ||
+          psychologyAfterMenu.classList.contains('open');
+        tradeForm.classList.toggle('psychology-menu-open', pickerOpen);
+      };
+
+      const psychologyStates = ['', 'Calm', 'Confident', 'Neutral', 'Anxious', 'Frustrated', 'Excited'];
 
       const renderPsychologyMenu = (select, button, menu) => {
         menu.innerHTML = '';
@@ -5273,11 +5326,11 @@
           const option = document.createElement('button');
           option.type = 'button';
           option.dataset.psychologyValue = state;
-          option.textContent = state || 'Select state';
+          option.textContent = state || 'Select emotion';
           option.classList.toggle('selected', select.value === state);
           menu.appendChild(option);
         });
-        button.textContent = select.value || 'Select state';
+        button.textContent = select.value || 'Select emotion';
       };
 
       const syncPsychologyUi = () => {
@@ -5286,20 +5339,18 @@
       };
 
       const syncPsychologyMenuScrollLock = () => {
-        const psychologyOpen =
-          psychologyBeforeMenu.classList.contains('open') ||
-          psychologyAfterMenu.classList.contains('open');
-        tradeForm.classList.toggle('psychology-menu-open', psychologyOpen);
+        syncInstrumentMenuScrollLock();
       };
 
       const closeCustomMenus = (except = null) => {
-        [accountSelectMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
+        [accountSelectMenu, instrumentMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
           if (menu !== except) menu.classList.remove('open');
         });
         if (accountSelectMenu !== except) accountSelectBtn.setAttribute('aria-expanded', 'false');
+        if (instrumentMenu !== except) instrumentSelectBtn.setAttribute('aria-expanded', 'false');
         if (psychologyBeforeMenu !== except) psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
         if (psychologyAfterMenu !== except) psychologyAfterBtn.setAttribute('aria-expanded', 'false');
-        syncPsychologyMenuScrollLock();
+        syncInstrumentMenuScrollLock();
       };
 
       const showPage = (page) => {
@@ -5372,7 +5423,8 @@
         if (!restored && !tradeDate.value) tradeDate.value = getLocalDateValue();
         syncTradeDateDisplay();
         syncPsychologyUi();
-        tradeInstrument.focus();
+        syncInstrumentUi();
+        instrumentSelectBtn.focus();
       };
 
       const openEditTrade = async () => {
@@ -5380,7 +5432,8 @@
         if (!trade) return;
         editingTradeId = trade.id;
         tradeForm.reset();
-        tradeInstrument.value = trade.instrument || '';
+        tradeInstrument.value = (trade.instrument || '').trim().toUpperCase();
+        syncInstrumentUi();
         selectedDirection = trade.direction || '';
         tradeDate.value = trade.date || getLocalDateValue();
         syncTradeDateDisplay();
@@ -5395,8 +5448,8 @@
         tradeResult.value = trade.result || '';
         tradeNotes.value = trade.notes || '';
         tradeMistakes.value = trade.mistakes || '';
-        psychologyBefore.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyBefore) ? trade.psychologyBefore : '';
-        psychologyAfter.value = ['Confident', 'Neutral', 'Fomo', 'Fear', 'Revenge', 'Disciplined', 'Anxious', 'Excited'].includes(trade.psychologyAfter) ? trade.psychologyAfter : '';
+        psychologyBefore.value = typeof trade.psychologyBefore === 'string' ? trade.psychologyBefore : '';
+        psychologyAfter.value = typeof trade.psychologyAfter === 'string' ? trade.psychologyAfter : '';
         syncPsychologyUi();
         await loadTradeScreenshots(trade);
         updateDirectionButtons();
@@ -5413,13 +5466,16 @@
         placeholder.classList.remove('visible');
         if (typeof tradeFormCard.showModal === 'function' && !tradeFormCard.open) tradeFormCard.showModal();
         tradeFormCard.classList.add('visible');
-        tradeInstrument.focus();
+        syncInstrumentUi();
+        instrumentSelectBtn.focus();
       };
 
       const resetTradeForm = () => {
         if (tradeFormCard.open && typeof tradeFormCard.close === 'function') tradeFormCard.close();
         tradeFormCard.classList.remove('visible');
         tradeForm.reset();
+        tradeInstrument.value = '';
+        syncInstrumentUi();
         resetPendingScreenshots();
         editingTradeId = null;
         tradeFormTitle.textContent = 'New Trade';
@@ -5673,8 +5729,6 @@
 
       themeDarkBtn.addEventListener('click', () => saveTheme('dark'));
       themeLightBtn.addEventListener('click', () => saveTheme('light'));
-      languageEnBtn.addEventListener('click', () => saveLanguage('en'));
-      languageIdBtn.addEventListener('click', () => saveLanguage('id'));
 
       importLocalBtn.addEventListener('click', async () => {
         if (!currentUser) return;
@@ -5913,6 +5967,34 @@
         handleAccountSelection(value);
       });
 
+      instrumentSelectBtn.addEventListener('click', () => {
+        const open = !instrumentMenu.classList.contains('open');
+        closeCustomMenus(open ? instrumentMenu : null);
+        instrumentMenu.classList.toggle('open', open);
+        instrumentSelectBtn.setAttribute('aria-expanded', String(open));
+        if (open) {
+          instrumentSearch.value = '';
+          renderInstrumentResults('');
+          setTimeout(() => instrumentSearch.focus(), 0);
+        }
+        syncInstrumentMenuScrollLock();
+      });
+
+      instrumentSearch.addEventListener('input', () => {
+        renderInstrumentResults(instrumentSearch.value);
+      });
+
+      instrumentResults.addEventListener('click', (event) => {
+        const option = event.target.closest('button[data-instrument-value]');
+        if (!option) return;
+        tradeInstrument.value = option.dataset.instrumentValue || '';
+        syncInstrumentUi();
+        instrumentMenu.classList.remove('open');
+        instrumentSelectBtn.setAttribute('aria-expanded', 'false');
+        syncInstrumentMenuScrollLock();
+        tradeInstrument.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
       const wirePsychologyMenu = (select, button, menu) => {
         button.addEventListener('click', () => {
           syncPsychologyUi();
@@ -5936,6 +6018,8 @@
 
       wirePsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
       wirePsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
+      syncInstrumentUi();
+      renderInstrumentResults('');
       syncPsychologyUi();
 
       accountForm.addEventListener('submit', async (event) => {
@@ -6071,6 +6155,10 @@
           accountSelectMenu.classList.remove('open');
           accountSelectBtn.setAttribute('aria-expanded', 'false');
         }
+        if (!instrumentMenu.contains(event.target) && event.target !== instrumentSelectBtn) {
+          instrumentMenu.classList.remove('open');
+          instrumentSelectBtn.setAttribute('aria-expanded', 'false');
+        }
         if (!psychologyBeforeMenu.contains(event.target) && event.target !== psychologyBeforeBtn) {
           psychologyBeforeMenu.classList.remove('open');
           psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
@@ -6092,7 +6180,7 @@
           return;
         }
         if (!instrument) {
-          showTradeError('Instrument is required.', tradeInstrument);
+          showTradeError('Instrument is required.', instrumentSelectBtn);
           return;
         }
         if (!selectedDirection) {
