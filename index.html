@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v82g-oppo-a83-legacy-fallback">
+<meta name="ertrades-build" content="v83-carousel-motion">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1958,6 +1958,33 @@
 
 
     /* ======================================================
+       VIEW ENTER MOTION — v83
+       ====================================================== */
+    @keyframes er-view-rise-in {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 16px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    #ertrades-app .er-view-enter {
+      animation: er-view-rise-in 360ms cubic-bezier(.22,.78,.28,1) both;
+      will-change: opacity, transform;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #ertrades-app .er-view-enter {
+        animation: none !important;
+        will-change: auto;
+      }
+    }
+
+
+    /* ======================================================
        PUBLIC LANDING PAGE
        ====================================================== */
     #ertrades-app .landing-page {
@@ -2383,7 +2410,7 @@
     #ertrades-app .landing-carousel-controls {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 10px;
       margin-top: 4px;
     }
@@ -2409,26 +2436,6 @@
       width: 17px;
       border-radius: 999px;
       background: var(--accent);
-    }
-
-    #ertrades-app .landing-carousel-arrows {
-      display: flex;
-      gap: 6px;
-    }
-
-    #ertrades-app .landing-carousel-arrow {
-      width: 38px;
-      height: 38px;
-      padding: 0;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--panel);
-      color: var(--text);
-      font-size: 17px;
-      font-weight: 800;
-      cursor: pointer;
     }
 
     #ertrades-app .landing-carousel-note {
@@ -4575,10 +4582,6 @@
 
             <div class="landing-carousel-controls">
               <div class="landing-carousel-dots" id="landing-carousel-dots" aria-label="Carousel pages"></div>
-              <div class="landing-carousel-arrows">
-                <button class="landing-carousel-arrow" id="landing-carousel-prev" type="button" aria-label="Previous account">‹</button>
-                <button class="landing-carousel-arrow" id="landing-carousel-next" type="button" aria-label="Next account">›</button>
-              </div>
             </div>
             <div class="landing-carousel-note">Demo data is illustrative only and is not taken from any user's trading account.</div>
           </div>
@@ -5548,8 +5551,6 @@
       const pwaInstallCloseBtn = root.querySelector('#pwa-install-close-btn');
       const landingOverviewCarousel = root.querySelector('#landing-overview-carousel');
       const landingCarouselDots = root.querySelector('#landing-carousel-dots');
-      const landingCarouselPrev = root.querySelector('#landing-carousel-prev');
-      const landingCarouselNext = root.querySelector('#landing-carousel-next');
       const authPage = root.querySelector('#auth-page');
       const appWorkspace = root.querySelector('#app-workspace');
       const topNavShell = root.querySelector('#top-nav-shell');
@@ -6200,6 +6201,7 @@
         root.style.removeProperty('--landing-nav-space');
         closeLandingMenu();
         authPage.classList.add('visible');
+        playViewEntrance(authPage);
         appWorkspace.style.display = 'none';
         profileMenu.classList.remove('visible');
         root.querySelector('.auth-tabs').style.display = 'none';
@@ -6509,6 +6511,13 @@
 
       renderLandingCarouselDots();
 
+      const playViewEntrance = (element) => {
+        if (!element) return;
+        element.classList.remove('er-view-enter');
+        void element.offsetWidth;
+        element.classList.add('er-view-enter');
+      };
+
       const showLanding = ({ replaceHistory = false } = {}) => {
         root.classList.remove('authenticated', 'auth-visible');
         root.classList.add('landing-visible');
@@ -6520,6 +6529,7 @@
         landingPage.classList.add('visible');
         closeLandingMenu();
         loadTheme();
+        playViewEntrance(landingPage);
 
         if (replaceHistory && window.history?.replaceState) {
           try {
@@ -8141,6 +8151,17 @@
         }
         if (page === 'Calendar') renderCalendar();
         if (page === 'Analytics') renderAnalytics();
+
+        const activePageElement =
+          page === 'Dashboard' ? dashboard :
+          page === 'Journal' ? journalPage :
+          page === 'Calendar' ? calendarPage :
+          page === 'Analytics' ? analyticsPage :
+          page === 'Trade Detail' ? tradeDetailPage :
+          page === 'Settings' ? settingsPage :
+          placeholder;
+
+        playViewEntrance(activePageElement);
       };
 
       const openAccountForm = (account = null) => {
@@ -8388,14 +8409,6 @@
           setAuthStatus(error instanceof Error ? error.message : 'Unable to initialize eRTrades.', 'error');
         }
       };
-
-      landingCarouselPrev.addEventListener('click', () => {
-        scrollLandingCarouselTo(landingCarouselIndex - 1);
-      });
-
-      landingCarouselNext.addEventListener('click', () => {
-        scrollLandingCarouselTo(landingCarouselIndex + 1);
-      });
 
       landingOverviewCarousel.addEventListener('scroll', () => {
         clearTimeout(landingCarouselScrollTimer);
