@@ -4988,6 +4988,104 @@
       #ertrades-app .nav-btn,
       #ertrades-app .metric { transition: .16s ease; }
     }
+
+
+    /* ======================================================
+       DESKTOP LEFT SIDEBAR NAVIGATION
+       Uses the existing mobile bottom navigation markup.
+       Enabled only on desktop-class devices at >= 1024px.
+       Android/iOS/iPadOS keep the original bottom navigation.
+       ====================================================== */
+    @media (min-width: 1024px) {
+      #ertrades-app.desktop-device.authenticated .shell {
+        max-width: none;
+        padding-left: 226px;
+        padding-right: 28px;
+        padding-bottom: 38px;
+      }
+
+      #ertrades-app.desktop-device.authenticated .top-nav-shell {
+        left: 226px;
+        right: 28px;
+        width: auto;
+        max-width: none;
+        transform: none;
+      }
+
+      #ertrades-app.desktop-device.authenticated #app-workspace {
+        width: 100%;
+        max-width: 1440px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-bottom: 24px;
+      }
+
+      #ertrades-app.desktop-device.authenticated .nav-shell {
+        position: fixed;
+        left: 18px;
+        top: 18px;
+        bottom: 18px;
+        width: 190px;
+        max-width: none;
+        margin: 0;
+        padding: 10px;
+        transform: none;
+        border-radius: 18px;
+        overflow: hidden;
+        z-index: 72;
+        background: rgba(10,16,19,.92);
+        box-shadow: 0 16px 38px rgba(0,0,0,.30);
+        backdrop-filter: blur(12px) saturate(115%);
+        -webkit-backdrop-filter: blur(12px) saturate(115%);
+      }
+
+      #ertrades-app.desktop-device.authenticated .nav-shell::before,
+      #ertrades-app.desktop-device.authenticated .nav-shell::after {
+        display: none;
+      }
+
+      #ertrades-app.desktop-device.authenticated .bottom-nav {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+
+      #ertrades-app.desktop-device.authenticated .nav-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 50px;
+        padding: 0 13px;
+        border-radius: 12px;
+        flex: 0 0 auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 11px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      #ertrades-app.desktop-device.authenticated .nav-btn svg {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+      }
+
+      #ertrades-app.desktop-device.authenticated .nav-btn:last-child {
+        margin-top: auto;
+      }
+
+      #ertrades-app.desktop-device.authenticated .nav-btn.active {
+        color: var(--accent);
+        background: rgba(184,255,79,.09);
+        box-shadow: inset 0 0 0 1px rgba(184,255,79,.08);
+      }
+    }
   </style>
 
   <div class="shell">
@@ -6168,6 +6266,15 @@
       const root = document.getElementById('ertrades-app');
       if (!root || root.dataset.initialized === 'true') return;
       root.dataset.initialized = 'true';
+      // Device gate for the desktop-only left sidebar navigation.
+      // iPhone/iPad/iPod, iPadOS desktop-UA mode, and Android intentionally
+      // keep the original mobile bottom navigation even on wide screens.
+      const deviceUA = String(window.navigator.userAgent || '');
+      const isAndroidDevice = /Android/i.test(deviceUA);
+      const isIOSDevice = /iPhone|iPad|iPod/i.test(deviceUA);
+      const isIPadOSDevice = /Macintosh/i.test(deviceUA) && Number(window.navigator.maxTouchPoints || 0) > 1;
+      const useDesktopNavigation = !isAndroidDevice && !isIOSDevice && !isIPadOSDevice;
+      root.classList.toggle('desktop-device', useDesktopNavigation);
 
       const navButtons = Array.from(root.querySelectorAll('.nav-btn'));
       const dashboard = root.querySelector('#dashboard-content');
