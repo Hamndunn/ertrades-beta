@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83d-email-confirmation-notice">
+<meta name="ertrades-build" content="v83e-auth-resend-eye">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2729,6 +2729,82 @@
       margin-top: 15px;
     }
 
+    #ertrades-app .password-input-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #ertrades-app .password-input-wrap input {
+      width: 100%;
+      padding-right: 48px;
+    }
+
+    #ertrades-app .password-eye-btn {
+      position: absolute;
+      top: 50%;
+      right: 5px;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      transform: translateY(-50%);
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #ertrades-app .password-eye-btn:focus-visible {
+      outline: 2px solid rgba(184,255,79,.55);
+      outline-offset: 1px;
+    }
+
+    #ertrades-app .password-eye-btn .eye-icon {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    #ertrades-app .password-eye-btn .eye-closed { display: none; }
+
+    #ertrades-app .password-eye-btn.password-visible .eye-open { display: none; }
+    #ertrades-app .password-eye-btn.password-visible .eye-closed { display: block; }
+
+    #ertrades-app .auth-email-actions[hidden],
+    #ertrades-app .auth-resend-btn[hidden] {
+      display: none !important;
+    }
+
+    #ertrades-app .auth-email-actions {
+      display: grid;
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    #ertrades-app .auth-resend-btn {
+      min-height: 42px;
+      padding: 9px 12px;
+      border: 1px solid rgba(184,255,79,.34);
+      border-radius: 10px;
+      background: rgba(184,255,79,.055);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #ertrades-app .auth-resend-btn:disabled {
+      cursor: default;
+      opacity: .58;
+    }
+
     #ertrades-app .text-btn {
       min-height: 42px;
       border: 0;
@@ -3255,6 +3331,14 @@
     #ertrades-app.theme-light .equity-filter,
     #ertrades-app.theme-light .screenshot-slot,
     #ertrades-app.theme-light .auth-tab,
+    #ertrades-app.theme-light .password-eye-btn {
+      color: #67737a;
+    }
+
+    #ertrades-app.theme-light .auth-resend-btn {
+      background: rgba(91,154,0,.055);
+    }
+
     #ertrades-app.theme-light .auth-status {
       background: #f7f9fa;
     }
@@ -4840,14 +4924,46 @@
             </div>
             <div class="field">
               <label for="auth-password">Password</label>
-              <input id="auth-password" type="password" autocomplete="current-password" minlength="6" placeholder="••••••••" required>
+              <div class="password-input-wrap">
+                <input id="auth-password" type="password" autocomplete="current-password" minlength="6" placeholder="••••••••" required>
+                <button class="password-eye-btn" id="auth-password-eye" type="button" aria-label="Show password" title="Show password">
+                  <svg class="eye-icon eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                    <circle cx="12" cy="12" r="2.6"></circle>
+                  </svg>
+                  <svg class="eye-icon eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 3l18 18"></path>
+                    <path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6 0 9.5 6 9.5 6a15.8 15.8 0 0 1-3 3.6"></path>
+                    <path d="M6.4 6.5C3.9 8.2 2.5 12 2.5 12s3.5 6 9.5 6a10.3 10.3 0 0 0 4-.8"></path>
+                    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
             <div class="field" id="auth-confirm-password-field" style="display:none">
               <label for="auth-confirm-password">Confirm New Password</label>
-              <input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="6" placeholder="••••••••">
+              <div class="password-input-wrap">
+                <input id="auth-confirm-password" type="password" autocomplete="new-password" minlength="6" placeholder="••••••••">
+                <button class="password-eye-btn" id="auth-confirm-password-eye" type="button" aria-label="Show confirm password" title="Show confirm password">
+                  <svg class="eye-icon eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                    <circle cx="12" cy="12" r="2.6"></circle>
+                  </svg>
+                  <svg class="eye-icon eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 3l18 18"></path>
+                    <path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6 0 9.5 6 9.5 6a15.8 15.8 0 0 1-3 3.6"></path>
+                    <path d="M6.4 6.5C3.9 8.2 2.5 12 2.5 12s3.5 6 9.5 6a10.3 10.3 0 0 0 4-.8"></path>
+                    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
           <div class="auth-status" id="auth-status" role="status" aria-live="polite"></div>
+          <div class="auth-email-actions" id="auth-email-actions" hidden>
+            <button class="auth-resend-btn" id="resend-confirmation-btn" type="button" hidden>Resend confirmation email</button>
+            <button class="auth-resend-btn" id="resend-reset-btn" type="button" hidden>Resend reset email</button>
+          </div>
           <div class="auth-actions">
             <button class="primary-btn" id="auth-submit" type="submit">Login</button>
             <button class="text-btn" id="forgot-password-btn" type="button">Forgot Password?</button>
@@ -5695,8 +5811,13 @@
       const authForm = root.querySelector('#auth-form');
       const authEmail = root.querySelector('#auth-email');
       const authPassword = root.querySelector('#auth-password');
+      const authPasswordEye = root.querySelector('#auth-password-eye');
       const authConfirmPasswordField = root.querySelector('#auth-confirm-password-field');
       const authConfirmPassword = root.querySelector('#auth-confirm-password');
+      const authConfirmPasswordEye = root.querySelector('#auth-confirm-password-eye');
+      const authEmailActions = root.querySelector('#auth-email-actions');
+      const resendConfirmationBtn = root.querySelector('#resend-confirmation-btn');
+      const resendResetBtn = root.querySelector('#resend-reset-btn');
       const authSubmit = root.querySelector('#auth-submit');
       const forgotPasswordBtn = root.querySelector('#forgot-password-btn');
       const cancelPasswordResetBtn = root.querySelector('#cancel-password-reset-btn');
@@ -6296,6 +6417,111 @@
         ? crypto.randomUUID()
         : `user-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
+      const AUTH_EMAIL_RESEND_COOLDOWN_SECONDS = 60;
+      let authPendingConfirmationEmail = '';
+      let authPendingResetEmail = '';
+      let authResendTimer = null;
+      let authResendCountdown = 0;
+      let authResendMode = '';
+
+      const setPasswordVisibility = (input, button, visible) => {
+        if (!input || !button) return;
+        input.type = visible ? 'text' : 'password';
+        button.classList.toggle('password-visible', visible);
+        const label = input === authConfirmPassword
+          ? (visible ? 'Hide confirm password' : 'Show confirm password')
+          : (visible ? 'Hide password' : 'Show password');
+        button.setAttribute('aria-label', label);
+        button.title = label;
+      };
+
+      const resetAuthPasswordVisibility = () => {
+        setPasswordVisibility(authPassword, authPasswordEye, false);
+        setPasswordVisibility(authConfirmPassword, authConfirmPasswordEye, false);
+      };
+
+      const togglePasswordVisibility = (input, button) => {
+        setPasswordVisibility(input, button, input.type === 'password');
+        input.focus();
+      };
+
+      const clearAuthResendTimer = () => {
+        if (authResendTimer) {
+          window.clearInterval(authResendTimer);
+          authResendTimer = null;
+        }
+        authResendCountdown = 0;
+      };
+
+      const hideAuthEmailActions = () => {
+        clearAuthResendTimer();
+        authResendMode = '';
+        authEmailActions.hidden = true;
+        resendConfirmationBtn.hidden = true;
+        resendResetBtn.hidden = true;
+        resendConfirmationBtn.disabled = false;
+        resendResetBtn.disabled = false;
+        resendConfirmationBtn.textContent = 'Resend confirmation email';
+        resendResetBtn.textContent = 'Resend reset email';
+      };
+
+      const updateAuthResendCountdown = () => {
+        const button = authResendMode === 'confirmation'
+          ? resendConfirmationBtn
+          : authResendMode === 'reset'
+            ? resendResetBtn
+            : null;
+
+        if (!button) return;
+
+        if (authResendCountdown > 0) {
+          button.disabled = true;
+          button.textContent = authResendMode === 'confirmation'
+            ? `Resend confirmation in ${authResendCountdown}s`
+            : `Resend reset email in ${authResendCountdown}s`;
+        } else {
+          button.disabled = false;
+          button.textContent = authResendMode === 'confirmation'
+            ? 'Resend confirmation email'
+            : 'Resend reset email';
+        }
+      };
+
+      const startAuthResendCooldown = (mode) => {
+        clearAuthResendTimer();
+        authResendMode = mode;
+        authResendCountdown = AUTH_EMAIL_RESEND_COOLDOWN_SECONDS;
+        updateAuthResendCountdown();
+
+        authResendTimer = window.setInterval(() => {
+          authResendCountdown -= 1;
+
+          if (authResendCountdown <= 0) {
+            clearAuthResendTimer();
+          }
+
+          updateAuthResendCountdown();
+        }, 1000);
+      };
+
+      const showConfirmationResend = (email) => {
+        authPendingConfirmationEmail = normalizeEmail(email);
+        authPendingResetEmail = '';
+        authEmailActions.hidden = false;
+        resendConfirmationBtn.hidden = false;
+        resendResetBtn.hidden = true;
+        startAuthResendCooldown('confirmation');
+      };
+
+      const showResetResend = (email) => {
+        authPendingResetEmail = normalizeEmail(email);
+        authPendingConfirmationEmail = '';
+        authEmailActions.hidden = false;
+        resendConfirmationBtn.hidden = true;
+        resendResetBtn.hidden = false;
+        startAuthResendCooldown('reset');
+      };
+
       const setAuthStatus = (message, type = '') => {
         authStatus.textContent = message;
         authStatus.className = `auth-status show${type ? ` ${type}` : ''}`;
@@ -6322,6 +6548,8 @@
         authConfirmPassword.value = '';
         forgotPasswordBtn.style.display = signingUp ? 'none' : 'block';
         cancelPasswordResetBtn.style.display = 'none';
+        hideAuthEmailActions();
+        resetAuthPasswordVisibility();
         clearAuthStatus();
       };
 
@@ -6350,6 +6578,8 @@
         authSubmit.textContent = 'Update Password';
         forgotPasswordBtn.style.display = 'none';
         cancelPasswordResetBtn.style.display = 'block';
+        hideAuthEmailActions();
+        resetAuthPasswordVisibility();
         clearAuthStatus();
         authPassword.focus();
       };
@@ -8755,6 +8985,95 @@
       loginTab.addEventListener('click', () => setAuthMode('login'));
       signupTab.addEventListener('click', () => setAuthMode('signup'));
 
+      authPasswordEye.addEventListener('click', () => {
+        togglePasswordVisibility(authPassword, authPasswordEye);
+      });
+
+      authConfirmPasswordEye.addEventListener('click', () => {
+        togglePasswordVisibility(authConfirmPassword, authConfirmPasswordEye);
+      });
+
+      resendConfirmationBtn.addEventListener('click', async () => {
+        const email = normalizeEmail(authPendingConfirmationEmail || authEmail.value);
+
+        if (!email || !email.includes('@')) {
+          setAuthStatus('Enter a valid email address first.', 'error');
+          hideAuthEmailActions();
+          authEmail.focus();
+          return;
+        }
+
+        resendConfirmationBtn.disabled = true;
+        resendConfirmationBtn.textContent = 'Sending…';
+
+        try {
+          await supabaseRequest('/auth/v1/resend', {
+            method: 'POST',
+            body: JSON.stringify({
+              type: 'signup',
+              email
+            })
+          });
+
+          setAuthStatus(
+            `Confirmation email sent again to ${email}. Check your inbox and spam, then use the newest confirmation link.`,
+            'success'
+          );
+          authPendingConfirmationEmail = email;
+          startAuthResendCooldown('confirmation');
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to resend the confirmation email right now.';
+          setAuthStatus(
+            /rate limit|security purposes|after \d+ seconds?/i.test(message)
+              ? 'Please wait a little before requesting another confirmation email.'
+              : message,
+            'error'
+          );
+          startAuthResendCooldown('confirmation');
+        }
+      });
+
+      resendResetBtn.addEventListener('click', async () => {
+        const email = normalizeEmail(authPendingResetEmail || authEmail.value);
+
+        if (!email || !email.includes('@')) {
+          setAuthStatus('Enter a valid email address first.', 'error');
+          hideAuthEmailActions();
+          authEmail.focus();
+          return;
+        }
+
+        resendResetBtn.disabled = true;
+        resendResetBtn.textContent = 'Sending…';
+
+        try {
+          const redirectTo = `${window.location.origin}${window.location.pathname}`;
+          await supabaseRequest('/auth/v1/recover', {
+            method: 'POST',
+            body: JSON.stringify({
+              email,
+              redirect_to: redirectTo
+            })
+          });
+
+          setAuthStatus(
+            'If an account exists for this email, a new password reset link has been sent. Check your inbox and spam, and use the newest email.',
+            'success'
+          );
+          authPendingResetEmail = email;
+          startAuthResendCooldown('reset');
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to resend the password reset email right now.';
+          setAuthStatus(
+            /rate limit|security purposes|after \d+ seconds?/i.test(message)
+              ? 'Please wait a little before requesting another password reset email.'
+              : message,
+            'error'
+          );
+          startAuthResendCooldown('reset');
+        }
+      });
+
       authForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         clearAuthStatus();
@@ -8804,6 +9123,7 @@
                 `Account created. We sent a confirmation link to ${email}. Check your inbox (and spam), confirm your email, then return here and log in.`,
                 'success'
               );
+              showConfirmationResend(email);
 
               window.setTimeout(() => {
                 try { authPassword.focus(); } catch (_) {}
@@ -8864,7 +9184,8 @@
             method: 'POST',
             body: JSON.stringify({ email, redirect_to: redirectTo })
           });
-          setAuthStatus('Password reset email sent. Open the newest email from eRTrades, tap the reset link, then set your new password in eRTrades.', 'success');
+          setAuthStatus('If an account exists for this email, a password reset link has been sent. Check your inbox and spam, then open the newest email from eRTrades.', 'success');
+          showResetResend(email);
         } catch (error) {
           const message = error instanceof Error ? error.message : 'Unable to request a password reset right now.';
           setAuthStatus(/rate limit/i.test(message) ? 'Too many reset emails were requested. Wait a few minutes, then try Forgot Password again once.' : message, 'error');
