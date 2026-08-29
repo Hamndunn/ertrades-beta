@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83b-weekly-pl">
+<meta name="ertrades-build" content="v83c-landing-typing">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2231,10 +2231,41 @@
 
     #ertrades-app .landing-copy {
       max-width: 620px;
+      min-height: 5.1em;
       margin: 0;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.7;
+    }
+
+    #ertrades-app .landing-copy.typing::after {
+      content: '';
+      display: inline-block;
+      width: 1.5px;
+      height: 1em;
+      margin-left: 3px;
+      vertical-align: -.12em;
+      background: currentColor;
+      opacity: .82;
+      animation: er-typing-caret 760ms steps(1,end) infinite;
+    }
+
+    @keyframes er-typing-caret {
+      0%, 48% { opacity: .82; }
+      49%, 100% { opacity: 0; }
+    }
+
+    @media (min-width: 700px) {
+      #ertrades-app .landing-copy {
+        min-height: 3.4em;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #ertrades-app .landing-copy.typing::after {
+        display: none;
+        animation: none;
+      }
     }
 
     #ertrades-app .landing-cta-row {
@@ -4575,9 +4606,11 @@
       <section class="landing-hero">
         <div class="landing-kicker">Personal Trading Journal</div>
         <h1 class="landing-title" id="landing-title">Turn every trade into <span>better decisions.</span></h1>
-        <p class="landing-copy">
-          Record your trades, review your performance, understand your emotions, and build consistency from one private trading journal.
-        </p>
+        <p
+          class="landing-copy"
+          id="landing-copy"
+          aria-label="Record your trades, review your performance, understand your emotions, and build consistency from one private trading journal."
+        >Record your trades, review your performance, understand your emotions, and build consistency from one private trading journal.</p>
         <div class="landing-cta-row">
           <button class="landing-cta primary" id="landing-start-btn" type="button">Start Journaling</button>
           <button class="landing-cta" id="landing-existing-btn" type="button">I already have an account</button>
@@ -5625,6 +5658,7 @@
       const deleteAccountConfirmBtn = root.querySelector('#delete-account-confirm-btn');
       const landingPage = root.querySelector('#landing-page');
       const landingHero = root.querySelector('.landing-hero');
+      const landingCopy = root.querySelector('#landing-copy');
       const landingNavShell = root.querySelector('#landing-nav-shell');
       const landingMenuBtn = root.querySelector('#landing-menu-btn');
       const landingMenuPanel = root.querySelector('#landing-menu-panel');
@@ -6635,6 +6669,69 @@
         viewEntranceTimers.set(element, window.setTimeout(cleanup, 520));
       };
 
+      const landingCopyFullText = String(landingCopy.textContent || '').trim().replace(/\s+/g, ' ');
+      let landingTypingTimer = null;
+      let landingTypingRun = 0;
+
+      const stopLandingTyping = ({ showFullText = false } = {}) => {
+        landingTypingRun += 1;
+
+        if (landingTypingTimer) {
+          window.clearTimeout(landingTypingTimer);
+          landingTypingTimer = null;
+        }
+
+        landingCopy.classList.remove('typing');
+
+        if (showFullText) {
+          landingCopy.textContent = landingCopyFullText;
+        }
+      };
+
+      const playLandingTyping = () => {
+        stopLandingTyping();
+
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          landingCopy.textContent = landingCopyFullText;
+          return;
+        }
+
+        const runId = landingTypingRun;
+        let index = 0;
+
+        landingCopy.textContent = '';
+        landingCopy.classList.add('typing');
+
+        const typeNextCharacter = () => {
+          if (
+            runId !== landingTypingRun ||
+            !landingPage.classList.contains('visible')
+          ) {
+            return;
+          }
+
+          if (index >= landingCopyFullText.length) {
+            landingCopy.classList.remove('typing');
+            landingTypingTimer = null;
+            return;
+          }
+
+          const character = landingCopyFullText.charAt(index);
+          landingCopy.textContent += character;
+          index += 1;
+
+          const delay =
+            character === '.' ? 360 :
+            character === ',' ? 190 :
+            character === ' ' ? 34 :
+            48;
+
+          landingTypingTimer = window.setTimeout(typeNextCharacter, delay);
+        };
+
+        landingTypingTimer = window.setTimeout(typeNextCharacter, 480);
+      };
+
       const showLanding = ({ replaceHistory = false } = {}) => {
         root.classList.remove('authenticated', 'auth-visible');
         root.classList.add('landing-visible');
@@ -6647,6 +6744,7 @@
         closeLandingMenu();
         loadTheme();
         playViewEntrance(landingHero);
+        playLandingTyping();
 
         if (replaceHistory && window.history?.replaceState) {
           try {
@@ -6665,6 +6763,7 @@
         root.classList.remove('auth-visible', 'landing-visible');
         root.classList.add('authenticated');
         landingPage.classList.remove('visible');
+        stopLandingTyping({ showFullText: true });
         root.style.removeProperty('--landing-nav-space');
         authPage.classList.remove('visible');
         appWorkspace.style.display = 'grid';
@@ -6692,6 +6791,7 @@
         root.style.removeProperty('--top-nav-space');
         root.style.removeProperty('--landing-nav-space');
         landingPage.classList.remove('visible');
+        stopLandingTyping({ showFullText: true });
         closeLandingMenu();
         authPage.classList.add('visible');
         appWorkspace.style.display = 'none';
