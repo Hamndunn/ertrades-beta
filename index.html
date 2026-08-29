@@ -1,4 +1,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+  (() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('preview') !== 'desktop') return;
+
+      document.documentElement.dataset.erDesktopPreview = 'true';
+
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute(
+          'content',
+          'width=1440, viewport-fit=cover, user-scalable=yes, minimum-scale=0.1, maximum-scale=5'
+        );
+      }
+    } catch (_) {}
+  })();
+</script>
 <meta name="theme-color" content="#070b0d">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
@@ -17,7 +35,60 @@
     background: #070b0d;
     overflow-x: hidden;
   }
+
+
+  html[data-er-desktop-preview="true"],
+  html[data-er-desktop-preview="true"] body {
+    min-width: 1440px;
+    overflow-x: auto;
+  }
+
+  #er-desktop-preview-badge {
+    display: none;
+  }
+
+  html[data-er-desktop-preview="true"] #er-desktop-preview-badge {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    padding: 8px 10px 8px 13px;
+    border: 1px solid rgba(184,255,79,.38);
+    border-radius: 11px;
+    background: rgba(10,16,19,.90);
+    color: #a7b3b9;
+    box-shadow: 0 12px 28px rgba(0,0,0,.28);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font: 800 10px/1.2 Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  #er-desktop-preview-badge strong {
+    color: #b8ff4f;
+  }
+
+  #er-desktop-preview-exit {
+    min-height: 28px;
+    padding: 6px 9px;
+    border: 1px solid #26363d;
+    border-radius: 7px;
+    background: #10181c;
+    color: #f4f7f8;
+    text-decoration: none;
+    font-size: 9px;
+    font-weight: 900;
+  }
 </style>
+<div id="er-desktop-preview-badge" aria-live="polite">
+  <span><strong>Desktop Preview</strong> · 1440px</span>
+  <a id="er-desktop-preview-exit" href="/">Exit Preview</a>
+</div>
 <div id="ertrades-app" class="er-app">
   <style>
     #ertrades-app {
@@ -8971,6 +9042,19 @@
       if (!cachedAppBooted && !initialRecoveryRedirect) {
         showLanding({ replaceHistory: true });
       }
+      if (document.documentElement.dataset.erDesktopPreview === 'true') {
+        const exitPreview = document.querySelector('#er-desktop-preview-exit');
+        if (exitPreview) {
+          try {
+            const exitUrl = new URL(window.location.href);
+            exitUrl.searchParams.delete('preview');
+            exitPreview.href = `${exitUrl.pathname}${exitUrl.search}${exitUrl.hash}` || '/';
+          } catch (_) {
+            exitPreview.href = '/';
+          }
+        }
+      }
+
       initializeData();
     })();
   </script>
