@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83c-landing-typing">
+<meta name="ertrades-build" content="v83d-email-confirmation-notice">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2753,7 +2753,11 @@
 
     #ertrades-app .auth-status.show { display: block; }
     #ertrades-app .auth-status.error { color: var(--red); border-color: rgba(255,107,121,.25); }
-    #ertrades-app .auth-status.success { color: var(--green); border-color: rgba(99,230,161,.25); }
+    #ertrades-app .auth-status.success {
+      color: var(--green);
+      border-color: rgba(99,230,161,.34);
+      background: rgba(99,230,161,.07);
+    }
 
     #ertrades-app .profile-menu {
       margin-left: auto;
@@ -8787,8 +8791,23 @@
             });
             if (!response?.access_token || !response?.user?.id) {
               authForm.reset();
-              setAuthStatus('Account created. Check your email to confirm your address, then return here and log in.', 'success');
+
+              /*
+                Email confirmation is enabled.
+                Switch to Login FIRST because setAuthMode clears authStatus,
+                then show the confirmation notice so it remains visible.
+              */
               setAuthMode('login');
+              authEmail.value = email;
+              authPassword.value = '';
+              setAuthStatus(
+                `Account created. We sent a confirmation link to ${email}. Check your inbox (and spam), confirm your email, then return here and log in.`,
+                'success'
+              );
+
+              window.setTimeout(() => {
+                try { authPassword.focus(); } catch (_) {}
+              }, 80);
               return;
             }
             if (!saveSupabaseSession(response)) throw new Error('Unable to persist login session.');
