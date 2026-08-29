@@ -18,7 +18,18 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83h-auto-risk-percent">
+<script>
+  (() => {
+    try {
+      const ua = String(window.navigator.userAgent || '');
+      const isAndroid = /Android/i.test(ua);
+      const isIOS = /iPhone|iPad|iPod/i.test(ua);
+      const isIPadOS = /Macintosh/i.test(ua) && Number(window.navigator.maxTouchPoints || 0) > 1;
+      document.documentElement.classList.toggle('er-desktop-device', !isAndroid && !isIOS && !isIPadOS);
+    } catch (_) {}
+  })();
+</script>
+<meta name="ertrades-build" content="v83i-desktop-sidebar">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4989,30 +5000,29 @@
       #ertrades-app .metric { transition: .16s ease; }
     }
 
-
     /* ======================================================
-       DESKTOP LEFT SIDEBAR NAVIGATION
-       Uses the existing mobile bottom navigation markup.
-       Enabled only on desktop-class devices at >= 1024px.
-       Android/iOS/iPadOS keep the original bottom navigation.
+       v83i — DESKTOP LEFT SIDEBAR
+       The SAME primary navigation used on mobile is moved
+       from the bottom to the left on real desktop/laptop.
+       Android / iPhone / iPad keep the original bottom nav.
        ====================================================== */
-    @media (min-width: 1024px) {
-      #ertrades-app.desktop-device.authenticated .shell {
+    @media (min-width: 800px) {
+      html.er-desktop-device #ertrades-app.authenticated .shell {
         max-width: none;
-        padding-left: 226px;
-        padding-right: 28px;
-        padding-bottom: 38px;
+        padding-left: 244px;
+        padding-right: 30px;
+        padding-bottom: 42px;
       }
 
-      #ertrades-app.desktop-device.authenticated .top-nav-shell {
-        left: 226px;
-        right: 28px;
+      html.er-desktop-device #ertrades-app.authenticated .top-nav-shell {
+        left: 244px;
+        right: 30px;
         width: auto;
         max-width: none;
         transform: none;
       }
 
-      #ertrades-app.desktop-device.authenticated #app-workspace {
+      html.er-desktop-device #ertrades-app.authenticated #app-workspace {
         width: 100%;
         max-width: 1440px;
         margin-left: auto;
@@ -5020,16 +5030,17 @@
         padding-bottom: 24px;
       }
 
-      #ertrades-app.desktop-device.authenticated .nav-shell {
+      html.er-desktop-device #ertrades-app.authenticated .nav-shell {
         position: fixed;
         left: 18px;
         top: 18px;
         bottom: 18px;
-        width: 190px;
+        width: 208px;
         max-width: none;
         margin: 0;
-        padding: 10px;
+        padding: 12px;
         transform: none;
+        border: 1px solid var(--border);
         border-radius: 18px;
         overflow: hidden;
         z-index: 72;
@@ -5039,51 +5050,51 @@
         -webkit-backdrop-filter: blur(12px) saturate(115%);
       }
 
-      #ertrades-app.desktop-device.authenticated .nav-shell::before,
-      #ertrades-app.desktop-device.authenticated .nav-shell::after {
+      html.er-desktop-device #ertrades-app.authenticated .nav-shell::before,
+      html.er-desktop-device #ertrades-app.authenticated .nav-shell::after {
         display: none;
       }
 
-      #ertrades-app.desktop-device.authenticated .bottom-nav {
+      html.er-desktop-device #ertrades-app.authenticated .bottom-nav {
         min-width: 0;
         width: 100%;
-        height: 100%;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 6px;
+        gap: 7px;
       }
 
-      #ertrades-app.desktop-device.authenticated .nav-btn {
+      html.er-desktop-device #ertrades-app.authenticated .nav-btn {
         width: 100%;
         min-width: 0;
-        min-height: 50px;
-        padding: 0 13px;
+        min-height: 54px;
+        padding: 0 14px;
         border-radius: 12px;
         flex: 0 0 auto;
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
-        gap: 11px;
+        gap: 12px;
         text-align: left;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 760;
       }
 
-      #ertrades-app.desktop-device.authenticated .nav-btn svg {
-        width: 20px;
-        height: 20px;
-        flex: 0 0 20px;
+      html.er-desktop-device #ertrades-app.authenticated .nav-btn svg {
+        width: 21px;
+        height: 21px;
+        flex: 0 0 21px;
       }
 
-      #ertrades-app.desktop-device.authenticated .nav-btn:last-child {
-        margin-top: auto;
-      }
-
-      #ertrades-app.desktop-device.authenticated .nav-btn.active {
+      html.er-desktop-device #ertrades-app.authenticated .nav-btn.active {
         color: var(--accent);
         background: rgba(184,255,79,.09);
-        box-shadow: inset 0 0 0 1px rgba(184,255,79,.08);
+        box-shadow: inset 0 0 0 1px rgba(184,255,79,.09);
+      }
+
+      html.er-desktop-device #ertrades-app.theme-light.authenticated .nav-shell {
+        background: rgba(247,250,251,.94);
       }
     }
   </style>
@@ -6266,15 +6277,6 @@
       const root = document.getElementById('ertrades-app');
       if (!root || root.dataset.initialized === 'true') return;
       root.dataset.initialized = 'true';
-      // Device gate for the desktop-only left sidebar navigation.
-      // iPhone/iPad/iPod, iPadOS desktop-UA mode, and Android intentionally
-      // keep the original mobile bottom navigation even on wide screens.
-      const deviceUA = String(window.navigator.userAgent || '');
-      const isAndroidDevice = /Android/i.test(deviceUA);
-      const isIOSDevice = /iPhone|iPad|iPod/i.test(deviceUA);
-      const isIPadOSDevice = /Macintosh/i.test(deviceUA) && Number(window.navigator.maxTouchPoints || 0) > 1;
-      const useDesktopNavigation = !isAndroidDevice && !isIOSDevice && !isIPadOSDevice;
-      root.classList.toggle('desktop-device', useDesktopNavigation);
 
       const navButtons = Array.from(root.querySelectorAll('.nav-btn'));
       const dashboard = root.querySelector('#dashboard-content');
