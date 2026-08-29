@@ -26,6 +26,9 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=72">
 <link rel="shortcut icon" href="/favicon.ico?v=72">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=72">
+<link rel="manifest" href="/manifest.webmanifest?v=82">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
 <style>
   html, body {
     margin: 0;
@@ -1747,6 +1750,121 @@
       grid-template-columns: repeat(2,minmax(0,1fr));
       gap: 9px;
       margin-top: 17px;
+    }
+
+
+    #ertrades-app .pwa-install-menu-item[hidden],
+    #ertrades-app .pwa-install-divider[hidden] {
+      display: none !important;
+    }
+
+    #ertrades-app .pwa-install-dialog {
+      width: min(92%, 430px);
+    }
+
+    #ertrades-app .pwa-install-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    #ertrades-app .pwa-install-brand-icon {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a1013;
+    }
+
+    #ertrades-app .pwa-install-brand-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    #ertrades-app .pwa-install-brand strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    #ertrades-app .pwa-install-brand span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.3;
+    }
+
+    #ertrades-app .pwa-install-steps {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0 16px;
+    }
+
+    #ertrades-app .pwa-install-step {
+      display: grid;
+      grid-template-columns: 26px minmax(0,1fr);
+      gap: 9px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(7,11,13,.28);
+      color: var(--soft);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .pwa-install-step b {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--accent-dark);
+      color: var(--accent);
+      font-size: 10px;
+    }
+
+    #ertrades-app .pwa-install-status {
+      display: none;
+      margin: 0 0 12px;
+      padding: 9px 10px;
+      border: 1px solid rgba(184,255,79,.28);
+      border-radius: 9px;
+      background: rgba(184,255,79,.055);
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    #ertrades-app .pwa-install-status.show {
+      display: block;
+    }
+
+    #ertrades-app .pwa-install-actions {
+      grid-template-columns: 1fr;
+    }
+
+    #ertrades-app .pwa-install-primary {
+      min-height: 46px;
+      border: 1px solid var(--accent);
+      border-radius: 11px;
+      background: var(--accent);
+      color: #071004;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    #ertrades-app.theme-light .pwa-install-brand-icon,
+    #ertrades-app.theme-light .pwa-install-step {
+      background: #f7fafb;
     }
 
 
@@ -4262,6 +4380,10 @@
               <button class="landing-menu-item" id="landing-theme-light-btn" type="button" role="menuitem">
                 <span>Light Theme</span><span class="landing-menu-check" aria-hidden="true"></span>
               </button>
+              <div class="landing-menu-divider pwa-install-divider" aria-hidden="true"></div>
+              <button class="landing-menu-item pwa-install-menu-item" id="landing-install-btn" type="button" role="menuitem">
+                <span>Install eRTrades</span><span aria-hidden="true">＋</span>
+              </button>
             </div>
           </div>
         </nav>
@@ -5086,6 +5208,29 @@
         </div>
       </section>
 
+      <dialog class="confirm-dialog pwa-install-dialog" id="pwa-install-dialog">
+        <div class="confirm-body">
+          <div class="pwa-install-brand">
+            <div class="pwa-install-brand-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 16.5V11m4 5.5V7m4 9.5v-4m4 4V4.5" stroke="#b8ff4f" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M4 19.5h16" stroke="#74838b" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <strong>Install eRTrades</strong>
+              <span>Use eRTrades from your Home Screen like an app.</span>
+            </div>
+          </div>
+          <p id="pwa-install-copy">Install instructions will appear here.</p>
+          <div class="pwa-install-status" id="pwa-install-status" aria-live="polite"></div>
+          <div class="pwa-install-steps" id="pwa-install-steps"></div>
+          <div class="confirm-actions pwa-install-actions">
+            <button class="pwa-install-primary" id="pwa-install-action-btn" type="button">Got it</button>
+          </div>
+        </div>
+      </dialog>
+
       <dialog class="confirm-dialog delete-user-dialog" id="delete-user-dialog">
         <form class="confirm-body delete-user-body" id="delete-user-form">
           <div class="danger-zone-label">Danger Zone</div>
@@ -5304,6 +5449,13 @@
       const landingExistingBtn = root.querySelector('#landing-existing-btn');
       const landingThemeDarkBtn = root.querySelector('#landing-theme-dark-btn');
       const landingThemeLightBtn = root.querySelector('#landing-theme-light-btn');
+      const landingInstallBtn = root.querySelector('#landing-install-btn');
+      const landingInstallDivider = root.querySelector('.pwa-install-divider');
+      const pwaInstallDialog = root.querySelector('#pwa-install-dialog');
+      const pwaInstallCopy = root.querySelector('#pwa-install-copy');
+      const pwaInstallStatus = root.querySelector('#pwa-install-status');
+      const pwaInstallSteps = root.querySelector('#pwa-install-steps');
+      const pwaInstallActionBtn = root.querySelector('#pwa-install-action-btn');
       const landingOverviewCarousel = root.querySelector('#landing-overview-carousel');
       const landingCarouselDots = root.querySelector('#landing-carousel-dots');
       const landingCarouselPrev = root.querySelector('#landing-carousel-prev');
@@ -5524,6 +5676,9 @@
           if (darkCheck) darkCheck.textContent = selectedTheme === 'dark' ? '✓' : '';
           if (lightCheck) lightCheck.textContent = selectedTheme === 'light' ? '✓' : '';
         }
+
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) themeMeta.setAttribute('content', selectedTheme === 'light' ? '#f4f7f8' : '#070b0d');
 
         root.dataset.theme = selectedTheme;
       };
@@ -6050,6 +6205,96 @@
         landingMenuPanel.classList.remove('open');
         landingMenuBtn.setAttribute('aria-expanded', 'false');
       };
+
+      let deferredPwaInstallPrompt = null;
+
+      const isPwaStandalone = () =>
+        window.matchMedia?.('(display-mode: standalone)')?.matches === true ||
+        window.navigator.standalone === true;
+
+      const isIosDevice = () =>
+        /iphone|ipad|ipod/i.test(window.navigator.userAgent || '') ||
+        (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+
+      const updatePwaInstallVisibility = () => {
+        const installed = isPwaStandalone();
+        landingInstallBtn.hidden = installed;
+        if (landingInstallDivider) landingInstallDivider.hidden = installed;
+      };
+
+      const setPwaInstallStatus = (message = '') => {
+        pwaInstallStatus.textContent = message;
+        pwaInstallStatus.classList.toggle('show', Boolean(message));
+      };
+
+      const setPwaInstallSteps = (steps = []) => {
+        pwaInstallSteps.innerHTML = '';
+        steps.forEach((step, index) => {
+          const item = document.createElement('div');
+          item.className = 'pwa-install-step';
+          const number = document.createElement('b');
+          number.textContent = String(index + 1);
+          const copy = document.createElement('span');
+          copy.textContent = step;
+          item.append(number, copy);
+          pwaInstallSteps.appendChild(item);
+        });
+      };
+
+      const closePwaInstallDialog = () => {
+        if (pwaInstallDialog.open && typeof pwaInstallDialog.close === 'function') {
+          pwaInstallDialog.close();
+        } else {
+          pwaInstallDialog.removeAttribute('open');
+        }
+      };
+
+      const showPwaInstallDialog = () => {
+        closeLandingMenu();
+        setPwaInstallStatus('');
+
+        if (isPwaStandalone()) {
+          pwaInstallCopy.textContent = 'eRTrades is already installed on this device.';
+          setPwaInstallSteps([]);
+          pwaInstallActionBtn.textContent = 'Close';
+          pwaInstallActionBtn.dataset.action = 'close';
+        } else if (deferredPwaInstallPrompt) {
+          pwaInstallCopy.textContent = 'Your browser can install eRTrades directly.';
+          setPwaInstallSteps([
+            'Tap Install eRTrades below.',
+            'Confirm the browser installation prompt.',
+            'Open eRTrades from your Home Screen or app launcher.'
+          ]);
+          pwaInstallActionBtn.textContent = 'Install eRTrades';
+          pwaInstallActionBtn.dataset.action = 'native-install';
+        } else if (isIosDevice()) {
+          pwaInstallCopy.textContent = 'On iPhone or iPad, install eRTrades from Safari using Add to Home Screen.';
+          setPwaInstallSteps([
+            'Open eRTrades in Safari.',
+            'Tap the Share button in Safari.',
+            'Choose Add to Home Screen, then tap Add.'
+          ]);
+          pwaInstallActionBtn.textContent = 'Got it';
+          pwaInstallActionBtn.dataset.action = 'close';
+        } else {
+          pwaInstallCopy.textContent = 'Use your browser menu to install eRTrades as an app.';
+          setPwaInstallSteps([
+            'Open your browser menu.',
+            'Choose Install app or Add to Home Screen.',
+            'Confirm the installation.'
+          ]);
+          pwaInstallActionBtn.textContent = 'Got it';
+          pwaInstallActionBtn.dataset.action = 'close';
+        }
+
+        if (typeof pwaInstallDialog.showModal === 'function') {
+          pwaInstallDialog.showModal();
+        } else {
+          pwaInstallDialog.setAttribute('open', '');
+        }
+      };
+
+      updatePwaInstallVisibility();
 
       const landingDemoCards = () => Array.from(landingOverviewCarousel?.querySelectorAll('.landing-account-demo') || []);
       let landingCarouselIndex = 0;
@@ -8019,6 +8264,59 @@
         }
       });
 
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredPwaInstallPrompt = event;
+        updatePwaInstallVisibility();
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredPwaInstallPrompt = null;
+        updatePwaInstallVisibility();
+        setPwaInstallStatus('eRTrades was installed successfully.');
+        if (pwaInstallDialog.open) {
+          pwaInstallCopy.textContent = 'eRTrades is ready on your device.';
+          setPwaInstallSteps([]);
+          pwaInstallActionBtn.textContent = 'Close';
+          pwaInstallActionBtn.dataset.action = 'close';
+        }
+      });
+
+      landingInstallBtn.addEventListener('click', showPwaInstallDialog);
+
+      pwaInstallActionBtn.addEventListener('click', async () => {
+        if (pwaInstallActionBtn.dataset.action !== 'native-install' || !deferredPwaInstallPrompt) {
+          closePwaInstallDialog();
+          return;
+        }
+
+        pwaInstallActionBtn.disabled = true;
+        pwaInstallActionBtn.textContent = 'Opening…';
+
+        try {
+          deferredPwaInstallPrompt.prompt();
+          const choice = await deferredPwaInstallPrompt.userChoice;
+          deferredPwaInstallPrompt = null;
+          if (choice?.outcome === 'accepted') {
+            setPwaInstallStatus('Installation accepted. eRTrades will appear on your device shortly.');
+          } else {
+            setPwaInstallStatus('Installation was cancelled. You can try again anytime.');
+          }
+        } catch (_) {
+          setPwaInstallStatus('The browser install prompt could not be opened. Use Add to Home Screen from your browser menu.');
+        } finally {
+          pwaInstallActionBtn.disabled = false;
+          pwaInstallActionBtn.textContent = 'Close';
+          pwaInstallActionBtn.dataset.action = 'close';
+          updatePwaInstallVisibility();
+        }
+      });
+
+      pwaInstallDialog.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        closePwaInstallDialog();
+      });
+
       landingMenuBtn.addEventListener('click', () => {
         const open = !landingMenuPanel.classList.contains('open');
         landingMenuPanel.classList.toggle('open', open);
@@ -9128,6 +9426,14 @@
           notice.classList.add('show');
         }
       });
+
+      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then((registration) => registration.update())
+            .catch(() => {});
+        });
+      }
 
       const cachedAppBooted = bootstrapCachedAuthenticatedView();
       const initialRecoveryRedirect = readRecoveryRedirect();
