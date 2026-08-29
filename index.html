@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83-carousel-motion">
+<meta name="ertrades-build" content="v83a-ios-header-fix">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1974,6 +1974,8 @@
     #ertrades-app .er-view-enter {
       animation: er-view-rise-in 360ms cubic-bezier(.22,.78,.28,1) both;
       will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -5531,6 +5533,7 @@
       const deleteAccountCancelBtn = root.querySelector('#delete-account-cancel-btn');
       const deleteAccountConfirmBtn = root.querySelector('#delete-account-confirm-btn');
       const landingPage = root.querySelector('#landing-page');
+      const landingHero = root.querySelector('.landing-hero');
       const landingNavShell = root.querySelector('#landing-nav-shell');
       const landingMenuBtn = root.querySelector('#landing-menu-btn');
       const landingMenuPanel = root.querySelector('#landing-menu-panel');
@@ -6511,11 +6514,33 @@
 
       renderLandingCarouselDots();
 
+      const viewEntranceTimers = new WeakMap();
+
       const playViewEntrance = (element) => {
         if (!element) return;
+
+        const previousTimer = viewEntranceTimers.get(element);
+        if (previousTimer) window.clearTimeout(previousTimer);
+
         element.classList.remove('er-view-enter');
         void element.offsetWidth;
+
+        const cleanup = () => {
+          element.classList.remove('er-view-enter');
+          const timer = viewEntranceTimers.get(element);
+          if (timer) window.clearTimeout(timer);
+          viewEntranceTimers.delete(element);
+          element.removeEventListener('animationend', cleanup);
+        };
+
+        element.addEventListener('animationend', cleanup);
         element.classList.add('er-view-enter');
+
+        /*
+          Fallback cleanup for reduced-motion / older Safari cases where
+          animationend may not fire reliably.
+        */
+        viewEntranceTimers.set(element, window.setTimeout(cleanup, 520));
       };
 
       const showLanding = ({ replaceHistory = false } = {}) => {
@@ -6529,7 +6554,7 @@
         landingPage.classList.add('visible');
         closeLandingMenu();
         loadTheme();
-        playViewEntrance(landingPage);
+        playViewEntrance(landingHero);
 
         if (replaceHistory && window.history?.replaceState) {
           try {
@@ -6581,6 +6606,7 @@
         profileMenu.classList.remove('visible');
         importBanner.classList.remove('visible');
         loadTheme();
+        playViewEntrance(authPage);
         authEmail.closest('.field').style.display = 'grid';
         authPassword.closest('.field').querySelector('label').textContent = 'Password';
         setAuthMode('login');
