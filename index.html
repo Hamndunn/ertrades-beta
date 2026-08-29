@@ -3510,6 +3510,552 @@
       #ertrades-app .analytics-insights { grid-template-columns: repeat(5,minmax(0,1fr)); }
     }
 
+
+    /* ======================================================
+       DESKTOP / LAPTOP OPTIMIZATION
+       Mobile remains the primary baseline. These rules only
+       apply to wider screens.
+       ====================================================== */
+    @media (min-width: 1024px) {
+      #ertrades-app .shell {
+        max-width: 1480px;
+        padding: 30px 32px 110px;
+      }
+
+      /* ---------- PUBLIC LANDING ---------- */
+      #ertrades-app.landing-visible .shell {
+        max-width: 1400px;
+        padding-bottom: 38px;
+      }
+
+      #ertrades-app .landing-nav-shell {
+        width: calc(100% - 64px);
+        max-width: 1336px;
+        padding: 8px 10px;
+        border-radius: 19px;
+      }
+
+      #ertrades-app .landing-brand .logo {
+        width: 44px;
+        height: 44px;
+      }
+
+      #ertrades-app .landing-brand-name {
+        font-size: 22px;
+      }
+
+      #ertrades-app .landing-menu-btn {
+        width: 50px;
+        height: 50px;
+      }
+
+      #ertrades-app .landing-menu-panel {
+        width: 224px;
+      }
+
+      #ertrades-app .landing-hero {
+        display: grid;
+        grid-template-columns: minmax(0,.92fr) minmax(560px,1.08fr);
+        grid-template-rows: auto auto auto auto;
+        column-gap: 54px;
+        row-gap: 0;
+        align-items: center;
+        padding: 58px 22px 40px;
+      }
+
+      #ertrades-app .landing-hero > .landing-kicker {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: end;
+      }
+
+      #ertrades-app .landing-title {
+        grid-column: 1;
+        grid-row: 2;
+        max-width: 650px;
+        margin-top: 12px;
+        font-size: clamp(48px, 5vw, 72px);
+      }
+
+      #ertrades-app .landing-copy {
+        grid-column: 1;
+        grid-row: 3;
+        max-width: 570px;
+        font-size: 15px;
+      }
+
+      #ertrades-app .landing-cta-row {
+        grid-column: 1;
+        grid-row: 4;
+        margin-top: 24px;
+      }
+
+      #ertrades-app .landing-cta {
+        min-height: 50px;
+        padding: 0 18px;
+        font-size: 13px;
+      }
+
+      #ertrades-app .landing-overview-section {
+        grid-column: 2;
+        grid-row: 1 / span 4;
+        align-self: center;
+        min-width: 0;
+        margin-top: 0;
+      }
+
+      #ertrades-app .landing-overview-title {
+        font-size: 20px;
+      }
+
+      #ertrades-app .landing-account-demo {
+        flex-basis: calc(50% - 5px);
+        min-width: 0;
+        padding: 18px;
+      }
+
+      #ertrades-app .landing-demo-balance {
+        font-size: 34px;
+      }
+
+      #ertrades-app .landing-demo-metric {
+        min-height: 72px;
+        padding: 11px;
+      }
+
+      #ertrades-app .landing-feature-section {
+        padding: 8px 22px 0;
+      }
+
+      #ertrades-app .landing-section-title {
+        max-width: 760px;
+        font-size: 27px;
+      }
+
+      #ertrades-app .landing-feature-list {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        align-items: start;
+        gap: 12px;
+      }
+
+      #ertrades-app .landing-feature[open] {
+        grid-column: 1 / -1;
+      }
+
+      #ertrades-app .landing-feature summary {
+        min-height: 76px;
+        padding: 17px 18px;
+      }
+
+      #ertrades-app .landing-feature-title b {
+        font-size: 15px;
+      }
+
+      #ertrades-app .landing-feature-title span {
+        font-size: 11px;
+      }
+
+      #ertrades-app .landing-feature-body {
+        padding: 0 18px 18px;
+        font-size: 12px;
+      }
+
+      #ertrades-app .landing-feature-points {
+        grid-template-columns: repeat(4,minmax(0,1fr));
+      }
+
+      #ertrades-app .landing-footer {
+        padding-top: 32px;
+      }
+
+      /* ---------- AUTH ---------- */
+      #ertrades-app .auth-page {
+        min-height: 650px;
+        padding: 40px 0;
+      }
+
+      #ertrades-app .auth-card {
+        max-width: 500px;
+        padding: 26px;
+        border-radius: 20px;
+      }
+
+      #ertrades-app .auth-title {
+        font-size: 27px;
+      }
+
+      #ertrades-app .auth-copy {
+        font-size: 13px;
+      }
+
+      /* ---------- AUTHENTICATED TOP NAV ---------- */
+      #ertrades-app.authenticated .top-nav-shell {
+        width: calc(100% - 64px);
+        max-width: 1416px;
+        display: grid;
+        grid-template-columns: auto minmax(610px, 1fr);
+        align-items: center;
+        gap: 18px;
+        padding: 8px 10px;
+        border-radius: 19px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell > .topbar {
+        padding: 0 6px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell > .control-row {
+        grid-template-columns: minmax(300px,1fr) 50px 154px;
+        gap: 8px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell .logo {
+        width: 42px;
+        height: 42px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell .brand {
+        font-size: 22px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell .selector-wrap .custom-select-btn,
+      #ertrades-app.authenticated .top-nav-shell .account-menu-btn,
+      #ertrades-app.authenticated .top-nav-shell .new-trade {
+        min-height: 58px;
+        border-radius: 13px;
+      }
+
+      #ertrades-app.authenticated .top-nav-shell .new-trade {
+        font-size: 14px;
+      }
+
+      /* ---------- DASHBOARD ---------- */
+      #ertrades-app.authenticated #app-workspace {
+        padding-top: var(--top-nav-space, 98px);
+      }
+
+      #ertrades-app .desktop-layout {
+        grid-template-columns: minmax(390px,.83fr) minmax(0,1.37fr);
+        gap: 20px;
+      }
+
+      #ertrades-app .desktop-layout > .workspace {
+        gap: 18px;
+      }
+
+      #ertrades-app .summary-card {
+        min-height: 250px;
+        padding: 26px;
+        border-radius: 20px;
+      }
+
+      #ertrades-app .balance {
+        margin-top: 13px;
+        font-size: clamp(42px, 4.2vw, 62px);
+      }
+
+      #ertrades-app .summary-foot {
+        margin-top: 27px;
+        padding-top: 20px;
+      }
+
+      #ertrades-app .pl-block strong {
+        font-size: 20px;
+      }
+
+      #ertrades-app .metrics {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+        gap: 11px;
+        margin-bottom: 0;
+      }
+
+      #ertrades-app .metric {
+        min-height: 112px;
+        padding: 17px;
+        border-radius: 16px;
+      }
+
+      #ertrades-app .metric-value {
+        font-size: 26px;
+      }
+
+      #ertrades-app .section-card {
+        border-radius: 19px;
+      }
+
+      #ertrades-app .section-head {
+        padding: 18px 20px 16px;
+      }
+
+      #ertrades-app .section-title {
+        font-size: 17px;
+      }
+
+      #ertrades-app .equity-chart-wrap {
+        height: 310px;
+        padding: 16px 14px 12px;
+      }
+
+      #ertrades-app .recent-empty {
+        min-height: 190px;
+      }
+
+      /* ---------- BOTTOM NAV ---------- */
+      #ertrades-app .nav-shell {
+        width: min(760px, calc(100% - 64px));
+        padding: 7px;
+        border-radius: 18px;
+      }
+
+      #ertrades-app .bottom-nav {
+        gap: 5px;
+      }
+
+      #ertrades-app .nav-btn {
+        min-height: 62px;
+        border-radius: 13px;
+        font-size: 10px;
+      }
+
+      #ertrades-app .nav-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* ---------- JOURNAL ---------- */
+      #ertrades-app .journal-page.visible {
+        display: grid;
+        grid-template-columns: 320px minmax(0,1fr);
+        grid-template-areas:
+          "head head"
+          "filters results";
+        align-items: start;
+        column-gap: 16px;
+        border: 0;
+        background: transparent;
+        overflow: visible;
+      }
+
+      #ertrades-app .journal-head {
+        grid-area: head;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--panel);
+        margin-bottom: 0;
+      }
+
+      #ertrades-app .journal-filter-panel {
+        grid-area: filters;
+        position: sticky;
+        top: calc(var(--top-nav-space, 98px) + 10px);
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--panel);
+        padding: 14px;
+      }
+
+      #ertrades-app .journal-filter-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+
+      #ertrades-app .journal-filter-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      #ertrades-app .journal-clear-filters {
+        width: 100%;
+      }
+
+      #ertrades-app .journal-list,
+      #ertrades-app .journal-empty {
+        grid-area: results;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      #ertrades-app .journal-list {
+        gap: 0;
+      }
+
+      #ertrades-app .trade-row {
+        padding: 17px 18px;
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
+      }
+
+      #ertrades-app .trade-row:last-child {
+        border-bottom: 0;
+      }
+
+      /* ---------- CALENDAR ---------- */
+      #ertrades-app .calendar-page,
+      #ertrades-app .analytics-page,
+      #ertrades-app .settings-page,
+      #ertrades-app .trade-detail-page {
+        border-radius: 19px;
+      }
+
+      #ertrades-app .calendar-toolbar {
+        padding: 18px 20px;
+      }
+
+      #ertrades-app .calendar-summary {
+        gap: 10px;
+        padding: 0 16px 16px;
+      }
+
+      #ertrades-app .calendar-stat {
+        min-height: 82px;
+        padding: 13px;
+      }
+
+      #ertrades-app .calendar-wrap {
+        padding: 18px;
+      }
+
+      #ertrades-app .calendar-grid,
+      #ertrades-app .calendar-weekdays {
+        gap: 7px;
+      }
+
+      #ertrades-app .calendar-cell {
+        min-height: 104px;
+        padding: 10px;
+        border-radius: 11px;
+      }
+
+      /* ---------- ANALYTICS ---------- */
+      #ertrades-app .analytics-body {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 14px;
+        padding: 18px;
+      }
+
+      #ertrades-app .analytics-overview {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(6,minmax(0,1fr));
+        gap: 10px;
+      }
+
+      #ertrades-app .analytics-stat {
+        min-height: 94px;
+        padding: 14px;
+      }
+
+      #ertrades-app .analytics-stat strong {
+        font-size: 20px;
+      }
+
+      #ertrades-app .analytics-body > .analytics-section:nth-of-type(5),
+      #ertrades-app .analytics-body > .analytics-section:nth-of-type(6) {
+        grid-column: 1 / -1;
+      }
+
+      #ertrades-app .analytics-chart {
+        min-height: 250px;
+        padding: 18px;
+      }
+
+      #ertrades-app .analytics-chart svg {
+        height: 220px;
+      }
+
+      #ertrades-app .analytics-insights {
+        grid-template-columns: repeat(5,minmax(0,1fr));
+        gap: 10px;
+        padding: 14px;
+      }
+
+      /* ---------- SETTINGS ---------- */
+      #ertrades-app .settings-body {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 14px;
+        padding: 20px;
+      }
+
+      #ertrades-app .settings-account-card {
+        min-height: 112px;
+        padding: 17px;
+      }
+
+      #ertrades-app .settings-body .settings-account-card:nth-child(3) {
+        grid-column: 1 / -1;
+      }
+
+      #ertrades-app .settings-logout {
+        min-height: 52px;
+      }
+
+      #ertrades-app .settings-danger-card {
+        grid-column: 1 / -1;
+        padding: 18px;
+      }
+
+      /* ---------- TRADE FORM / DETAIL ---------- */
+      #ertrades-app .trade-form-card {
+        width: min(92%, 900px);
+        max-height: 90%;
+        border-radius: 18px;
+      }
+
+      #ertrades-app .trade-form-body {
+        padding: 20px 22px 22px;
+      }
+
+      #ertrades-app .trade-grid.two-col {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 14px;
+      }
+
+      #ertrades-app .screenshot-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      #ertrades-app .detail-body {
+        padding: 20px;
+      }
+
+      #ertrades-app .detail-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+        gap: 11px;
+      }
+
+      #ertrades-app .detail-item.full {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      #ertrades-app .shell {
+        padding-left: 38px;
+        padding-right: 38px;
+      }
+
+      #ertrades-app .landing-account-demo {
+        flex-basis: calc(50% - 5px);
+      }
+
+      #ertrades-app .desktop-layout {
+        grid-template-columns: minmax(430px,.78fr) minmax(0,1.42fr);
+        gap: 22px;
+      }
+
+      #ertrades-app .summary-card {
+        min-height: 270px;
+      }
+
+      #ertrades-app .equity-chart-wrap {
+        height: 340px;
+      }
+
+      #ertrades-app .analytics-overview {
+        grid-template-columns: repeat(8,minmax(0,1fr));
+      }
+    }
+
     @media (hover:hover) and (pointer:fine) {
       #ertrades-app .new-trade:hover { filter: brightness(.94); }
       #ertrades-app .nav-btn:hover:not(.active) { color: #b1bdc2; background: #11191c; }
