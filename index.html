@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v82d-install-panel-fix">
+<meta name="ertrades-build" content="v82e-install-panel-location-fix">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4561,6 +4561,29 @@
         </section>
       </section>
 
+
+      <section class="pwa-install-panel" id="pwa-install-panel" hidden aria-labelledby="pwa-install-title">
+        <div class="pwa-install-panel-head">
+          <div class="pwa-install-brand">
+            <div class="pwa-install-brand-icon" aria-hidden="true">⌛</div>
+            <div>
+              <strong id="pwa-install-title">Install eRTrades</strong>
+              <span>Add eRTrades to your device and open it like an app.</span>
+            </div>
+          </div>
+          <button class="pwa-install-close" id="pwa-install-close-btn" type="button" aria-label="Close install instructions">×</button>
+        </div>
+
+        <p class="pwa-install-copy" id="pwa-install-copy">Choose the install method for your browser.</p>
+        <div class="pwa-install-status" id="pwa-install-status" aria-live="polite"></div>
+        <div class="pwa-install-steps" id="pwa-install-steps"></div>
+
+        <div class="pwa-install-actions">
+          <button class="pwa-install-primary" id="pwa-native-install-btn" type="button" hidden>Install App</button>
+          <button class="pwa-install-secondary" id="pwa-install-done-btn" type="button">Got it</button>
+        </div>
+      </section>
+
       <section class="landing-feature-section" aria-labelledby="landing-feature-heading">
         <div class="landing-section-head">
           <div class="landing-kicker">Inside eRTrades</div>
@@ -5272,30 +5295,6 @@
           </div>
         </div>
       </section>
-
-      <section class="pwa-install-panel" id="pwa-install-panel" hidden aria-labelledby="pwa-install-title">
-        <div class="pwa-install-panel-head">
-          <div class="pwa-install-brand">
-            <div class="pwa-install-brand-icon" aria-hidden="true">⌛</div>
-            <div>
-              <strong id="pwa-install-title">Install eRTrades</strong>
-              <span>Add eRTrades to your device and open it like an app.</span>
-            </div>
-          </div>
-          <button class="pwa-install-close" id="pwa-install-close-btn" type="button" aria-label="Close install instructions">×</button>
-        </div>
-
-        <p class="pwa-install-copy" id="pwa-install-copy">Choose the install method for your browser.</p>
-        <div class="pwa-install-status" id="pwa-install-status" aria-live="polite"></div>
-        <div class="pwa-install-steps" id="pwa-install-steps"></div>
-
-        <div class="pwa-install-actions">
-          <button class="pwa-install-primary" id="pwa-native-install-btn" type="button" hidden>Install App</button>
-          <button class="pwa-install-secondary" id="pwa-install-done-btn" type="button">Got it</button>
-        </div>
-      </section>
-
-
 <dialog class="confirm-dialog delete-user-dialog" id="delete-user-dialog">
         <form class="confirm-body delete-user-body" id="delete-user-form">
           <div class="danger-zone-label">Danger Zone</div>
@@ -6369,6 +6368,12 @@
 
       const showPwaInstallPanel = () => {
         closeLandingMenu();
+
+        if (!pwaInstallPanel) {
+          window.alert('Install eRTrades: use your browser menu and choose Install app / Add to Home Screen.');
+          return;
+        }
+
         configurePwaInstallPanel();
         revealPwaInstallPanel();
       };
