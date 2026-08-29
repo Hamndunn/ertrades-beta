@@ -1692,6 +1692,10 @@
       display: block;
     }
 
+    #ertrades-app.landing-visible .shell {
+      padding-bottom: 24px;
+    }
+
     /* The app header is hidden by default to avoid a flash on the public landing page.
        It is restored only for auth or authenticated app states. */
     #ertrades-app .top-nav-shell {
@@ -1951,8 +1955,60 @@
       color: #071004;
     }
 
-    #ertrades-app .landing-preview {
+    #ertrades-app .landing-overview-section {
       margin-top: 18px;
+    }
+
+    #ertrades-app .landing-overview-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    #ertrades-app .landing-overview-copy {
+      min-width: 0;
+    }
+
+    #ertrades-app .landing-overview-title {
+      margin-top: 4px;
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 850;
+      letter-spacing: -.025em;
+    }
+
+    #ertrades-app .landing-overview-hint {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .landing-overview-carousel-wrap {
+      position: relative;
+    }
+
+    #ertrades-app .landing-overview-carousel {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding: 1px 1px 7px;
+    }
+
+    #ertrades-app .landing-overview-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    #ertrades-app .landing-account-demo {
+      flex: 0 0 min(88%, 430px);
+      scroll-snap-align: start;
       padding: 15px;
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -1961,14 +2017,20 @@
         var(--panel);
     }
 
-    #ertrades-app .landing-preview-head {
+    #ertrades-app .landing-account-demo.loss-demo {
+      background:
+        radial-gradient(circle at 100% 0%, rgba(255,107,121,.065), transparent 34%),
+        var(--panel);
+    }
+
+    #ertrades-app .landing-demo-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
 
-    #ertrades-app .landing-preview-label {
+    #ertrades-app .landing-demo-label {
       color: var(--muted);
       font-size: 9px;
       font-weight: 900;
@@ -1976,28 +2038,46 @@
       text-transform: uppercase;
     }
 
-    #ertrades-app .landing-preview-status {
-      color: var(--accent);
-      font-size: 10px;
+    #ertrades-app .landing-demo-dot {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    #ertrades-app .landing-account-demo.loss-demo .landing-demo-dot {
+      background: var(--red);
+    }
+
+    #ertrades-app .landing-demo-balance {
+      margin-top: 12px;
+      color: var(--text);
+      font-size: clamp(27px, 8vw, 40px);
+      font-weight: 900;
+      letter-spacing: -.045em;
+      line-height: 1;
+    }
+
+    #ertrades-app .landing-demo-pl {
+      margin-top: 8px;
+      color: var(--green);
+      font-size: 13px;
       font-weight: 850;
     }
 
-    #ertrades-app .landing-preview-line {
-      height: 8px;
-      margin-top: 13px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent) 0 34%, var(--border) 34% 100%);
-      opacity: .85;
+    #ertrades-app .landing-demo-pl.negative {
+      color: var(--red);
     }
 
-    #ertrades-app .landing-preview-grid {
+    #ertrades-app .landing-demo-metrics {
       display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
+      grid-template-columns: repeat(2,minmax(0,1fr));
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 14px;
     }
 
-    #ertrades-app .landing-preview-cell {
+    #ertrades-app .landing-demo-metric {
       min-width: 0;
       padding: 10px;
       border: 1px solid var(--border);
@@ -2005,20 +2085,93 @@
       background: rgba(7,11,13,.32);
     }
 
-    #ertrades-app .landing-preview-cell span {
+    #ertrades-app .landing-demo-metric span {
       display: block;
       color: var(--muted);
       font-size: 8px;
       font-weight: 850;
       letter-spacing: .08em;
+      text-transform: uppercase;
     }
 
-    #ertrades-app .landing-preview-cell b {
+    #ertrades-app .landing-demo-metric b {
       display: block;
       margin-top: 5px;
       color: var(--text);
-      font-size: 13px;
+      font-size: 14px;
       overflow-wrap: anywhere;
+    }
+
+    #ertrades-app .landing-carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    #ertrades-app .landing-carousel-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    #ertrades-app .landing-carousel-dot {
+      width: 6px;
+      height: 6px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+    }
+
+    #ertrades-app .landing-carousel-dot.active {
+      width: 17px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    #ertrades-app .landing-carousel-arrows {
+      display: flex;
+      gap: 6px;
+    }
+
+    #ertrades-app .landing-carousel-arrow {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #ertrades-app .landing-carousel-note {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    #ertrades-app.theme-light .landing-demo-metric {
+      background: rgba(255,255,255,.62);
+    }
+
+    @media (max-width: 560px) {
+      #ertrades-app .landing-account-demo {
+        flex-basis: 91%;
+      }
+
+      #ertrades-app .landing-overview-hint {
+        display: none;
+      }
     }
 
     #ertrades-app .landing-feature-section {
@@ -2126,7 +2279,7 @@
     }
 
     #ertrades-app .landing-footer {
-      padding: 26px 4px 8px;
+      padding: 20px 4px 2px;
       color: var(--muted);
       font-size: 10px;
       line-height: 1.5;
@@ -2161,7 +2314,6 @@
       box-shadow: 0 18px 40px rgba(31,42,46,.16);
     }
 
-    #ertrades-app.theme-light .landing-preview-cell,
     #ertrades-app.theme-light .landing-feature-point {
       background: rgba(255,255,255,.62);
     }
@@ -2189,10 +2341,6 @@
 
       #ertrades-app .landing-hero {
         padding-top: 26px;
-      }
-
-      #ertrades-app .landing-preview-grid {
-        grid-template-columns: repeat(2,minmax(0,1fr));
       }
 
       #ertrades-app .landing-feature-points {
@@ -3471,18 +3619,100 @@
           <button class="landing-cta" id="landing-existing-btn" type="button">I already have an account</button>
         </div>
 
-        <div class="landing-preview" aria-label="eRTrades dashboard preview">
-          <div class="landing-preview-head">
-            <span class="landing-preview-label">Your trading process</span>
-            <span class="landing-preview-status">Private · Structured · Reviewable</span>
+        <section class="landing-overview-section" aria-labelledby="landing-overview-title">
+          <div class="landing-overview-head">
+            <div class="landing-overview-copy">
+              <div class="landing-kicker">Sample Dashboard</div>
+              <div class="landing-overview-title" id="landing-overview-title">Account Overview</div>
+            </div>
+            <div class="landing-overview-hint">Swipe left / right</div>
           </div>
-          <div class="landing-preview-line" aria-hidden="true"></div>
-          <div class="landing-preview-grid">
-            <div class="landing-preview-cell"><span>JOURNAL</span><b>Every trade</b></div>
-            <div class="landing-preview-cell"><span>ANALYTICS</span><b>Your patterns</b></div>
-            <div class="landing-preview-cell"><span>EMOTION</span><b>Your execution</b></div>
+
+          <div class="landing-overview-carousel-wrap">
+            <div class="landing-overview-carousel" id="landing-overview-carousel" aria-label="Sample account overview carousel">
+              <article class="landing-account-demo">
+                <div class="landing-demo-top"><span class="landing-demo-label">Demo Account 01</span><span class="landing-demo-dot"></span></div>
+                <div class="landing-demo-balance">US$5,175.23</div>
+                <div class="landing-demo-pl">+US$175.23 · +3.50%</div>
+                <div class="landing-demo-metrics">
+                  <div class="landing-demo-metric"><span>Win Rate</span><b>64.21%</b></div>
+                  <div class="landing-demo-metric"><span>Profit Factor</span><b>1.84</b></div>
+                  <div class="landing-demo-metric"><span>Average RR</span><b>2.31</b></div>
+                  <div class="landing-demo-metric"><span>Total Trades</span><b>38</b></div>
+                </div>
+              </article>
+
+              <article class="landing-account-demo">
+                <div class="landing-demo-top"><span class="landing-demo-label">Demo Account 02</span><span class="landing-demo-dot"></span></div>
+                <div class="landing-demo-balance">US$10,840.60</div>
+                <div class="landing-demo-pl">+US$840.60 · +8.41%</div>
+                <div class="landing-demo-metrics">
+                  <div class="landing-demo-metric"><span>Win Rate</span><b>58.33%</b></div>
+                  <div class="landing-demo-metric"><span>Profit Factor</span><b>1.67</b></div>
+                  <div class="landing-demo-metric"><span>Average RR</span><b>1.92</b></div>
+                  <div class="landing-demo-metric"><span>Total Trades</span><b>72</b></div>
+                </div>
+              </article>
+
+              <article class="landing-account-demo loss-demo">
+                <div class="landing-demo-top"><span class="landing-demo-label">Demo Account 03</span><span class="landing-demo-dot"></span></div>
+                <div class="landing-demo-balance">US$2,436.75</div>
+                <div class="landing-demo-pl negative">−US$63.25 · −2.53%</div>
+                <div class="landing-demo-metrics">
+                  <div class="landing-demo-metric"><span>Win Rate</span><b>47.06%</b></div>
+                  <div class="landing-demo-metric"><span>Profit Factor</span><b>0.91</b></div>
+                  <div class="landing-demo-metric"><span>Average RR</span><b>1.54</b></div>
+                  <div class="landing-demo-metric"><span>Total Trades</span><b>34</b></div>
+                </div>
+              </article>
+
+              <article class="landing-account-demo">
+                <div class="landing-demo-top"><span class="landing-demo-label">Demo Account 04</span><span class="landing-demo-dot"></span></div>
+                <div class="landing-demo-balance">US$25,980.40</div>
+                <div class="landing-demo-pl">+US$980.40 · +3.92%</div>
+                <div class="landing-demo-metrics">
+                  <div class="landing-demo-metric"><span>Win Rate</span><b>61.54%</b></div>
+                  <div class="landing-demo-metric"><span>Profit Factor</span><b>2.08</b></div>
+                  <div class="landing-demo-metric"><span>Average RR</span><b>2.76</b></div>
+                  <div class="landing-demo-metric"><span>Total Trades</span><b>52</b></div>
+                </div>
+              </article>
+
+              <article class="landing-account-demo">
+                <div class="landing-demo-top"><span class="landing-demo-label">Demo Account 05</span><span class="landing-demo-dot"></span></div>
+                <div class="landing-demo-balance">US$1,126.80</div>
+                <div class="landing-demo-pl">+US$126.80 · +12.68%</div>
+                <div class="landing-demo-metrics">
+                  <div class="landing-demo-metric"><span>Win Rate</span><b>70.00%</b></div>
+                  <div class="landing-demo-metric"><span>Profit Factor</span><b>2.34</b></div>
+                  <div class="landing-demo-metric"><span>Average RR</span><b>1.88</b></div>
+                  <div class="landing-demo-metric"><span>Total Trades</span><b>20</b></div>
+                </div>
+              </article>
+
+              <article class="landing-account-demo">
+                <div class="landing-demo-top"><span class="landing-demo-label">Demo Account 06</span><span class="landing-demo-dot"></span></div>
+                <div class="landing-demo-balance">US$50,420.15</div>
+                <div class="landing-demo-pl">+US$420.15 · +0.84%</div>
+                <div class="landing-demo-metrics">
+                  <div class="landing-demo-metric"><span>Win Rate</span><b>55.26%</b></div>
+                  <div class="landing-demo-metric"><span>Profit Factor</span><b>1.52</b></div>
+                  <div class="landing-demo-metric"><span>Average RR</span><b>2.10</b></div>
+                  <div class="landing-demo-metric"><span>Total Trades</span><b>76</b></div>
+                </div>
+              </article>
+            </div>
+
+            <div class="landing-carousel-controls">
+              <div class="landing-carousel-dots" id="landing-carousel-dots" aria-label="Carousel pages"></div>
+              <div class="landing-carousel-arrows">
+                <button class="landing-carousel-arrow" id="landing-carousel-prev" type="button" aria-label="Previous account">‹</button>
+                <button class="landing-carousel-arrow" id="landing-carousel-next" type="button" aria-label="Next account">›</button>
+              </div>
+            </div>
+            <div class="landing-carousel-note">Demo data is illustrative only and is not taken from any user's trading account.</div>
           </div>
-        </div>
+        </section>
       </section>
 
       <section class="landing-feature-section" aria-labelledby="landing-feature-heading">
@@ -4415,6 +4645,10 @@
       const landingExistingBtn = root.querySelector('#landing-existing-btn');
       const landingThemeDarkBtn = root.querySelector('#landing-theme-dark-btn');
       const landingThemeLightBtn = root.querySelector('#landing-theme-light-btn');
+      const landingOverviewCarousel = root.querySelector('#landing-overview-carousel');
+      const landingCarouselDots = root.querySelector('#landing-carousel-dots');
+      const landingCarouselPrev = root.querySelector('#landing-carousel-prev');
+      const landingCarouselNext = root.querySelector('#landing-carousel-next');
       const authPage = root.querySelector('#auth-page');
       const appWorkspace = root.querySelector('#app-workspace');
       const topNavShell = root.querySelector('#top-nav-shell');
@@ -5056,7 +5290,7 @@
       const showPasswordReset = (accessToken) => {
         recoveryAccessToken = accessToken || null;
         authMode = 'recovery';
-        root.classList.remove('authenticated');
+        root.classList.remove('authenticated', 'landing-visible');
         root.classList.add('auth-visible');
         landingPage.classList.remove('visible');
         root.style.removeProperty('--landing-nav-space');
@@ -5158,8 +5392,69 @@
         landingMenuBtn.setAttribute('aria-expanded', 'false');
       };
 
-      const showLanding = () => {
+      const landingDemoCards = () => Array.from(landingOverviewCarousel?.querySelectorAll('.landing-account-demo') || []);
+      let landingCarouselIndex = 0;
+      let landingCarouselScrollTimer = null;
+
+      const renderLandingCarouselDots = () => {
+        if (!landingCarouselDots) return;
+        const cards = landingDemoCards();
+        landingCarouselDots.innerHTML = '';
+
+        cards.forEach((_, index) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = `landing-carousel-dot${index === landingCarouselIndex ? ' active' : ''}`;
+          dot.setAttribute('aria-label', `Show demo account ${index + 1}`);
+          dot.addEventListener('click', () => scrollLandingCarouselTo(index));
+          landingCarouselDots.appendChild(dot);
+        });
+      };
+
+      const updateLandingCarouselDots = () => {
+        const dots = Array.from(landingCarouselDots?.querySelectorAll('.landing-carousel-dot') || []);
+        dots.forEach((dot, index) => dot.classList.toggle('active', index === landingCarouselIndex));
+      };
+
+      const scrollLandingCarouselTo = (index, behavior = 'smooth') => {
+        const cards = landingDemoCards();
+        if (!cards.length || !landingOverviewCarousel) return;
+        const safeIndex = Math.max(0, Math.min(cards.length - 1, index));
+        landingCarouselIndex = safeIndex;
+        cards[safeIndex].scrollIntoView({
+          behavior,
+          block: 'nearest',
+          inline: 'start'
+        });
+        updateLandingCarouselDots();
+      };
+
+      const syncLandingCarouselFromScroll = () => {
+        if (!landingOverviewCarousel) return;
+        const cards = landingDemoCards();
+        if (!cards.length) return;
+
+        const containerLeft = landingOverviewCarousel.getBoundingClientRect().left;
+        let nearestIndex = 0;
+        let nearestDistance = Infinity;
+
+        cards.forEach((card, index) => {
+          const distance = Math.abs(card.getBoundingClientRect().left - containerLeft);
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestIndex = index;
+          }
+        });
+
+        landingCarouselIndex = nearestIndex;
+        updateLandingCarouselDots();
+      };
+
+      renderLandingCarouselDots();
+
+      const showLanding = ({ replaceHistory = false } = {}) => {
         root.classList.remove('authenticated', 'auth-visible');
+        root.classList.add('landing-visible');
         root.style.removeProperty('--top-nav-space');
         authPage.classList.remove('visible');
         appWorkspace.style.display = 'none';
@@ -5168,12 +5463,22 @@
         landingPage.classList.add('visible');
         closeLandingMenu();
         loadTheme();
-        requestAnimationFrame(updateLandingNavSpace);
+
+        if (replaceHistory && window.history?.replaceState) {
+          try {
+            window.history.replaceState({ ertradesView: 'landing' }, '', window.location.href);
+          } catch (_) {}
+        }
+
+        requestAnimationFrame(() => {
+          updateLandingNavSpace();
+          syncLandingCarouselFromScroll();
+        });
       };
 
       const showAuthenticatedApp = () => {
         markCurrentUserActive();
-        root.classList.remove('auth-visible');
+        root.classList.remove('auth-visible', 'landing-visible');
         root.classList.add('authenticated');
         landingPage.classList.remove('visible');
         root.style.removeProperty('--landing-nav-space');
@@ -5187,6 +5492,13 @@
         }
         loadTheme();
         showPage('Dashboard');
+
+        if (window.history?.replaceState) {
+          try {
+            window.history.replaceState({ ertradesView: 'app' }, '', window.location.href);
+          } catch (_) {}
+        }
+
         requestAnimationFrame(updateTopNavSpace);
       };
 
@@ -5207,9 +5519,22 @@
         setAuthMode('login');
       };
 
-      const showAuthMode = (mode = 'login') => {
+      const showAuthMode = (mode = 'login', { pushHistory = true } = {}) => {
+        const selectedMode = mode === 'signup' ? 'signup' : 'login';
+        const cameFromLanding = landingPage.classList.contains('visible');
+
+        if (pushHistory && cameFromLanding && window.history?.pushState) {
+          try {
+            window.history.pushState(
+              { ertradesView: 'auth', authMode: selectedMode },
+              '',
+              window.location.href
+            );
+          } catch (_) {}
+        }
+
         showLogin();
-        setAuthMode(mode === 'signup' ? 'signup' : 'login');
+        setAuthMode(selectedMode);
         requestAnimationFrame(() => authEmail.focus());
       };
 
@@ -6963,6 +7288,34 @@
         }
       };
 
+      landingCarouselPrev.addEventListener('click', () => {
+        scrollLandingCarouselTo(landingCarouselIndex - 1);
+      });
+
+      landingCarouselNext.addEventListener('click', () => {
+        scrollLandingCarouselTo(landingCarouselIndex + 1);
+      });
+
+      landingOverviewCarousel.addEventListener('scroll', () => {
+        clearTimeout(landingCarouselScrollTimer);
+        landingCarouselScrollTimer = setTimeout(syncLandingCarouselFromScroll, 80);
+      }, { passive: true });
+
+      window.addEventListener('popstate', (event) => {
+        if (root.classList.contains('authenticated')) return;
+        if (authMode === 'recovery') return;
+
+        const targetView = event.state?.ertradesView;
+        if (targetView === 'auth') {
+          showAuthMode(event.state?.authMode || 'login', { pushHistory: false });
+          return;
+        }
+
+        if (authPage.classList.contains('visible') || targetView === 'landing' || !targetView) {
+          showLanding();
+        }
+      });
+
       landingMenuBtn.addEventListener('click', () => {
         const open = !landingMenuPanel.classList.contains('open');
         landingMenuPanel.classList.toggle('open', open);
@@ -7243,8 +7596,11 @@
         selectedAccountId = null;
         renderAccountSelector();
         renderDashboardAccount();
-        if (destination === 'login') showLogin();
-        else showLanding();
+        if (destination === 'login') {
+          showLogin();
+        } else {
+          showLanding({ replaceHistory: true });
+        }
       };
 
       settingsDeleteUserBtn.addEventListener('click', () => {
@@ -8067,7 +8423,7 @@
       const cachedAppBooted = bootstrapCachedAuthenticatedView();
       const initialRecoveryRedirect = readRecoveryRedirect();
       if (!cachedAppBooted && !initialRecoveryRedirect) {
-        showLanding();
+        showLanding({ replaceHistory: true });
       }
       initializeData();
     })();
