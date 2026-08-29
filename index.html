@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83a-ios-header-fix">
+<meta name="ertrades-build" content="v83b-weekly-pl">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3215,6 +3215,7 @@
     #ertrades-app.theme-light .analytics-stat,
     #ertrades-app.theme-light .analytics-section,
     #ertrades-app.theme-light .calendar-stat,
+    #ertrades-app.theme-light .calendar-week-pl,
     #ertrades-app.theme-light .calendar-cell,
     #ertrades-app.theme-light .equity-filter,
     #ertrades-app.theme-light .screenshot-slot,
@@ -3321,6 +3322,80 @@
       font-variant-numeric: tabular-nums;
       overflow-wrap: anywhere;
     }
+
+    #ertrades-app .calendar-weekly {
+      padding: 0 16px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #ertrades-app .calendar-weekly-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    #ertrades-app .calendar-weekly-title {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .calendar-weekly-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    #ertrades-app .calendar-week-pl {
+      min-width: 0;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #0a1013;
+    }
+
+    #ertrades-app .calendar-week-pl-label {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    #ertrades-app .calendar-week-pl-range {
+      display: block;
+      margin-top: 2px;
+      color: var(--soft);
+      font-size: 9px;
+      font-weight: 650;
+      line-height: 1.25;
+    }
+
+    #ertrades-app .calendar-week-pl-value {
+      display: block;
+      margin-top: 7px;
+      color: var(--soft);
+      font-size: 13px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
+
+    #ertrades-app .calendar-week-pl.positive {
+      border-color: rgba(99,230,161,.28);
+      background: rgba(99,230,161,.045);
+    }
+
+    #ertrades-app .calendar-week-pl.negative {
+      border-color: rgba(255,107,121,.28);
+      background: rgba(255,107,121,.045);
+    }
+
+    #ertrades-app .calendar-week-pl.positive .calendar-week-pl-value { color: var(--green); }
+    #ertrades-app .calendar-week-pl.negative .calendar-week-pl-value { color: var(--red); }
 
     #ertrades-app .calendar-wrap { padding: 12px; }
 
@@ -3780,6 +3855,7 @@
       #ertrades-app .analytics-overview,
       #ertrades-app .analytics-insights,
       #ertrades-app .calendar-summary,
+      #ertrades-app .calendar-weekly-grid,
       #ertrades-app .detail-grid {
         grid-template-columns: minmax(0,1fr);
       }
@@ -3822,6 +3898,7 @@
       #ertrades-app .nav-shell { overflow: visible; }
       #ertrades-app .trade-grid.two-col { grid-template-columns: repeat(2,minmax(0,1fr)); }
       #ertrades-app .calendar-summary { grid-template-columns: repeat(6,minmax(0,1fr)); }
+      #ertrades-app .calendar-weekly-grid { grid-template-columns: repeat(6,minmax(0,1fr)); }
       #ertrades-app .analytics-overview { grid-template-columns: repeat(4,minmax(0,1fr)); }
       #ertrades-app .analytics-insights { grid-template-columns: repeat(5,minmax(0,1fr)); }
     }
@@ -4234,6 +4311,14 @@
       #ertrades-app .calendar-summary {
         gap: 10px;
         padding: 0 16px 16px;
+      }
+
+      #ertrades-app .calendar-weekly {
+        padding: 0 16px 16px;
+      }
+
+      #ertrades-app .calendar-weekly-grid {
+        gap: 10px;
       }
 
       #ertrades-app .calendar-stat {
@@ -5198,6 +5283,12 @@
           <div class="calendar-stat"><div class="metric-label">Best Day</div><strong id="calendar-best-day">$0.00</strong></div>
           <div class="calendar-stat"><div class="metric-label">Worst Day</div><strong id="calendar-worst-day">$0.00</strong></div>
         </div>
+        <div class="calendar-weekly" aria-label="Weekly profit and loss">
+          <div class="calendar-weekly-head">
+            <div class="calendar-weekly-title">Weekly P/L</div>
+          </div>
+          <div class="calendar-weekly-grid" id="calendar-weekly-grid"></div>
+        </div>
         <div class="calendar-wrap">
           <div class="calendar-weekdays" aria-hidden="true">
             <div class="calendar-weekday">Sun</div><div class="calendar-weekday">Mon</div><div class="calendar-weekday">Tue</div><div class="calendar-weekday">Wed</div><div class="calendar-weekday">Thu</div><div class="calendar-weekday">Fri</div><div class="calendar-weekday">Sat</div>
@@ -5607,6 +5698,7 @@
       const calendarLosingDays = root.querySelector('#calendar-losing-days');
       const calendarBestDay = root.querySelector('#calendar-best-day');
       const calendarWorstDay = root.querySelector('#calendar-worst-day');
+      const calendarWeeklyGrid = root.querySelector('#calendar-weekly-grid');
       const calendarGrid = root.querySelector('#calendar-grid');
       const calendarSelectedDate = root.querySelector('#calendar-selected-date');
       const calendarSelectedCount = root.querySelector('#calendar-selected-count');
@@ -6931,6 +7023,55 @@
         dayTrades.forEach((trade) => calendarDayList.appendChild(makeTradeRow(trade, currency)));
       };
 
+      const renderCalendarWeeklyPl = (daily, currency) => {
+        calendarWeeklyGrid.innerHTML = '';
+
+        const firstWeekday = new Date(calendarYear, calendarMonth, 1).getDay();
+        const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+        const monthShort = new Intl.DateTimeFormat(undefined, { month: 'short' })
+          .format(new Date(calendarYear, calendarMonth, 1));
+
+        let visibleWeek = 0;
+
+        for (let row = 0; row < 6; row += 1) {
+          const rawStart = 1 - firstWeekday + (row * 7);
+          const rawEnd = rawStart + 6;
+          const startDay = Math.max(1, rawStart);
+          const endDay = Math.min(daysInMonth, rawEnd);
+
+          if (startDay > endDay) continue;
+          visibleWeek += 1;
+
+          let weekPl = 0;
+          for (let day = startDay; day <= endDay; day += 1) {
+            const dateString = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            weekPl += Number(daily.get(dateString)?.pl) || 0;
+          }
+
+          const card = document.createElement('div');
+          card.className = `calendar-week-pl ${weekPl > 0 ? 'positive' : weekPl < 0 ? 'negative' : 'flat'}`;
+
+          const label = document.createElement('div');
+          label.className = 'calendar-week-pl-label';
+          label.textContent = `Week ${visibleWeek}`;
+
+          const range = document.createElement('span');
+          range.className = 'calendar-week-pl-range';
+          range.textContent = startDay === endDay
+            ? `${monthShort} ${startDay}`
+            : `${monthShort} ${startDay}–${endDay}`;
+
+          const value = document.createElement('strong');
+          value.className = 'calendar-week-pl-value';
+          value.textContent = formatMoney(weekPl, currency);
+
+          card.appendChild(label);
+          card.appendChild(range);
+          card.appendChild(value);
+          calendarWeeklyGrid.appendChild(card);
+        }
+      };
+
       const renderCalendar = () => {
         const account = currentAccount();
         const currency = account?.currency || 'USD';
@@ -6947,6 +7088,7 @@
         calendarLosingDays.textContent = String(losingDays);
         calendarBestDay.textContent = formatMoney(dailyValues.length ? Math.max(...dailyValues) : 0, currency);
         calendarWorstDay.textContent = formatMoney(dailyValues.length ? Math.min(...dailyValues) : 0, currency);
+        renderCalendarWeeklyPl(daily, currency);
 
         calendarGrid.innerHTML = '';
         const firstWeekday = new Date(calendarYear, calendarMonth, 1).getDay();
