@@ -17,6 +17,20 @@
     } catch (_) {}
   })();
 </script>
+
+<script>
+  (() => {
+    try {
+      const ua = String(window.navigator.userAgent || '');
+      const isIOS = /iPhone|iPad|iPod/i.test(ua) || (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+      const isAndroid = /Android/i.test(ua);
+      const forceDesktopPreview = document.documentElement.dataset.erDesktopPreview === 'true';
+      document.documentElement.dataset.erMobileOs = (!forceDesktopPreview && (isIOS || isAndroid)) ? 'true' : 'false';
+    } catch (_) {
+      document.documentElement.dataset.erMobileOs = 'false';
+    }
+  })();
+</script>
 <meta name="theme-color" content="#070b0d">
 <meta name="ertrades-build" content="v83h-auto-risk-percent">
 <meta name="application-name" content="eRTrades">
@@ -4988,6 +5002,97 @@
       #ertrades-app .nav-btn,
       #ertrades-app .metric { transition: .16s ease; }
     }
+
+
+    /* ======================================================
+       DESKTOP SIDEBAR NAVIGATION
+       Desktop browsers only. Android / iOS intentionally keep
+       the original floating bottom navigation unchanged.
+       ====================================================== */
+    @media (min-width: 1024px) {
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated #app-workspace {
+        margin-left: 220px;
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .nav-shell {
+        left: max(22px, calc((100vw - 1480px) / 2 + 32px));
+        top: calc(var(--top-nav-space, 98px) + 18px);
+        bottom: 24px;
+        width: 196px;
+        max-width: 196px;
+        min-height: 430px;
+        margin: 0;
+        padding: 10px;
+        transform: none;
+        border-radius: 18px;
+        overflow: visible;
+        background: rgba(10,16,19,.88);
+        box-shadow: 0 16px 38px rgba(0,0,0,.28);
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .nav-shell::before,
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .nav-shell::after {
+        display: none;
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .bottom-nav {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .nav-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 54px;
+        padding: 0 13px;
+        border-radius: 12px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        color: #9aa7ad;
+        font-size: 13px;
+        font-weight: 760;
+        text-align: left;
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .nav-btn svg {
+        width: 21px;
+        height: 21px;
+        flex: 0 0 auto;
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .nav-btn.active {
+        color: var(--accent);
+        background: rgba(184,255,79,.075);
+        box-shadow: inset 0 0 0 1px rgba(184,255,79,.10);
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.authenticated .nav-btn:last-child {
+        margin-top: auto;
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.theme-light.authenticated .nav-shell {
+        background: rgba(247,250,251,.92);
+        box-shadow: 0 16px 38px rgba(31,42,46,.13);
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.theme-light.authenticated .nav-btn {
+        color: #67757b;
+      }
+
+      html:not([data-er-mobile-os="true"]) #ertrades-app.theme-light.authenticated .nav-btn.active {
+        color: #4f7e13;
+        background: rgba(118,185,29,.09);
+        box-shadow: inset 0 0 0 1px rgba(118,185,29,.13);
+      }
+    }
+
   </style>
 
   <div class="shell">
