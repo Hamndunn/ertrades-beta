@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83f-light-theme-contrast-fix">
+<meta name="ertrades-build" content="v83g-journal-export-import">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3107,6 +3107,319 @@
       overflow-wrap: anywhere;
     }
 
+    #ertrades-app .journal-data-copy {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    #ertrades-app .journal-data-actions {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    #ertrades-app .journal-data-actions .secondary-btn,
+    #ertrades-app .journal-data-actions .primary-btn {
+      width: 100%;
+    }
+
+    #ertrades-app .journal-data-status {
+      display: none;
+      margin-top: 10px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(184,255,79,.035);
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .journal-data-status.show { display: block; }
+    #ertrades-app .journal-data-status.error {
+      border-color: rgba(255,91,110,.28);
+      background: rgba(255,91,110,.055);
+      color: #ff8996;
+    }
+
+    #ertrades-app .journal-import-dialog {
+      width: min(94%, 620px);
+      max-height: 88%;
+      padding: 0;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: auto;
+    }
+
+    #ertrades-app .journal-import-dialog::backdrop {
+      background: rgba(0,0,0,.72);
+    }
+
+    #ertrades-app .journal-import-body {
+      padding: 16px;
+    }
+
+    #ertrades-app .journal-import-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    #ertrades-app .journal-import-head h3 {
+      margin: 4px 0 0;
+      font-size: 17px;
+      letter-spacing: -.02em;
+    }
+
+    #ertrades-app .journal-import-close {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #10171a;
+      color: var(--soft);
+      cursor: pointer;
+    }
+
+    #ertrades-app .journal-import-picker {
+      padding: 13px;
+      border: 1px dashed rgba(184,255,79,.34);
+      border-radius: 14px;
+      background: rgba(184,255,79,.028);
+    }
+
+    #ertrades-app .journal-import-picker input[type="file"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #ertrades-app .journal-import-file-name {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    #ertrades-app .journal-import-summary {
+      display: none;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    #ertrades-app .journal-import-summary.show { display: grid; }
+
+    #ertrades-app .journal-import-stat {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #0a1013;
+    }
+
+    #ertrades-app .journal-import-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .journal-import-stat strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--text);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    #ertrades-app .journal-import-config {
+      display: none;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    #ertrades-app .journal-import-config.show { display: grid; }
+
+    #ertrades-app .journal-import-source-note {
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(184,255,79,.035);
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .journal-import-target-options {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    #ertrades-app .journal-import-target {
+      min-height: 46px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #0a1013;
+      color: var(--soft);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #ertrades-app .journal-import-target.active {
+      border-color: rgba(184,255,79,.52);
+      background: var(--accent-dark);
+      color: var(--accent);
+    }
+
+    #ertrades-app .journal-import-new-account,
+    #ertrades-app .journal-import-existing-account {
+      display: none;
+      gap: 10px;
+    }
+
+    #ertrades-app .journal-import-new-account.show,
+    #ertrades-app .journal-import-existing-account.show {
+      display: grid;
+    }
+
+    #ertrades-app .journal-import-new-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) minmax(0,.72fr);
+      gap: 9px;
+    }
+
+    #ertrades-app .journal-import-preview-wrap {
+      display: none;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    #ertrades-app .journal-import-preview-wrap.show { display: block; }
+
+    #ertrades-app .journal-import-preview-scroll {
+      margin-top: 8px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #ertrades-app .journal-import-preview {
+      width: 100%;
+      min-width: 560px;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    #ertrades-app .journal-import-preview th,
+    #ertrades-app .journal-import-preview td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .journal-import-preview th {
+      color: var(--muted);
+      background: #0a1013;
+      font-size: 9px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .journal-import-preview tr:last-child td { border-bottom: 0; }
+
+    #ertrades-app .journal-import-warning {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 11px;
+      border: 1px solid rgba(215,168,74,.28);
+      border-radius: 10px;
+      background: rgba(215,168,74,.055);
+      color: #d7a84a;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .journal-import-warning.show { display: block; }
+
+    #ertrades-app .journal-import-status {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .journal-import-status.show { display: block; }
+    #ertrades-app .journal-import-status.error {
+      border-color: rgba(255,91,110,.28);
+      background: rgba(255,91,110,.055);
+      color: #ff8996;
+    }
+
+    #ertrades-app .journal-import-actions {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1.3fr);
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    #ertrades-app .journal-import-actions button:disabled {
+      opacity: .46;
+      cursor: not-allowed;
+    }
+
+    #ertrades-app.theme-light .journal-import-close,
+    #ertrades-app.theme-light .journal-import-stat,
+    #ertrades-app.theme-light .journal-import-target,
+    #ertrades-app.theme-light .journal-import-preview th {
+      background: #ffffff;
+    }
+
+    #ertrades-app.theme-light .journal-import-target.active {
+      background: var(--accent-dark);
+    }
+
+    @media (max-width: 560px) {
+      #ertrades-app .journal-data-actions,
+      #ertrades-app .journal-import-target-options,
+      #ertrades-app .journal-import-new-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #ertrades-app .journal-import-summary {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      #ertrades-app .journal-import-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
     #ertrades-app .support-links {
       display: grid;
       gap: 8px;
@@ -5587,6 +5900,16 @@
               <button class="theme-option" id="theme-light-btn" type="button">Light</button>
             </div>
           </div>
+          <div class="settings-account-card journal-data-card">
+            <div class="detail-label">Journal Data</div>
+            <p class="journal-data-copy">Backup your eRTrades journal or import trades from eRTrades, CSV, JSON, Excel, and other journal exports.</p>
+            <div class="journal-data-actions">
+              <button class="secondary-btn" id="journal-export-btn" type="button">Export Journal</button>
+              <button class="primary-btn" id="journal-import-btn" type="button">Import Journal</button>
+            </div>
+            <div class="journal-data-status" id="journal-data-status" role="status" aria-live="polite"></div>
+          </div>
+
           <div class="settings-account-card">
             <div class="detail-label">Support</div>
             <div class="support-links">
@@ -5610,6 +5933,111 @@
           </div>
         </div>
       </section>
+<dialog class="journal-import-dialog" id="journal-import-dialog">
+        <div class="journal-import-body">
+          <div class="journal-import-head">
+            <div>
+              <div class="section-kicker">Journal Data</div>
+              <h3>Import Journal</h3>
+            </div>
+            <button class="journal-import-close" id="journal-import-close-btn" type="button" aria-label="Close import journal">✕</button>
+          </div>
+
+          <div class="journal-import-picker">
+            <button class="secondary-btn" id="journal-import-choose-btn" type="button">Choose File</button>
+            <input id="journal-import-file" type="file" accept=".json,.csv,.xlsx,.xls,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+            <div class="journal-import-file-name" id="journal-import-file-name">Supported: eRTrades JSON backup, CSV, JSON, XLSX, XLS · max 20 MB</div>
+          </div>
+
+          <div class="journal-import-summary" id="journal-import-summary">
+            <div class="journal-import-stat">
+              <span>Source</span>
+              <strong id="journal-import-source">—</strong>
+            </div>
+            <div class="journal-import-stat">
+              <span>Trades</span>
+              <strong id="journal-import-trades-count">0</strong>
+            </div>
+            <div class="journal-import-stat">
+              <span>Accounts</span>
+              <strong id="journal-import-accounts-count">—</strong>
+            </div>
+          </div>
+
+          <div class="journal-import-config" id="journal-import-config">
+            <div class="journal-import-source-note" id="journal-import-source-note"></div>
+
+            <div id="journal-import-external-config">
+              <div class="detail-label">Import trades to</div>
+              <div class="journal-import-target-options">
+                <button class="journal-import-target active" id="journal-import-target-new" type="button">Create New Account</button>
+                <button class="journal-import-target" id="journal-import-target-existing" type="button">Existing Account</button>
+              </div>
+
+              <div class="journal-import-new-account show" id="journal-import-new-account">
+                <div class="journal-import-new-grid">
+                  <div class="field">
+                    <label for="journal-import-account-name">Account Name</label>
+                    <input id="journal-import-account-name" type="text" maxlength="80" placeholder="Imported Journal">
+                  </div>
+                  <div class="field">
+                    <label for="journal-import-starting-balance">Starting Balance</label>
+                    <input id="journal-import-starting-balance" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0">
+                  </div>
+                  <div class="field">
+                    <label for="journal-import-currency">Currency</label>
+                    <select id="journal-import-currency">
+                      <option value="USD">USD</option>
+                      <option value="EUR">EUR</option>
+                      <option value="GBP">GBP</option>
+                      <option value="IDR">IDR</option>
+                      <option value="JPY">JPY</option>
+                      <option value="AUD">AUD</option>
+                      <option value="CAD">CAD</option>
+                      <option value="CHF">CHF</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="journal-import-existing-account" id="journal-import-existing-account">
+                <div class="field">
+                  <label for="journal-import-account-select">Trading Account</label>
+                  <select id="journal-import-account-select"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="journal-import-preview-wrap" id="journal-import-preview-wrap">
+            <div class="detail-label">Preview</div>
+            <div class="journal-import-preview-scroll">
+              <table class="journal-import-preview">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Instrument</th>
+                    <th>Direction</th>
+                    <th>Result</th>
+                    <th>P/L</th>
+                    <th>Session</th>
+                  </tr>
+                </thead>
+                <tbody id="journal-import-preview-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="journal-import-warning" id="journal-import-warning"></div>
+          <div class="journal-import-status" id="journal-import-status" role="status" aria-live="polite"></div>
+
+          <div class="journal-import-actions">
+            <button class="secondary-btn" id="journal-import-cancel-btn" type="button">Cancel</button>
+            <button class="primary-btn" id="journal-import-confirm-btn" type="button" disabled>Import Journal</button>
+          </div>
+        </div>
+      </dialog>
+
 <dialog class="confirm-dialog delete-user-dialog" id="delete-user-dialog">
         <form class="confirm-body delete-user-body" id="delete-user-form">
           <div class="danger-zone-label">Danger Zone</div>
@@ -5869,6 +6297,35 @@
       const skipImportBtn = root.querySelector('#skip-import-btn');
       const settingsPage = root.querySelector('#settings-page');
       const settingsEmail = root.querySelector('#settings-email');
+      const journalExportBtn = root.querySelector('#journal-export-btn');
+      const journalImportBtn = root.querySelector('#journal-import-btn');
+      const journalDataStatus = root.querySelector('#journal-data-status');
+      const journalImportDialog = root.querySelector('#journal-import-dialog');
+      const journalImportCloseBtn = root.querySelector('#journal-import-close-btn');
+      const journalImportChooseBtn = root.querySelector('#journal-import-choose-btn');
+      const journalImportFile = root.querySelector('#journal-import-file');
+      const journalImportFileName = root.querySelector('#journal-import-file-name');
+      const journalImportSummary = root.querySelector('#journal-import-summary');
+      const journalImportSource = root.querySelector('#journal-import-source');
+      const journalImportTradesCount = root.querySelector('#journal-import-trades-count');
+      const journalImportAccountsCount = root.querySelector('#journal-import-accounts-count');
+      const journalImportConfig = root.querySelector('#journal-import-config');
+      const journalImportSourceNote = root.querySelector('#journal-import-source-note');
+      const journalImportExternalConfig = root.querySelector('#journal-import-external-config');
+      const journalImportTargetNew = root.querySelector('#journal-import-target-new');
+      const journalImportTargetExisting = root.querySelector('#journal-import-target-existing');
+      const journalImportNewAccount = root.querySelector('#journal-import-new-account');
+      const journalImportExistingAccount = root.querySelector('#journal-import-existing-account');
+      const journalImportAccountName = root.querySelector('#journal-import-account-name');
+      const journalImportStartingBalance = root.querySelector('#journal-import-starting-balance');
+      const journalImportCurrency = root.querySelector('#journal-import-currency');
+      const journalImportAccountSelect = root.querySelector('#journal-import-account-select');
+      const journalImportPreviewWrap = root.querySelector('#journal-import-preview-wrap');
+      const journalImportPreviewBody = root.querySelector('#journal-import-preview-body');
+      const journalImportWarning = root.querySelector('#journal-import-warning');
+      const journalImportStatus = root.querySelector('#journal-import-status');
+      const journalImportCancelBtn = root.querySelector('#journal-import-cancel-btn');
+      const journalImportConfirmBtn = root.querySelector('#journal-import-confirm-btn');
       const settingsLogoutBtn = root.querySelector('#settings-logout-btn');
       const settingsDeleteUserBtn = root.querySelector('#settings-delete-user-btn');
       const deleteUserDialog = root.querySelector('#delete-user-dialog');
@@ -5953,6 +6410,12 @@
       let previewUrls = { before: null, after: null };
       let equityFilter = 'ALL';
       let analyticsFilter = 'ALL';
+      let journalImportParsed = null;
+      let journalImportTargetMode = 'new';
+      let journalImportBusy = false;
+      const JOURNAL_BACKUP_FORMAT = 'ertrades-journal-backup';
+      const JOURNAL_BACKUP_VERSION = 1;
+      const JOURNAL_IMPORT_MAX_BYTES = 20 * 1024 * 1024;
       const calendarNow = new Date();
       let calendarYear = calendarNow.getFullYear();
       let calendarMonth = calendarNow.getMonth();
@@ -6332,6 +6795,73 @@
             updated_at: new Date().toISOString()
           }
         });
+      };
+
+      const chunkArray = (items, size = 150) => {
+        const output = [];
+        for (let index = 0; index < items.length; index += size) output.push(items.slice(index, index + size));
+        return output;
+      };
+
+      const accountToSupabaseRow = (account) => ({
+        id: account.id,
+        user_id: currentUser.id,
+        name: account.name,
+        starting_balance: account.startingBalance,
+        currency: account.currency,
+        prop_firm_config: account.propFirmConfig || null,
+        created_at: new Date(account.createdAt || Date.now()).toISOString(),
+        updated_at: new Date().toISOString()
+      });
+
+      const tradeToSupabaseRow = (trade) => ({
+        id: trade.id,
+        user_id: currentUser.id,
+        account_id: trade.accountId,
+        instrument: trade.instrument,
+        direction: trade.direction,
+        trade_date: trade.date,
+        session: trade.session,
+        entry_price: trade.entryPrice,
+        stop_loss: trade.stopLoss,
+        take_profit: trade.takeProfit,
+        lot_size: trade.lotSize,
+        risk_percent: trade.riskPercent,
+        risk_amount: trade.riskAmount,
+        profit_loss: trade.profitLoss,
+        result: trade.result,
+        planned_rr: trade.plannedRr,
+        realized_r: trade.realizedR,
+        reason_for_entry: trade.notes || null,
+        mistakes: trade.mistakes || null,
+        psychology_before: trade.psychologyBefore || null,
+        psychology_after: trade.psychologyAfter || null,
+        screenshot_before_path: trade.screenshotBeforePath || null,
+        screenshot_after_path: trade.screenshotAfterPath || null,
+        created_at: new Date(trade.createdAt || Date.now()).toISOString(),
+        updated_at: new Date().toISOString()
+      });
+
+      const saveAccountsBatchToSupabase = async (items) => {
+        for (const chunk of chunkArray(items)) {
+          await supabaseRest('trading_accounts', {
+            method: 'POST',
+            query: 'on_conflict=id',
+            prefer: 'resolution=merge-duplicates,return=minimal',
+            body: chunk.map(accountToSupabaseRow)
+          });
+        }
+      };
+
+      const saveTradesBatchToSupabase = async (items) => {
+        for (const chunk of chunkArray(items)) {
+          await supabaseRest('trades', {
+            method: 'POST',
+            query: 'on_conflict=id',
+            prefer: 'resolution=merge-duplicates,return=minimal',
+            body: chunk.map(tradeToSupabaseRow)
+          });
+        }
       };
 
       const deleteTradeFromSupabase = async (tradeId) => {
@@ -8865,6 +9395,809 @@
         if (focusTarget) focusTarget.focus();
       };
 
+      const setJournalDataStatus = (message = '', type = '') => {
+        journalDataStatus.textContent = message;
+        journalDataStatus.classList.toggle('show', Boolean(message));
+        journalDataStatus.classList.toggle('error', type === 'error');
+      };
+
+      const setJournalImportStatus = (message = '', type = '') => {
+        journalImportStatus.textContent = message;
+        journalImportStatus.classList.toggle('show', Boolean(message));
+        journalImportStatus.classList.toggle('error', type === 'error');
+      };
+
+      const setJournalImportWarning = (message = '') => {
+        journalImportWarning.textContent = message;
+        journalImportWarning.classList.toggle('show', Boolean(message));
+      };
+
+      const makeRecordUuid = () => typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `00000000-0000-4000-8000-${String(Date.now()).padStart(12, '0').slice(-12)}`;
+
+      const hash32 = (value, seed = 2166136261) => {
+        let hash = seed >>> 0;
+        const text = String(value || '');
+        for (let index = 0; index < text.length; index += 1) {
+          hash ^= text.charCodeAt(index);
+          hash = Math.imul(hash, 16777619);
+        }
+        return hash >>> 0;
+      };
+
+      const deterministicUuid = (seed) => {
+        const a = hash32(seed, 2166136261);
+        const b = hash32(seed, 2246822519);
+        const c = hash32(seed, 3266489917);
+        const d = hash32(seed, 668265263);
+        let hex = [a,b,c,d].map((part) => part.toString(16).padStart(8, '0')).join('').slice(0, 32);
+        hex = `${hex.slice(0,12)}4${hex.slice(13,16)}${((parseInt(hex[16],16) & 3) | 8).toString(16)}${hex.slice(17)}`;
+        return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20,32)}`;
+      };
+
+      const normalizeImportKey = (value) => String(value || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[%$€£¥]/g, '')
+        .replace(/[\s._/\\()[\]-]+/g, '');
+
+      const IMPORT_FIELD_ALIASES = {
+        id: ['id','tradeid','ticket','ticketid','order','orderid','deal','dealid','positionid'],
+        instrument: ['instrument','symbol','pair','market','ticker','asset'],
+        direction: ['direction','side','type','tradetype','ordertype','positiontype'],
+        date: ['date','tradedate','opendate','closedate','datetime','opentime','closetime','time'],
+        session: ['session','tradingsession','marketsession'],
+        entryPrice: ['entry','entryprice','openprice','entrylevel','priceopen'],
+        stopLoss: ['sl','stoploss','stopprice','stoplossprice'],
+        takeProfit: ['tp','takeprofit','target','targetprice','takeprofitprice'],
+        lotSize: ['lot','lots','lotsize','volume','size','quantity','qty'],
+        riskPercent: ['riskpercent','riskpercentage','riskpct','risk'],
+        riskAmount: ['riskamount','riskusd','riskmoney','amountatrisk'],
+        profitLoss: ['pl','pnl','profit','profitloss','netprofit','netpl','realizedpnl','realizedprofit','resultamount'],
+        result: ['result','outcome','status','tradeoutcome'],
+        plannedRr: ['rr','plannedrr','riskreward','riskrewardratio','ratiorewardrisk'],
+        realizedR: ['realizedr','rmultiple','actualr'],
+        notes: ['notes','note','reason','reasonforentry','entryreason','comment','comments'],
+        mistakes: ['mistakes','mistake','error','errors'],
+        psychologyBefore: ['emotion','emotionalstate','psychology','mood'],
+        rating: ['rating','score','tradingscore'],
+        accountName: ['accountname','tradingaccount','account','portfolio'],
+        startingBalance: ['startingbalance','initialbalance','startbalance','balanceinitial'],
+        currency: ['currency','accountcurrency','ccy']
+      };
+
+      const findImportValue = (row, field) => {
+        if (!row || typeof row !== 'object') return '';
+        const aliases = IMPORT_FIELD_ALIASES[field] || [];
+        const keyMap = new Map(Object.keys(row).map((key) => [normalizeImportKey(key), key]));
+        for (const alias of aliases) {
+          const original = keyMap.get(normalizeImportKey(alias));
+          if (original !== undefined) return row[original];
+        }
+        return '';
+      };
+
+      const parseImportNumber = (value) => {
+        if (value === null || value === undefined || value === '') return null;
+        if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+        let text = String(value).trim();
+        if (!text) return null;
+        text = text.replace(/\s/g, '').replace(/[^\d,.\-+]/g, '');
+        if (!text) return null;
+        const comma = text.lastIndexOf(',');
+        const dot = text.lastIndexOf('.');
+        if (comma >= 0 && dot >= 0) {
+          if (comma > dot) text = text.replace(/\./g, '').replace(',', '.');
+          else text = text.replace(/,/g, '');
+        } else if (comma >= 0) {
+          const pieces = text.split(',');
+          text = pieces.length === 2 && pieces[1].length <= 2
+            ? `${pieces[0]}.${pieces[1]}`
+            : pieces.join('');
+        }
+        const number = Number(text);
+        return Number.isFinite(number) ? number : null;
+      };
+
+      const padDatePart = (value) => String(value).padStart(2, '0');
+
+      const validIsoDateParts = (year, month, day) => {
+        const y = Number(year);
+        const m = Number(month);
+        const d = Number(day);
+        if (!Number.isInteger(y) || y < 1970 || y > 2200 || !Number.isInteger(m) || m < 1 || m > 12 || !Number.isInteger(d) || d < 1 || d > 31) return '';
+        const probe = new Date(Date.UTC(y, m - 1, d));
+        if (probe.getUTCFullYear() !== y || probe.getUTCMonth() !== m - 1 || probe.getUTCDate() !== d) return '';
+        return `${y}-${padDatePart(m)}-${padDatePart(d)}`;
+      };
+
+      const parseImportDate = (value) => {
+        if (value === null || value === undefined || value === '') return '';
+
+        if (typeof value === 'number' && Number.isFinite(value) && value > 20000 && value < 90000) {
+          const epoch = Date.UTC(1899, 11, 30);
+          const date = new Date(epoch + Math.floor(value) * 86400000);
+          return validIsoDateParts(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+        }
+
+        const text = String(value).trim();
+        if (!text) return '';
+
+        let match = text.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+        if (match) return validIsoDateParts(match[1], match[2], match[3]);
+
+        match = text.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
+        if (match) {
+          const first = Number(match[1]);
+          const second = Number(match[2]);
+          if (first > 12) return validIsoDateParts(match[3], second, first);
+          if (second > 12) return validIsoDateParts(match[3], first, second);
+          // For ambiguous DD/MM/YYYY vs MM/DD/YYYY, use day-first because
+          // most third-party exports used by the target audience are non-US.
+          return validIsoDateParts(match[3], second, first);
+        }
+
+        const parsed = new Date(text);
+        if (Number.isFinite(parsed.getTime())) {
+          return validIsoDateParts(parsed.getUTCFullYear(), parsed.getUTCMonth() + 1, parsed.getUTCDate());
+        }
+        return '';
+      };
+
+      const normalizeImportDirection = (value) => {
+        const text = String(value || '').trim().toLowerCase();
+        if (['buy','long','b','buy limit','buy stop'].includes(text)) return 'BUY';
+        if (['sell','short','s','sell limit','sell stop'].includes(text)) return 'SELL';
+        return String(value || '').trim().toUpperCase() === 'BUY' ? 'BUY'
+          : String(value || '').trim().toUpperCase() === 'SELL' ? 'SELL'
+          : '';
+      };
+
+      const normalizeImportSession = (value) => {
+        const text = String(value || '').trim().toLowerCase();
+        if (!text) return '';
+        if (text.includes('asia')) return 'Asia';
+        if (text.includes('london')) return 'London';
+        if (text.includes('new york') || text === 'ny' || text.includes('newyork')) return 'New York';
+        return String(value || '').trim();
+      };
+
+      const normalizeImportResult = (value, profitLoss) => {
+        const text = String(value || '').trim().toLowerCase().replace(/[_-]+/g, ' ');
+        if (['win','winner','profit','won','tp','take profit'].includes(text)) return 'WIN';
+        if (['loss','lose','loser','lost','sl','stop loss'].includes(text)) return 'LOSS';
+        if (['be','break even','breakeven','break-even','flat'].includes(text)) return 'BREAK EVEN';
+        if (Number.isFinite(profitLoss)) return profitLoss > 0 ? 'WIN' : profitLoss < 0 ? 'LOSS' : 'BREAK EVEN';
+        return '';
+      };
+
+      const calculateImportedPlannedRr = (direction, entry, stopLoss, takeProfit) => {
+        if (![entry, stopLoss, takeProfit].every(Number.isFinite)) return null;
+        if (direction === 'BUY' && stopLoss < entry && takeProfit > entry) {
+          const risk = entry - stopLoss;
+          return risk > 0 ? (takeProfit - entry) / risk : null;
+        }
+        if (direction === 'SELL' && stopLoss > entry && takeProfit < entry) {
+          const risk = stopLoss - entry;
+          return risk > 0 ? (entry - takeProfit) / risk : null;
+        }
+        return null;
+      };
+
+      const normalizeExternalImportRow = (row, index) => {
+        const instrument = String(findImportValue(row, 'instrument') || '').trim().toUpperCase();
+        const date = parseImportDate(findImportValue(row, 'date'));
+        if (!instrument || !date) return { valid: false, reason: !instrument ? 'Missing instrument' : 'Missing/invalid date', index };
+
+        const direction = normalizeImportDirection(findImportValue(row, 'direction'));
+        const entryPrice = parseImportNumber(findImportValue(row, 'entryPrice'));
+        const stopLoss = parseImportNumber(findImportValue(row, 'stopLoss'));
+        const takeProfit = parseImportNumber(findImportValue(row, 'takeProfit'));
+        const lotSize = parseImportNumber(findImportValue(row, 'lotSize'));
+        const riskPercent = parseImportNumber(findImportValue(row, 'riskPercent'));
+        const riskAmount = parseImportNumber(findImportValue(row, 'riskAmount'));
+        const profitLoss = parseImportNumber(findImportValue(row, 'profitLoss')) ?? 0;
+        const result = normalizeImportResult(findImportValue(row, 'result'), profitLoss);
+        const importedPlanned = parseImportNumber(findImportValue(row, 'plannedRr'));
+        const plannedRr = Number.isFinite(importedPlanned)
+          ? importedPlanned
+          : calculateImportedPlannedRr(direction, entryPrice, stopLoss, takeProfit);
+        const importedRealized = parseImportNumber(findImportValue(row, 'realizedR'));
+        const realizedR = Number.isFinite(importedRealized)
+          ? importedRealized
+          : Number.isFinite(riskAmount) && riskAmount > 0
+            ? profitLoss / riskAmount
+            : result === 'BREAK EVEN'
+              ? 0
+              : result === 'LOSS'
+                ? -1
+                : result === 'WIN' && Number.isFinite(plannedRr)
+                  ? plannedRr
+                  : null;
+        const ratingRaw = parseImportNumber(findImportValue(row, 'rating'));
+        const rating = Number.isFinite(ratingRaw) ? Math.max(0, Math.min(5, Math.round(ratingRaw))) : 0;
+        const sourceId = String(findImportValue(row, 'id') || '').trim();
+
+        return {
+          valid: true,
+          index,
+          sourceId,
+          trade: {
+            instrument,
+            direction,
+            date,
+            session: normalizeImportSession(findImportValue(row, 'session')),
+            entryPrice,
+            stopLoss,
+            takeProfit,
+            lotSize,
+            riskPercent,
+            riskAmount,
+            profitLoss,
+            result,
+            plannedRr,
+            realizedR,
+            notes: String(findImportValue(row, 'notes') || '').trim(),
+            mistakes: String(findImportValue(row, 'mistakes') || '').trim(),
+            psychologyBefore: String(findImportValue(row, 'psychologyBefore') || '').trim(),
+            psychologyAfter: rating ? `rating:${rating}` : '',
+            screenshotBeforePath: null,
+            screenshotAfterPath: null,
+            screenshotBeforeId: null,
+            screenshotAfterId: null,
+            createdAt: Date.now() + index,
+            updatedAt: Date.now() + index
+          }
+        };
+      };
+
+      const parseCsvRows = (text) => {
+        const rows = [];
+        let row = [];
+        let cell = '';
+        let quoted = false;
+
+        for (let index = 0; index < text.length; index += 1) {
+          const char = text[index];
+          const next = text[index + 1];
+
+          if (char === '"') {
+            if (quoted && next === '"') {
+              cell += '"';
+              index += 1;
+            } else {
+              quoted = !quoted;
+            }
+          } else if (char === ',' && !quoted) {
+            row.push(cell);
+            cell = '';
+          } else if ((char === '\n' || char === '\r') && !quoted) {
+            if (char === '\r' && next === '\n') index += 1;
+            row.push(cell);
+            if (row.some((value) => String(value).trim() !== '')) rows.push(row);
+            row = [];
+            cell = '';
+          } else {
+            cell += char;
+          }
+        }
+
+        row.push(cell);
+        if (row.some((value) => String(value).trim() !== '')) rows.push(row);
+        if (rows.length < 2) return [];
+
+        const headers = rows[0].map((value, index) => String(value || '').trim() || `Column ${index + 1}`);
+        return rows.slice(1).map((cells) => {
+          const record = {};
+          headers.forEach((header, index) => { record[header] = cells[index] ?? ''; });
+          return record;
+        });
+      };
+
+      const loadXlsxRows = async (file) => {
+        let module;
+        try {
+          module = await import('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm');
+        } catch (_) {
+          throw new Error('Excel reader could not be loaded. Try exporting the journal as CSV or JSON instead.');
+        }
+        const XLSX = module?.default || module;
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array', cellDates: false });
+        const firstSheet = workbook.SheetNames?.[0];
+        if (!firstSheet) return [];
+        return XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: '', raw: true });
+      };
+
+      const safeFileBaseName = (name) => String(name || 'Imported Journal')
+        .replace(/\.[^.]+$/, '')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 80) || 'Imported Journal';
+
+      const inferExternalAccountMeta = (rows, parsedObject, fileName) => {
+        const first = Array.isArray(rows) ? rows.find((row) => row && typeof row === 'object') : null;
+        const objectAccount = parsedObject?.account && typeof parsedObject.account === 'object' ? parsedObject.account : null;
+        const name = String(
+          objectAccount?.name ||
+          parsedObject?.accountName ||
+          (first ? findImportValue(first, 'accountName') : '') ||
+          safeFileBaseName(fileName)
+        ).trim().slice(0,80) || 'Imported Journal';
+        const balance = parseImportNumber(
+          objectAccount?.startingBalance ??
+          parsedObject?.startingBalance ??
+          (first ? findImportValue(first, 'startingBalance') : '')
+        );
+        const currency = String(
+          objectAccount?.currency ||
+          parsedObject?.currency ||
+          (first ? findImportValue(first, 'currency') : '') ||
+          currentAccount()?.currency ||
+          'USD'
+        ).trim().toUpperCase();
+
+        return {
+          name,
+          startingBalance: Number.isFinite(balance) && balance >= 0 ? balance : 0,
+          currency: ['USD','EUR','GBP','IDR','JPY','AUD','CAD','CHF'].includes(currency) ? currency : 'USD'
+        };
+      };
+
+      const sanitizeBackupAccount = (account) => ({
+        id: String(account?.id || ''),
+        name: String(account?.name || 'Imported Account').trim().slice(0,80) || 'Imported Account',
+        startingBalance: Math.max(0, Number(account?.startingBalance) || 0),
+        currency: String(account?.currency || 'USD').trim().toUpperCase() || 'USD',
+        ...(account?.propFirmConfig ? { propFirmConfig: account.propFirmConfig } : {}),
+        createdAt: Number(account?.createdAt) || Date.now(),
+        updatedAt: Number(account?.updatedAt) || Date.now()
+      });
+
+      const sanitizeBackupTrade = (trade) => ({
+        id: String(trade?.id || ''),
+        accountId: String(trade?.accountId || ''),
+        instrument: String(trade?.instrument || '').trim().toUpperCase(),
+        direction: normalizeImportDirection(trade?.direction),
+        date: parseImportDate(trade?.date),
+        session: normalizeImportSession(trade?.session),
+        entryPrice: parseImportNumber(trade?.entryPrice),
+        stopLoss: parseImportNumber(trade?.stopLoss),
+        takeProfit: parseImportNumber(trade?.takeProfit),
+        lotSize: parseImportNumber(trade?.lotSize),
+        riskPercent: parseImportNumber(trade?.riskPercent),
+        riskAmount: parseImportNumber(trade?.riskAmount),
+        profitLoss: parseImportNumber(trade?.profitLoss) ?? 0,
+        result: normalizeImportResult(trade?.result, parseImportNumber(trade?.profitLoss) ?? 0),
+        plannedRr: parseImportNumber(trade?.plannedRr),
+        realizedR: parseImportNumber(trade?.realizedR),
+        notes: String(trade?.notes || ''),
+        mistakes: String(trade?.mistakes || ''),
+        psychologyBefore: String(trade?.psychologyBefore || ''),
+        psychologyAfter: /^rating:[1-5]$/i.test(String(trade?.psychologyAfter || '')) ? String(trade.psychologyAfter) : '',
+        screenshotBeforePath: null,
+        screenshotAfterPath: null,
+        screenshotBeforeId: null,
+        screenshotAfterId: null,
+        createdAt: Number(trade?.createdAt) || Date.now(),
+        updatedAt: Number(trade?.updatedAt) || Date.now()
+      });
+
+      const parseJournalImportFile = async (file) => {
+        if (!file) throw new Error('Choose a journal file first.');
+        if (file.size > JOURNAL_IMPORT_MAX_BYTES) throw new Error('This file is larger than 20 MB. Export journal data without screenshots and try again.');
+
+        const extension = String(file.name || '').split('.').pop().toLowerCase();
+        let rawRows = [];
+        let parsedObject = null;
+
+        if (extension === 'xlsx' || extension === 'xls') {
+          rawRows = await loadXlsxRows(file);
+        } else {
+          const text = await file.text();
+          if (extension === 'json' || String(file.type || '').includes('json') || /^[\s]*[\[{]/.test(text)) {
+            try {
+              parsedObject = JSON.parse(text);
+            } catch (_) {
+              if (extension === 'json') throw new Error('This JSON file is invalid or damaged.');
+            }
+          }
+          if (parsedObject === null) rawRows = parseCsvRows(text);
+        }
+
+        if (parsedObject && parsedObject.format === JOURNAL_BACKUP_FORMAT) {
+          if (Number(parsedObject.version) > JOURNAL_BACKUP_VERSION) {
+            throw new Error('This backup was created by a newer eRTrades backup format. Update eRTrades before importing it.');
+          }
+          const backupAccounts = Array.isArray(parsedObject.accounts) ? parsedObject.accounts.map(sanitizeBackupAccount).filter((item) => item.id) : [];
+          const validAccountIds = new Set(backupAccounts.map((item) => item.id));
+          const backupTrades = Array.isArray(parsedObject.trades)
+            ? parsedObject.trades.map(sanitizeBackupTrade).filter((item) => item.instrument && item.date && validAccountIds.has(item.accountId))
+            : [];
+          if (!backupAccounts.length && !backupTrades.length) throw new Error('This eRTrades backup does not contain journal data.');
+          return {
+            kind: 'backup',
+            sourceLabel: 'eRTrades Backup',
+            fileName: file.name,
+            accounts: backupAccounts,
+            trades: backupTrades,
+            invalidCount: Math.max(0, (Array.isArray(parsedObject.trades) ? parsedObject.trades.length : 0) - backupTrades.length),
+            exportedAt: parsedObject.exportedAt || '',
+            screenshotsIncluded: parsedObject.screenshotsIncluded === true
+          };
+        }
+
+        if (parsedObject !== null) {
+          if (Array.isArray(parsedObject)) rawRows = parsedObject;
+          else if (Array.isArray(parsedObject.trades)) rawRows = parsedObject.trades;
+          else if (Array.isArray(parsedObject.data)) rawRows = parsedObject.data;
+          else if (Array.isArray(parsedObject.rows)) rawRows = parsedObject.rows;
+          else throw new Error('No trade rows were found in this JSON file.');
+        }
+
+        if (!Array.isArray(rawRows) || !rawRows.length) throw new Error('No journal rows were found in this file.');
+
+        const normalized = rawRows.map(normalizeExternalImportRow);
+        const validRows = normalized.filter((item) => item.valid);
+        const invalidCount = normalized.length - validRows.length;
+        if (!validRows.length) {
+          throw new Error('No importable trades were found. The file needs at least an Instrument/Symbol and Date column.');
+        }
+
+        return {
+          kind: 'external',
+          sourceLabel: extension === 'xlsx' || extension === 'xls' ? 'Excel Journal' : extension === 'json' ? 'JSON Journal' : 'CSV Journal',
+          fileName: file.name,
+          rows: validRows,
+          invalidCount,
+          accountMeta: inferExternalAccountMeta(rawRows, parsedObject || {}, file.name)
+        };
+      };
+
+      const exportTradeForBackup = (trade) => ({
+        id: trade.id,
+        accountId: trade.accountId,
+        instrument: trade.instrument,
+        direction: trade.direction,
+        date: trade.date,
+        session: trade.session,
+        entryPrice: trade.entryPrice,
+        stopLoss: trade.stopLoss,
+        takeProfit: trade.takeProfit,
+        lotSize: trade.lotSize,
+        riskPercent: trade.riskPercent,
+        riskAmount: trade.riskAmount,
+        profitLoss: trade.profitLoss,
+        result: trade.result,
+        plannedRr: trade.plannedRr,
+        realizedR: trade.realizedR,
+        notes: trade.notes || '',
+        mistakes: trade.mistakes || '',
+        psychologyBefore: trade.psychologyBefore || '',
+        psychologyAfter: trade.psychologyAfter || '',
+        createdAt: trade.createdAt,
+        updatedAt: trade.updatedAt
+      });
+
+      const exportJournalBackup = () => {
+        if (!accounts.length && !trades.length) {
+          setJournalDataStatus('There is no journal data to export yet.', 'error');
+          return;
+        }
+
+        const payload = {
+          format: JOURNAL_BACKUP_FORMAT,
+          version: JOURNAL_BACKUP_VERSION,
+          app: 'eRTrades',
+          exportedAt: new Date().toISOString(),
+          screenshotsIncluded: false,
+          note: 'Journal backup only. Cloud screenshots are not included in backup version 1.',
+          accounts: accounts.map((account) => ({
+            id: account.id,
+            name: account.name,
+            startingBalance: account.startingBalance,
+            currency: account.currency,
+            ...(account.propFirmConfig ? { propFirmConfig: account.propFirmConfig } : {}),
+            createdAt: account.createdAt,
+            updatedAt: account.updatedAt
+          })),
+          trades: trades.map(exportTradeForBackup)
+        };
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        const now = new Date();
+        const dateName = `${now.getFullYear()}-${padDatePart(now.getMonth() + 1)}-${padDatePart(now.getDate())}`;
+        anchor.href = url;
+        anchor.download = `ertrades-backup-${dateName}.json`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setJournalDataStatus(`Backup ready: ${accounts.length} account${accounts.length === 1 ? '' : 's'} · ${trades.length} trade${trades.length === 1 ? '' : 's'}. Screenshots are not included.`);
+      };
+
+      const resetJournalImportUi = () => {
+        journalImportParsed = null;
+        journalImportTargetMode = 'new';
+        journalImportBusy = false;
+        journalImportFile.value = '';
+        journalImportFileName.textContent = 'Supported: eRTrades JSON backup, CSV, JSON, XLSX, XLS · max 20 MB';
+        journalImportSummary.classList.remove('show');
+        journalImportConfig.classList.remove('show');
+        journalImportPreviewWrap.classList.remove('show');
+        journalImportPreviewBody.innerHTML = '';
+        journalImportSource.textContent = '—';
+        journalImportTradesCount.textContent = '0';
+        journalImportAccountsCount.textContent = '—';
+        journalImportSourceNote.textContent = '';
+        journalImportExternalConfig.style.display = '';
+        journalImportTargetNew.classList.add('active');
+        journalImportTargetExisting.classList.remove('active');
+        journalImportNewAccount.classList.add('show');
+        journalImportExistingAccount.classList.remove('show');
+        journalImportAccountName.value = '';
+        journalImportStartingBalance.value = '0';
+        journalImportCurrency.value = currentAccount()?.currency || 'USD';
+        journalImportAccountSelect.innerHTML = '';
+        setJournalImportWarning('');
+        setJournalImportStatus('');
+        journalImportConfirmBtn.disabled = true;
+        journalImportConfirmBtn.textContent = 'Import Journal';
+      };
+
+      const populateJournalImportAccountSelect = () => {
+        journalImportAccountSelect.innerHTML = '';
+        accounts.forEach((account) => {
+          const option = document.createElement('option');
+          option.value = account.id;
+          option.textContent = `${account.name} · ${account.currency}`;
+          journalImportAccountSelect.appendChild(option);
+        });
+        if (selectedAccountId && accounts.some((account) => account.id === selectedAccountId)) {
+          journalImportAccountSelect.value = selectedAccountId;
+        }
+      };
+
+      const renderJournalImportPreview = (tradesToPreview) => {
+        journalImportPreviewBody.innerHTML = '';
+        const preview = tradesToPreview.slice(0, 6);
+        preview.forEach((trade) => {
+          const row = document.createElement('tr');
+          const values = [
+            trade.date || '—',
+            trade.instrument || '—',
+            trade.direction || '—',
+            trade.result || '—',
+            Number.isFinite(Number(trade.profitLoss)) ? String(Number(trade.profitLoss)) : '0',
+            trade.session || '—'
+          ];
+          values.forEach((value) => {
+            const cell = document.createElement('td');
+            cell.textContent = value;
+            row.appendChild(cell);
+          });
+          journalImportPreviewBody.appendChild(row);
+        });
+        journalImportPreviewWrap.classList.toggle('show', Boolean(preview.length));
+      };
+
+      const renderParsedJournalImport = () => {
+        const parsed = journalImportParsed;
+        if (!parsed) return;
+
+        journalImportSummary.classList.add('show');
+        journalImportConfig.classList.add('show');
+        journalImportSource.textContent = parsed.sourceLabel;
+
+        if (parsed.kind === 'backup') {
+          journalImportTradesCount.textContent = String(parsed.trades.length);
+          journalImportAccountsCount.textContent = String(parsed.accounts.length);
+          journalImportExternalConfig.style.display = 'none';
+          journalImportSourceNote.textContent = `Safe merge: ${parsed.accounts.length} account${parsed.accounts.length === 1 ? '' : 's'} and ${parsed.trades.length} trade${parsed.trades.length === 1 ? '' : 's'} will be restored without deleting your current journal. Existing duplicates are skipped.`;
+          renderJournalImportPreview(parsed.trades);
+          journalImportConfirmBtn.disabled = false;
+          if (parsed.invalidCount) {
+            setJournalImportWarning(`${parsed.invalidCount} incomplete trade row${parsed.invalidCount === 1 ? '' : 's'} will be skipped.`);
+          } else {
+            setJournalImportWarning('Screenshots are not restored in backup version 1. Existing cloud screenshots are never deleted by this import.');
+          }
+        } else {
+          journalImportExternalConfig.style.display = '';
+          journalImportTradesCount.textContent = String(parsed.rows.length);
+          journalImportAccountsCount.textContent = '1 target';
+          journalImportSourceNote.textContent = 'External journal detected. Choose an existing Trading Account or create a new one. Imported trades stay editable and you can keep adding new trades normally.';
+          journalImportAccountName.value = parsed.accountMeta.name;
+          journalImportStartingBalance.value = String(parsed.accountMeta.startingBalance);
+          journalImportCurrency.value = parsed.accountMeta.currency;
+          populateJournalImportAccountSelect();
+          renderJournalImportPreview(parsed.rows.map((item) => item.trade));
+          journalImportConfirmBtn.disabled = false;
+          if (parsed.invalidCount) {
+            setJournalImportWarning(`${parsed.invalidCount} row${parsed.invalidCount === 1 ? '' : 's'} could not be mapped and will be skipped. Required fields: Instrument/Symbol and Date.`);
+          } else {
+            setJournalImportWarning('Common column names are mapped automatically. Screenshots from third-party journals are not imported.');
+          }
+        }
+      };
+
+      const chooseJournalImportTarget = (mode) => {
+        if (mode === 'existing' && !accounts.length) mode = 'new';
+        journalImportTargetMode = mode;
+        journalImportTargetNew.classList.toggle('active', mode === 'new');
+        journalImportTargetExisting.classList.toggle('active', mode === 'existing');
+        journalImportNewAccount.classList.toggle('show', mode === 'new');
+        journalImportExistingAccount.classList.toggle('show', mode === 'existing');
+      };
+
+      const saveImportedRecords = async (newAccounts, newTrades) => {
+        if (usingCloudData) {
+          if (newAccounts.length) await saveAccountsBatchToSupabase(newAccounts);
+          if (newTrades.length) await saveTradesBatchToSupabase(newTrades);
+        } else {
+          for (const account of newAccounts) await saveAccount(account);
+          for (const trade of newTrades) await saveTrade(trade);
+        }
+      };
+
+      const importNativeBackup = async (parsed) => {
+        const currentAccountIds = new Set(accounts.map((account) => account.id));
+        const currentTradeIds = new Set(trades.map((trade) => trade.id));
+        const accountMap = new Map();
+        const newAccounts = [];
+        const now = Date.now();
+
+        parsed.accounts.forEach((sourceAccount, index) => {
+          let targetId;
+          if (currentAccountIds.has(sourceAccount.id)) {
+            targetId = sourceAccount.id;
+          } else {
+            targetId = deterministicUuid(`ertrades-backup-account|${currentUser?.id || 'local'}|${sourceAccount.id}`);
+            if (!currentAccountIds.has(targetId)) {
+              newAccounts.push({
+                ...sourceAccount,
+                id: targetId,
+                createdAt: sourceAccount.createdAt || now + index,
+                updatedAt: now + index
+              });
+              currentAccountIds.add(targetId);
+            }
+          }
+          accountMap.set(sourceAccount.id, targetId);
+        });
+
+        const seenImportedIds = new Set(currentTradeIds);
+        const newTrades = [];
+        let duplicates = 0;
+
+        parsed.trades.forEach((sourceTrade, index) => {
+          const targetAccountId = accountMap.get(sourceTrade.accountId);
+          if (!targetAccountId) return;
+          const deterministicId = deterministicUuid(`ertrades-backup-trade|${currentUser?.id || 'local'}|${targetAccountId}|${sourceTrade.id || index}`);
+
+          if (currentTradeIds.has(sourceTrade.id) || seenImportedIds.has(deterministicId)) {
+            duplicates += 1;
+            return;
+          }
+
+          const trade = {
+            ...sourceTrade,
+            id: deterministicId,
+            accountId: targetAccountId,
+            screenshotBeforePath: null,
+            screenshotAfterPath: null,
+            screenshotBeforeId: null,
+            screenshotAfterId: null,
+            updatedAt: now + index
+          };
+          seenImportedIds.add(deterministicId);
+          newTrades.push(trade);
+        });
+
+        await saveImportedRecords(newAccounts, newTrades);
+        accounts.push(...newAccounts);
+        trades.push(...newTrades);
+
+        const firstImportedAccount = accountMap.get(parsed.accounts[0]?.id);
+        if (firstImportedAccount) selectedAccountId = firstImportedAccount;
+
+        return { accountsAdded: newAccounts.length, tradesAdded: newTrades.length, duplicates };
+      };
+
+      const externalTradeSeed = (trade, sourceId, index) => [
+        sourceId || `row-${index}`,
+        trade.date,
+        trade.instrument,
+        trade.direction,
+        trade.entryPrice,
+        trade.stopLoss,
+        trade.takeProfit,
+        trade.lotSize,
+        trade.profitLoss,
+        trade.result
+      ].join('|');
+
+      const importExternalJournal = async (parsed) => {
+        let targetAccount = null;
+        const newAccounts = [];
+
+        if (journalImportTargetMode === 'existing') {
+          targetAccount = accounts.find((account) => account.id === journalImportAccountSelect.value) || null;
+          if (!targetAccount) throw new Error('Choose an existing Trading Account.');
+        } else {
+          const name = journalImportAccountName.value.trim();
+          const startingBalanceValue = Number(journalImportStartingBalance.value);
+          const currency = journalImportCurrency.value;
+          if (!name) throw new Error('Enter a Trading Account name.');
+          if (!Number.isFinite(startingBalanceValue) || startingBalanceValue < 0) throw new Error('Starting Balance must be 0 or more.');
+          targetAccount = {
+            id: makeRecordUuid(),
+            name,
+            startingBalance: startingBalanceValue,
+            currency,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          };
+          newAccounts.push(targetAccount);
+        }
+
+        const existingIds = new Set(trades.filter((trade) => trade.accountId === targetAccount.id).map((trade) => trade.id));
+        const newTrades = [];
+        let duplicates = 0;
+        const now = Date.now();
+
+        parsed.rows.forEach((item, index) => {
+          const sourceSeed = externalTradeSeed(item.trade, item.sourceId, item.index);
+          const id = deterministicUuid(`ertrades-external-trade|${currentUser?.id || 'local'}|${targetAccount.id}|${sourceSeed}`);
+          if (existingIds.has(id)) {
+            duplicates += 1;
+            return;
+          }
+          existingIds.add(id);
+          newTrades.push({
+            ...item.trade,
+            id,
+            accountId: targetAccount.id,
+            createdAt: now + index,
+            updatedAt: now + index
+          });
+        });
+
+        await saveImportedRecords(newAccounts, newTrades);
+        if (newAccounts.length) accounts.push(...newAccounts);
+        trades.push(...newTrades);
+        selectedAccountId = targetAccount.id;
+
+        return { accountsAdded: newAccounts.length, tradesAdded: newTrades.length, duplicates };
+      };
+
+      const finalizeJournalImport = async (result) => {
+        if (usingCloudData) {
+          persistCloudState();
+        } else {
+          await saveSelectedAccount(selectedAccountId);
+          if (selectedAccountId) safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
+        }
+
+        renderAccountSelector();
+        renderDashboardAccount();
+        renderTrades();
+        renderCalendar();
+        renderAnalytics();
+        settingsEmail.textContent = currentUser?.email || '—';
+
+        setJournalDataStatus(`Import complete: ${result.tradesAdded} trade${result.tradesAdded === 1 ? '' : 's'} added${result.accountsAdded ? ` · ${result.accountsAdded} account${result.accountsAdded === 1 ? '' : 's'} created` : ''}${result.duplicates ? ` · ${result.duplicates} duplicate${result.duplicates === 1 ? '' : 's'} skipped` : ''}.`);
+      };
+
+      const closeJournalImportDialog = () => {
+        if (journalImportBusy) return;
+        if (journalImportDialog.open && typeof journalImportDialog.close === 'function') journalImportDialog.close();
+        resetJournalImportUi();
+      };
+
       const bootstrapCachedAuthenticatedView = () => {
         try {
           const recoveryRedirect = readRecoveryRedirect();
@@ -9877,6 +11210,88 @@
       syncTradeSessionUi();
       syncTradeResultUi();
       syncPsychologyUi();
+
+      journalExportBtn.addEventListener('click', exportJournalBackup);
+
+      journalImportBtn.addEventListener('click', () => {
+        resetJournalImportUi();
+        populateJournalImportAccountSelect();
+        if (typeof journalImportDialog.showModal === 'function') journalImportDialog.showModal();
+      });
+
+      journalImportChooseBtn.addEventListener('click', () => {
+        if (!journalImportBusy) journalImportFile.click();
+      });
+
+      journalImportCloseBtn.addEventListener('click', closeJournalImportDialog);
+      journalImportCancelBtn.addEventListener('click', closeJournalImportDialog);
+
+      journalImportTargetNew.addEventListener('click', () => chooseJournalImportTarget('new'));
+      journalImportTargetExisting.addEventListener('click', () => chooseJournalImportTarget('existing'));
+
+      journalImportFile.addEventListener('change', async () => {
+        const file = journalImportFile.files?.[0];
+        if (!file) return;
+
+        journalImportParsed = null;
+        journalImportConfirmBtn.disabled = true;
+        journalImportSummary.classList.remove('show');
+        journalImportConfig.classList.remove('show');
+        journalImportPreviewWrap.classList.remove('show');
+        setJournalImportWarning('');
+        setJournalImportStatus('Reading journal file…');
+        journalImportFileName.textContent = `${file.name} · ${(file.size / 1024).toFixed(file.size >= 1024 * 1024 ? 0 : 1)} KB`;
+
+        try {
+          journalImportParsed = await parseJournalImportFile(file);
+          setJournalImportStatus('');
+          renderParsedJournalImport();
+        } catch (error) {
+          journalImportParsed = null;
+          setJournalImportStatus(error instanceof Error ? error.message : 'Unable to read this journal file.', 'error');
+          journalImportConfirmBtn.disabled = true;
+        }
+      });
+
+      journalImportConfirmBtn.addEventListener('click', async () => {
+        if (!journalImportParsed || journalImportBusy) return;
+
+        journalImportBusy = true;
+        journalImportConfirmBtn.disabled = true;
+        journalImportCancelBtn.disabled = true;
+        journalImportCloseBtn.disabled = true;
+        journalImportChooseBtn.disabled = true;
+        journalImportConfirmBtn.textContent = 'Importing…';
+        setJournalImportStatus('Importing journal data. Keep eRTrades open until this finishes…');
+
+        try {
+          const result = journalImportParsed.kind === 'backup'
+            ? await importNativeBackup(journalImportParsed)
+            : await importExternalJournal(journalImportParsed);
+
+          await finalizeJournalImport(result);
+          setJournalImportStatus(`Done. ${result.tradesAdded} trade${result.tradesAdded === 1 ? '' : 's'} imported${result.duplicates ? `, ${result.duplicates} duplicate${result.duplicates === 1 ? '' : 's'} skipped` : ''}.`);
+          journalImportConfirmBtn.textContent = 'Imported ✓';
+
+          window.setTimeout(() => {
+            journalImportBusy = false;
+            journalImportCancelBtn.disabled = false;
+            journalImportCloseBtn.disabled = false;
+            journalImportChooseBtn.disabled = false;
+            if (journalImportDialog.open && typeof journalImportDialog.close === 'function') journalImportDialog.close();
+            resetJournalImportUi();
+            showPage('Dashboard');
+          }, 750);
+        } catch (error) {
+          journalImportBusy = false;
+          journalImportCancelBtn.disabled = false;
+          journalImportCloseBtn.disabled = false;
+          journalImportChooseBtn.disabled = false;
+          journalImportConfirmBtn.disabled = false;
+          journalImportConfirmBtn.textContent = 'Import Journal';
+          setJournalImportStatus(error instanceof Error ? error.message : 'Unable to import this journal.', 'error');
+        }
+      });
 
       accountForm.addEventListener('submit', async (event) => {
         event.preventDefault();
