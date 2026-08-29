@@ -1678,6 +1678,528 @@
       margin-top: 17px;
     }
 
+
+    /* ======================================================
+       PUBLIC LANDING PAGE
+       ====================================================== */
+    #ertrades-app .landing-page {
+      display: none;
+      min-height: 720px;
+      padding-top: var(--landing-nav-space, 90px);
+    }
+
+    #ertrades-app .landing-page.visible {
+      display: block;
+    }
+
+    /* The app header is hidden by default to avoid a flash on the public landing page.
+       It is restored only for auth or authenticated app states. */
+    #ertrades-app .top-nav-shell {
+      display: none;
+    }
+
+    #ertrades-app.auth-visible .top-nav-shell,
+    #ertrades-app.authenticated .top-nav-shell {
+      display: block;
+    }
+
+    #ertrades-app .landing-nav-shell {
+      position: fixed;
+      left: 50%;
+      top: max(8px, env(safe-area-inset-top));
+      z-index: 82;
+      width: calc(100% - 30px);
+      max-width: 1090px;
+      transform: translateX(-50%);
+      padding: 7px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: rgba(10,16,19,.84);
+      box-shadow: 0 12px 30px rgba(0,0,0,.28);
+      backdrop-filter: blur(10px) saturate(115%);
+      -webkit-backdrop-filter: blur(10px) saturate(115%);
+    }
+
+    #ertrades-app .landing-nav-shell::before,
+    #ertrades-app .landing-nav-shell::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      height: 26px;
+      pointer-events: none;
+      backdrop-filter: blur(7px) saturate(108%);
+      -webkit-backdrop-filter: blur(7px) saturate(108%);
+    }
+
+    #ertrades-app .landing-nav-shell::before {
+      bottom: calc(100% - 1px);
+      border-radius: 18px 18px 0 0;
+      background: linear-gradient(
+        to top,
+        rgba(10,16,19,.30) 0%,
+        rgba(10,16,19,.14) 48%,
+        rgba(10,16,19,0) 100%
+      );
+      -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.68) 48%, transparent 100%);
+      mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.68) 48%, transparent 100%);
+    }
+
+    #ertrades-app .landing-nav-shell::after {
+      top: calc(100% - 1px);
+      border-radius: 0 0 18px 18px;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,16,19,.34) 0%,
+        rgba(10,16,19,.18) 48%,
+        rgba(10,16,19,0) 100%
+      );
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.72) 48%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.72) 48%, transparent 100%);
+    }
+
+    #ertrades-app .landing-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    #ertrades-app .landing-brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    #ertrades-app .landing-brand .logo {
+      flex: 0 0 auto;
+    }
+
+    #ertrades-app .landing-brand-name {
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -.045em;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .landing-brand-name span {
+      color: var(--accent);
+    }
+
+    #ertrades-app .landing-brand-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(184,255,79,.08);
+    }
+
+    #ertrades-app .landing-menu-wrap {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    #ertrades-app .landing-menu-btn {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: rgba(255,255,255,.035);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    #ertrades-app .landing-menu-lines {
+      display: grid;
+      gap: 5px;
+      width: 21px;
+    }
+
+    #ertrades-app .landing-menu-lines i {
+      display: block;
+      width: 100%;
+      height: 2px;
+      border-radius: 99px;
+      background: currentColor;
+    }
+
+    #ertrades-app .landing-menu-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 9px);
+      right: 0;
+      z-index: 5;
+      width: min(210px, calc(100vw - 50px));
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(10,16,19,.94);
+      box-shadow: 0 18px 40px rgba(0,0,0,.34);
+      backdrop-filter: blur(12px) saturate(112%);
+      -webkit-backdrop-filter: blur(12px) saturate(112%);
+    }
+
+    #ertrades-app .landing-menu-panel.open {
+      display: grid;
+      gap: 5px;
+    }
+
+    #ertrades-app .landing-menu-item {
+      min-height: 44px;
+      width: 100%;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    #ertrades-app .landing-menu-item.signup {
+      background: var(--accent);
+      color: #071004;
+    }
+
+    #ertrades-app .landing-menu-item.theme-active {
+      background: var(--accent-dark);
+      color: var(--accent);
+    }
+
+    #ertrades-app .landing-menu-check {
+      min-width: 16px;
+      color: inherit;
+      text-align: right;
+      font-weight: 900;
+    }
+
+    #ertrades-app .landing-menu-divider {
+      height: 1px;
+      margin: 2px 4px;
+      background: var(--border);
+    }
+
+    #ertrades-app .landing-hero {
+      padding: 34px 4px 20px;
+    }
+
+    #ertrades-app .landing-kicker {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .landing-title {
+      max-width: 680px;
+      margin: 9px 0 12px;
+      color: var(--text);
+      font-size: clamp(34px, 8vw, 62px);
+      font-weight: 900;
+      line-height: .99;
+      letter-spacing: -.055em;
+    }
+
+    #ertrades-app .landing-title span {
+      color: var(--accent);
+    }
+
+    #ertrades-app .landing-copy {
+      max-width: 620px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    #ertrades-app .landing-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 20px;
+    }
+
+    #ertrades-app .landing-cta {
+      min-height: 46px;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    #ertrades-app .landing-cta.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #071004;
+    }
+
+    #ertrades-app .landing-preview {
+      margin-top: 18px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(184,255,79,.075), transparent 34%),
+        var(--panel);
+    }
+
+    #ertrades-app .landing-preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    #ertrades-app .landing-preview-label {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .landing-preview-status {
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    #ertrades-app .landing-preview-line {
+      height: 8px;
+      margin-top: 13px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent) 0 34%, var(--border) 34% 100%);
+      opacity: .85;
+    }
+
+    #ertrades-app .landing-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    #ertrades-app .landing-preview-cell {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(7,11,13,.32);
+    }
+
+    #ertrades-app .landing-preview-cell span {
+      display: block;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 850;
+      letter-spacing: .08em;
+    }
+
+    #ertrades-app .landing-preview-cell b {
+      display: block;
+      margin-top: 5px;
+      color: var(--text);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    #ertrades-app .landing-feature-section {
+      margin-top: 20px;
+    }
+
+    #ertrades-app .landing-section-head {
+      margin-bottom: 10px;
+    }
+
+    #ertrades-app .landing-section-title {
+      margin-top: 5px;
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 850;
+      letter-spacing: -.035em;
+    }
+
+    #ertrades-app .landing-feature-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    #ertrades-app .landing-feature {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    #ertrades-app .landing-feature[open] {
+      border-color: rgba(184,255,79,.42);
+      background: linear-gradient(180deg, rgba(184,255,79,.035), transparent 68%), var(--panel);
+    }
+
+    #ertrades-app .landing-feature summary {
+      min-height: 60px;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--text);
+      cursor: pointer;
+      list-style: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #ertrades-app .landing-feature summary::-webkit-details-marker {
+      display: none;
+    }
+
+    #ertrades-app .landing-feature-title {
+      min-width: 0;
+    }
+
+    #ertrades-app .landing-feature-title b {
+      display: block;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    #ertrades-app .landing-feature-title span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    #ertrades-app .landing-feature-chevron {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 17px;
+      transition: transform .18s ease;
+    }
+
+    #ertrades-app .landing-feature[open] .landing-feature-chevron {
+      transform: rotate(90deg);
+      color: var(--accent);
+    }
+
+    #ertrades-app .landing-feature-body {
+      padding: 0 14px 14px;
+      color: var(--soft);
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    #ertrades-app .landing-feature-points {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    #ertrades-app .landing-feature-point {
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: rgba(7,11,13,.3);
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    #ertrades-app .landing-footer {
+      padding: 26px 4px 8px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    #ertrades-app.theme-light .landing-nav-shell {
+      background: rgba(247,250,251,.86);
+      box-shadow: 0 12px 30px rgba(31,42,46,.14);
+    }
+
+    #ertrades-app.theme-light .landing-nav-shell::before {
+      background: linear-gradient(
+        to top,
+        rgba(247,250,251,.30) 0%,
+        rgba(247,250,251,.14) 48%,
+        rgba(247,250,251,0) 100%
+      );
+    }
+
+    #ertrades-app.theme-light .landing-nav-shell::after {
+      background: linear-gradient(
+        to bottom,
+        rgba(247,250,251,.34) 0%,
+        rgba(247,250,251,.18) 48%,
+        rgba(247,250,251,0) 100%
+      );
+    }
+
+    #ertrades-app.theme-light .landing-menu-panel {
+      background: rgba(247,250,251,.96);
+      box-shadow: 0 18px 40px rgba(31,42,46,.16);
+    }
+
+    #ertrades-app.theme-light .landing-preview-cell,
+    #ertrades-app.theme-light .landing-feature-point {
+      background: rgba(255,255,255,.62);
+    }
+
+    @media (max-width: 560px) {
+      #ertrades-app .landing-nav-shell {
+        top: max(6px, env(safe-area-inset-top));
+        width: calc(100% - 24px);
+        padding: 6px;
+      }
+
+      #ertrades-app .landing-nav-shell::before,
+      #ertrades-app .landing-nav-shell::after {
+        height: 24px;
+      }
+
+      #ertrades-app .landing-brand-name {
+        font-size: 18px;
+      }
+
+      #ertrades-app .landing-menu-btn {
+        width: 46px;
+        height: 46px;
+      }
+
+      #ertrades-app .landing-hero {
+        padding-top: 26px;
+      }
+
+      #ertrades-app .landing-preview-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      #ertrades-app .landing-feature-points {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
     #ertrades-app .auth-page {
       display: none;
       min-height: 520px;
@@ -2901,6 +3423,156 @@
       </div>
     </div>
 
+    <section class="landing-page" id="landing-page" aria-labelledby="landing-title">
+      <div class="landing-nav-shell" id="landing-nav-shell">
+        <nav class="landing-nav" aria-label="eRTrades public navigation">
+          <div class="landing-brand">
+            <div class="logo" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 16.5V11m4 5.5V7m4 9.5v-4m4 4V4.5" stroke="#b8ff4f" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M4 19.5h16" stroke="#738188" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="landing-brand-name">eR<span>Trades</span></div>
+            <span class="landing-brand-dot" aria-hidden="true"></span>
+          </div>
+
+          <div class="landing-menu-wrap">
+            <button class="landing-menu-btn" id="landing-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">
+              <span class="landing-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+            </button>
+            <div class="landing-menu-panel" id="landing-menu-panel" role="menu">
+              <button class="landing-menu-item" id="landing-login-btn" type="button" role="menuitem">
+                <span>Login</span><span aria-hidden="true">→</span>
+              </button>
+              <button class="landing-menu-item signup" id="landing-signup-btn" type="button" role="menuitem">
+                <span>Sign Up</span><span aria-hidden="true">→</span>
+              </button>
+              <div class="landing-menu-divider" aria-hidden="true"></div>
+              <button class="landing-menu-item" id="landing-theme-dark-btn" type="button" role="menuitem">
+                <span>Dark Theme</span><span class="landing-menu-check" aria-hidden="true">✓</span>
+              </button>
+              <button class="landing-menu-item" id="landing-theme-light-btn" type="button" role="menuitem">
+                <span>Light Theme</span><span class="landing-menu-check" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <section class="landing-hero">
+        <div class="landing-kicker">Personal Trading Journal</div>
+        <h1 class="landing-title" id="landing-title">Turn every trade into <span>better decisions.</span></h1>
+        <p class="landing-copy">
+          Record your trades, review your performance, understand your emotions, and build consistency from one private trading journal.
+        </p>
+        <div class="landing-cta-row">
+          <button class="landing-cta primary" id="landing-start-btn" type="button">Start Journaling</button>
+          <button class="landing-cta" id="landing-existing-btn" type="button">I already have an account</button>
+        </div>
+
+        <div class="landing-preview" aria-label="eRTrades dashboard preview">
+          <div class="landing-preview-head">
+            <span class="landing-preview-label">Your trading process</span>
+            <span class="landing-preview-status">Private · Structured · Reviewable</span>
+          </div>
+          <div class="landing-preview-line" aria-hidden="true"></div>
+          <div class="landing-preview-grid">
+            <div class="landing-preview-cell"><span>JOURNAL</span><b>Every trade</b></div>
+            <div class="landing-preview-cell"><span>ANALYTICS</span><b>Your patterns</b></div>
+            <div class="landing-preview-cell"><span>EMOTION</span><b>Your execution</b></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-feature-section" aria-labelledby="landing-feature-heading">
+        <div class="landing-section-head">
+          <div class="landing-kicker">Inside eRTrades</div>
+          <div class="landing-section-title" id="landing-feature-heading">Everything you need to review your trading.</div>
+        </div>
+
+        <div class="landing-feature-list">
+          <details class="landing-feature">
+            <summary>
+              <span class="landing-feature-title">
+                <b>Trading Journal</b>
+                <span>Keep the complete context behind every execution.</span>
+              </span>
+              <span class="landing-feature-chevron" aria-hidden="true">›</span>
+            </summary>
+            <div class="landing-feature-body">
+              Save more than profit or loss. eRTrades keeps the setup, execution, notes, mistakes, screenshots, and risk context together so each trade can be reviewed properly.
+              <div class="landing-feature-points">
+                <div class="landing-feature-point">Instrument, direction, session, Entry / SL / TP</div>
+                <div class="landing-feature-point">Planned RR and Realized R</div>
+                <div class="landing-feature-point">Reason for entry, mistakes, and screenshots</div>
+                <div class="landing-feature-point">Search and filters across your journal history</div>
+              </div>
+            </div>
+          </details>
+
+          <details class="landing-feature">
+            <summary>
+              <span class="landing-feature-title">
+                <b>Analytics</b>
+                <span>Turn journal history into measurable feedback.</span>
+              </span>
+              <span class="landing-feature-chevron" aria-hidden="true">›</span>
+            </summary>
+            <div class="landing-feature-body">
+              See what is actually working in your trading instead of relying on memory. Review performance, consistency, risk, and repeated patterns from your own journal data.
+              <div class="landing-feature-points">
+                <div class="landing-feature-point">Win rate, Profit Factor, Expectancy, and Average RR</div>
+                <div class="landing-feature-point">Performance by instrument and trading session</div>
+                <div class="landing-feature-point">Equity Curve and real Max Drawdown</div>
+                <div class="landing-feature-point">Best / worst trades and winning / losing streaks</div>
+              </div>
+            </div>
+          </details>
+
+          <details class="landing-feature">
+            <summary>
+              <span class="landing-feature-title">
+                <b>Emotion Tracking</b>
+                <span>Connect your mindset with your trading decisions.</span>
+              </span>
+              <span class="landing-feature-chevron" aria-hidden="true">›</span>
+            </summary>
+            <div class="landing-feature-body">
+              Record the emotion behind a trade so you can identify whether specific mental states are helping or hurting execution over time.
+              <div class="landing-feature-points">
+                <div class="landing-feature-point">Calm, Confident, Neutral</div>
+                <div class="landing-feature-point">Anxious, Frustrated, Excited</div>
+                <div class="landing-feature-point">Simple 1–5 rating for each trade</div>
+                <div class="landing-feature-point">Review emotion together with the actual trade result</div>
+              </div>
+            </div>
+          </details>
+
+          <details class="landing-feature">
+            <summary>
+              <span class="landing-feature-title">
+                <b>Private Cloud</b>
+                <span>Your journal follows your eRTrades account.</span>
+              </span>
+              <span class="landing-feature-chevron" aria-hidden="true">›</span>
+            </summary>
+            <div class="landing-feature-body">
+              Your accounts and journal records are tied to your private login so you can access the same trading journal across supported devices without relying on one browser.
+              <div class="landing-feature-points">
+                <div class="landing-feature-point">Cross-device accounts and trade journal sync</div>
+                <div class="landing-feature-point">Private cloud trade screenshots</div>
+                <div class="landing-feature-point">Secure email/password authentication</div>
+                <div class="landing-feature-point">Permanent Delete My Account control</div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <div class="landing-footer">eRTrades · Personal trading journal</div>
+    </section>
+
     <section class="auth-page" id="auth-page" aria-labelledby="auth-title">
       <div class="auth-card">
         <div class="section-kicker">eRTrades Account</div>
@@ -3733,6 +4405,16 @@
       const deleteAccountDialog = root.querySelector('#delete-account-dialog');
       const deleteAccountCancelBtn = root.querySelector('#delete-account-cancel-btn');
       const deleteAccountConfirmBtn = root.querySelector('#delete-account-confirm-btn');
+      const landingPage = root.querySelector('#landing-page');
+      const landingNavShell = root.querySelector('#landing-nav-shell');
+      const landingMenuBtn = root.querySelector('#landing-menu-btn');
+      const landingMenuPanel = root.querySelector('#landing-menu-panel');
+      const landingLoginBtn = root.querySelector('#landing-login-btn');
+      const landingSignupBtn = root.querySelector('#landing-signup-btn');
+      const landingStartBtn = root.querySelector('#landing-start-btn');
+      const landingExistingBtn = root.querySelector('#landing-existing-btn');
+      const landingThemeDarkBtn = root.querySelector('#landing-theme-dark-btn');
+      const landingThemeLightBtn = root.querySelector('#landing-theme-light-btn');
       const authPage = root.querySelector('#auth-page');
       const appWorkspace = root.querySelector('#app-workspace');
       const topNavShell = root.querySelector('#top-nav-shell');
@@ -3940,6 +4622,16 @@
         root.classList.toggle('theme-light', selectedTheme === 'light');
         themeDarkBtn.classList.toggle('active', selectedTheme === 'dark');
         themeLightBtn.classList.toggle('active', selectedTheme === 'light');
+
+        if (landingThemeDarkBtn && landingThemeLightBtn) {
+          landingThemeDarkBtn.classList.toggle('theme-active', selectedTheme === 'dark');
+          landingThemeLightBtn.classList.toggle('theme-active', selectedTheme === 'light');
+          const darkCheck = landingThemeDarkBtn.querySelector('.landing-menu-check');
+          const lightCheck = landingThemeLightBtn.querySelector('.landing-menu-check');
+          if (darkCheck) darkCheck.textContent = selectedTheme === 'dark' ? '✓' : '';
+          if (lightCheck) lightCheck.textContent = selectedTheme === 'light' ? '✓' : '';
+        }
+
         root.dataset.theme = selectedTheme;
       };
 
@@ -4364,6 +5056,11 @@
       const showPasswordReset = (accessToken) => {
         recoveryAccessToken = accessToken || null;
         authMode = 'recovery';
+        root.classList.remove('authenticated');
+        root.classList.add('auth-visible');
+        landingPage.classList.remove('visible');
+        root.style.removeProperty('--landing-nav-space');
+        closeLandingMenu();
         authPage.classList.add('visible');
         appWorkspace.style.display = 'none';
         profileMenu.classList.remove('visible');
@@ -4447,14 +5144,47 @@
         root.style.setProperty('--top-nav-space', `${Math.max(112, navHeight + 14)}px`);
       };
 
+      const updateLandingNavSpace = () => {
+        if (!landingPage.classList.contains('visible')) {
+          root.style.removeProperty('--landing-nav-space');
+          return;
+        }
+        const navHeight = Math.ceil(landingNavShell.getBoundingClientRect().height || 0);
+        root.style.setProperty('--landing-nav-space', `${Math.max(82, navHeight + 18)}px`);
+      };
+
+      const closeLandingMenu = () => {
+        landingMenuPanel.classList.remove('open');
+        landingMenuBtn.setAttribute('aria-expanded', 'false');
+      };
+
+      const showLanding = () => {
+        root.classList.remove('authenticated', 'auth-visible');
+        root.style.removeProperty('--top-nav-space');
+        authPage.classList.remove('visible');
+        appWorkspace.style.display = 'none';
+        profileMenu.classList.remove('visible');
+        importBanner.classList.remove('visible');
+        landingPage.classList.add('visible');
+        closeLandingMenu();
+        loadTheme();
+        requestAnimationFrame(updateLandingNavSpace);
+      };
+
       const showAuthenticatedApp = () => {
         markCurrentUserActive();
+        root.classList.remove('auth-visible');
         root.classList.add('authenticated');
+        landingPage.classList.remove('visible');
+        root.style.removeProperty('--landing-nav-space');
         authPage.classList.remove('visible');
         appWorkspace.style.display = 'grid';
         profileMenu.classList.add('visible');
         profileEmail.textContent = currentUser?.email || '';
         settingsEmail.textContent = currentUser?.email || '—';
+        if (!safeLocalGet(themeKey()) && root.dataset.theme) {
+          safeLocalSet(themeKey(), root.dataset.theme === 'light' ? 'light' : 'dark');
+        }
         loadTheme();
         showPage('Dashboard');
         requestAnimationFrame(updateTopNavSpace);
@@ -4462,7 +5192,11 @@
 
       const showLogin = () => {
         root.classList.remove('authenticated');
+        root.classList.add('auth-visible');
         root.style.removeProperty('--top-nav-space');
+        root.style.removeProperty('--landing-nav-space');
+        landingPage.classList.remove('visible');
+        closeLandingMenu();
         authPage.classList.add('visible');
         appWorkspace.style.display = 'none';
         profileMenu.classList.remove('visible');
@@ -4471,6 +5205,12 @@
         authEmail.closest('.field').style.display = 'grid';
         authPassword.closest('.field').querySelector('label').textContent = 'Password';
         setAuthMode('login');
+      };
+
+      const showAuthMode = (mode = 'login') => {
+        showLogin();
+        setAuthMode(mode === 'signup' ? 'signup' : 'login');
+        requestAnimationFrame(() => authEmail.focus());
       };
 
       const stripPsychologyData = (trade) => {
@@ -6207,9 +6947,12 @@
             usingCloudData = false;
             renderAccountSelector();
             renderDashboardAccount();
-            showLogin();
+
             if (inactivityExpired) {
+              showLogin();
               setAuthStatus('For your security, you were signed out after 12 hours of inactivity. Please log in again.', 'error');
+            } else {
+              showLanding();
             }
           }
           tradeDate.value = getLocalDateValue();
@@ -6219,6 +6962,35 @@
           setAuthStatus(error instanceof Error ? error.message : 'Unable to initialize eRTrades.', 'error');
         }
       };
+
+      landingMenuBtn.addEventListener('click', () => {
+        const open = !landingMenuPanel.classList.contains('open');
+        landingMenuPanel.classList.toggle('open', open);
+        landingMenuBtn.setAttribute('aria-expanded', String(open));
+      });
+
+      landingLoginBtn.addEventListener('click', () => showAuthMode('login'));
+      landingSignupBtn.addEventListener('click', () => showAuthMode('signup'));
+      landingStartBtn.addEventListener('click', () => showAuthMode('signup'));
+      landingExistingBtn.addEventListener('click', () => showAuthMode('login'));
+
+      landingThemeDarkBtn.addEventListener('click', () => {
+        saveTheme('dark');
+        closeLandingMenu();
+      });
+
+      landingThemeLightBtn.addEventListener('click', () => {
+        saveTheme('light');
+        closeLandingMenu();
+      });
+
+      landingMenuPanel.addEventListener('click', (event) => event.stopPropagation());
+
+      document.addEventListener('click', (event) => {
+        if (!landingMenuPanel.contains(event.target) && event.target !== landingMenuBtn && !landingMenuBtn.contains(event.target)) {
+          closeLandingMenu();
+        }
+      });
 
       loginTab.addEventListener('click', () => setAuthMode('login'));
       signupTab.addEventListener('click', () => setAuthMode('signup'));
@@ -6450,7 +7222,7 @@
         return payload;
       };
 
-      const logout = async () => {
+      const logout = async (destination = 'landing') => {
         const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
         const logoutUserId = currentUser?.id || session?.user?.id || null;
         if (session?.access_token) {
@@ -6471,7 +7243,8 @@
         selectedAccountId = null;
         renderAccountSelector();
         renderDashboardAccount();
-        showLogin();
+        if (destination === 'login') showLogin();
+        else showLanding();
       };
 
       settingsDeleteUserBtn.addEventListener('click', () => {
@@ -6540,7 +7313,7 @@
           deleteUserDialog.close();
           deleteUserForm.reset();
 
-          await logout();
+          await logout('login');
           setAuthStatus('Your eRTrades account and cloud trading data were permanently deleted.', 'success');
         } catch (error) {
           console.error('Delete account failed:', error);
@@ -6577,7 +7350,7 @@
 
         const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
         if (session?.user?.id === currentUser.id && isSessionInactiveTooLong(session)) {
-          await logout();
+          await logout('login');
           setAuthStatus('For your security, you were signed out after 12 hours of inactivity. Please log in again.', 'error');
           return;
         }
@@ -6586,9 +7359,24 @@
 
       document.addEventListener('visibilitychange', handleAppVisibility);
       window.addEventListener('pagehide', markCurrentUserActive);
-      window.addEventListener('resize', updateTopNavSpace);
+      window.addEventListener('resize', () => {
+        updateTopNavSpace();
+        updateLandingNavSpace();
+      });
       window.addEventListener('orientationchange', () => {
-        setTimeout(updateTopNavSpace, 80);
+        setTimeout(() => {
+          updateTopNavSpace();
+          updateLandingNavSpace();
+        }, 80);
+      });
+
+      root.querySelectorAll('.landing-feature').forEach((feature) => {
+        feature.addEventListener('toggle', () => {
+          if (!feature.open) return;
+          root.querySelectorAll('.landing-feature').forEach((other) => {
+            if (other !== feature) other.open = false;
+          });
+        });
       });
 
       themeDarkBtn.addEventListener('click', () => saveTheme('dark'));
@@ -7276,7 +8064,11 @@
         }
       });
 
-      bootstrapCachedAuthenticatedView();
+      const cachedAppBooted = bootstrapCachedAuthenticatedView();
+      const initialRecoveryRedirect = readRecoveryRedirect();
+      if (!cachedAppBooted && !initialRecoveryRedirect) {
+        showLanding();
+      }
       initializeData();
     })();
   </script>
