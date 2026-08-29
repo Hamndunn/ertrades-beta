@@ -3225,10 +3225,39 @@
 
     #ertrades-app .equity-chart-wrap.empty { display: grid; place-items: center; }
     #ertrades-app .equity-svg { width: 100%; height: 100%; display: block; overflow: visible; }
-    #ertrades-app .equity-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    #ertrades-app .equity-area { fill: rgba(184,255,79,.055); }
-    #ertrades-app .equity-dot { fill: var(--panel); stroke: var(--accent); stroke-width: 1.5; }
-    #ertrades-app .equity-axis-label { fill: var(--muted); font-size: 8px; font-weight: 700; }
+    #ertrades-app .equity-line {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    #ertrades-app .equity-area { fill: url(#equity-area-gradient); }
+    #ertrades-app .equity-dot {
+      fill: var(--panel);
+      stroke: var(--accent);
+      stroke-width: 1.35;
+      opacity: .58;
+      vector-effect: non-scaling-stroke;
+    }
+    #ertrades-app .equity-dot.endpoint {
+      fill: var(--accent);
+      stroke: var(--panel);
+      stroke-width: 2;
+      opacity: 1;
+    }
+    #ertrades-app .equity-axis-label {
+      fill: var(--muted);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+    #ertrades-app .equity-current-label {
+      fill: var(--accent);
+      font-size: 8px;
+      font-weight: 850;
+    }
 
     #ertrades-app .screenshot-grid { display: grid; gap: 12px; }
     #ertrades-app .screenshot-slot {
@@ -3864,7 +3893,20 @@
 
       #ertrades-app .equity-chart-wrap {
         height: 310px;
-        padding: 16px 14px 12px;
+        padding: 18px 18px 16px;
+        background-image:
+          linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+          linear-gradient(90deg,rgba(255,255,255,.018) 1px, transparent 1px);
+        background-size: 100% 58px, 92px 100%;
+      }
+
+      #ertrades-app .equity-line {
+        stroke-width: 2.15;
+      }
+
+      #ertrades-app .equity-axis-label,
+      #ertrades-app .equity-current-label {
+        font-size: 10px;
       }
 
       #ertrades-app .recent-empty {
@@ -6342,26 +6384,70 @@
         equityChartWrap.classList.remove('empty');
         equityEmpty.style.display = 'none';
         equitySvg.style.display = 'block';
-        const width = 320;
-        const height = 160;
-        const padX = 16;
-        const padY = 18;
+
+        const rect = equitySvg.getBoundingClientRect();
+        const width = Math.max(320, Math.round(rect.width || 320));
+        const height = Math.max(160, Math.round(rect.height || 160));
+        const isWide = width >= 700;
+        const padX = isWide ? 30 : 16;
+        const padTop = isWide ? 32 : 20;
+        const padBottom = isWide ? 28 : 20;
+
+        equitySvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        equitySvg.setAttribute('preserveAspectRatio', 'none');
+
         const values = history.map((point) => point.equity);
-        let min = Math.min(...values);
-        let max = Math.max(...values);
-        if (min === max) { min -= 1; max += 1; }
-        const xFor = (index) => history.length === 1 ? width / 2 : padX + (index / (history.length - 1)) * (width - padX * 2);
-        const yFor = (value) => padY + ((max - value) / (max - min)) * (height - padY * 2);
-        const points = history.map((point, index) => `${xFor(index).toFixed(2)},${yFor(point.equity).toFixed(2)}`).join(' ');
-        const areaPoints = `${padX},${height - padY} ${points} ${width - padX},${height - padY}`;
+        let rawMin = Math.min(...values);
+        let rawMax = Math.max(...values);
+
+        if (rawMin === rawMax) {
+          rawMin -= 1;
+          rawMax += 1;
+        }
+
+        const rawRange = Math.max(1, rawMax - rawMin);
+        const headroom = rawRange * (isWide ? 0.12 : 0.09);
+        const min = rawMin - headroom;
+        const max = rawMax + headroom;
+
+        const xFor = (index) => history.length === 1
+          ? width / 2
+          : padX + (index / (history.length - 1)) * (width - padX * 2);
+
+        const yFor = (value) =>
+          padTop + ((max - value) / (max - min)) * (height - padTop - padBottom);
+
+        const points = history
+          .map((point, index) => `${xFor(index).toFixed(2)},${yFor(point.equity).toFixed(2)}`)
+          .join(' ');
+
+        const baselineY = height - padBottom;
+        const areaPoints = `${padX},${baselineY} ${points} ${width - padX},${baselineY}`;
+
         const account = currentAccount();
         const currency = account?.currency || 'USD';
+        const lastIndex = history.length - 1;
+        const dotRadius = isWide ? 2.15 : 2.55;
+        const endpointRadius = isWide ? 3.35 : 3.25;
+        const current = history[lastIndex];
+
         equitySvg.innerHTML = `
+          <defs>
+            <linearGradient id="equity-area-gradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--accent)" stop-opacity=".16"></stop>
+              <stop offset="58%" stop-color="var(--accent)" stop-opacity=".065"></stop>
+              <stop offset="100%" stop-color="var(--accent)" stop-opacity=".012"></stop>
+            </linearGradient>
+          </defs>
           <polygon class="equity-area" points="${areaPoints}"></polygon>
           <polyline class="equity-line" points="${points}"></polyline>
-          ${history.map((point, index) => `<circle class="equity-dot" cx="${xFor(index).toFixed(2)}" cy="${yFor(point.equity).toFixed(2)}" r="2.8"><title>${formatMoney(point.equity, currency)}</title></circle>`).join('')}
-          <text class="equity-axis-label" x="${padX}" y="10">${formatMoney(max, currency)}</text>
-          <text class="equity-axis-label" x="${padX}" y="157">${formatMoney(min, currency)}</text>
+          ${history.map((point, index) => {
+            const endpoint = index === 0 || index === lastIndex;
+            return `<circle class="equity-dot${endpoint ? ' endpoint' : ''}" cx="${xFor(index).toFixed(2)}" cy="${yFor(point.equity).toFixed(2)}" r="${endpoint ? endpointRadius : dotRadius}"><title>${formatMoney(point.equity, currency)}</title></circle>`;
+          }).join('')}
+          <text class="equity-axis-label" x="${padX}" y="${isWide ? 15 : 10}">${formatMoney(rawMax, currency)}</text>
+          <text class="equity-axis-label" x="${padX}" y="${height - (isWide ? 8 : 3)}">${formatMoney(rawMin, currency)}</text>
+          <text class="equity-current-label" text-anchor="end" x="${width - padX}" y="${Math.max(isWide ? 16 : 11, yFor(current.equity) - 10)}">${formatMoney(current.equity, currency)}</text>
         `;
       };
 
@@ -8332,15 +8418,21 @@
 
       document.addEventListener('visibilitychange', handleAppVisibility);
       window.addEventListener('pagehide', markCurrentUserActive);
+      let equityResizeTimer = null;
       window.addEventListener('resize', () => {
         updateTopNavSpace();
         updateLandingNavSpace();
+        clearTimeout(equityResizeTimer);
+        equityResizeTimer = setTimeout(() => {
+          if (root.classList.contains('authenticated')) renderEquityCurve();
+        }, 90);
       });
       window.addEventListener('orientationchange', () => {
         setTimeout(() => {
           updateTopNavSpace();
           updateLandingNavSpace();
-        }, 80);
+          if (root.classList.contains('authenticated')) renderEquityCurve();
+        }, 100);
       });
 
       root.querySelectorAll('.landing-feature').forEach((feature) => {
