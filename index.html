@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83g-journal-export-import">
+<meta name="ertrades-build" content="v83h-auto-risk-percent">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1326,6 +1326,33 @@
       color: var(--soft);
       font-weight: 800;
     }
+
+    #ertrades-app .auto-field-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      margin-left: 5px;
+      padding: 1px 6px;
+      border: 1px solid rgba(184,255,79,.30);
+      border-radius: 999px;
+      background: rgba(184,255,79,.06);
+      color: var(--accent);
+      font-size: 8px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: .08em;
+      vertical-align: 1px;
+    }
+
+    #ertrades-app .auto-calculated-input[readonly] {
+      cursor: default;
+      background: rgba(184,255,79,.035);
+      border-color: rgba(184,255,79,.20);
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    #ertrades-app .risk-auto-note { min-height: 31px; }
 
     #ertrades-app .field input:focus,
     #ertrades-app .field select:focus,
@@ -3621,6 +3648,12 @@
       background: #ffffff;
     }
 
+    #ertrades-app.theme-light .auto-calculated-input[readonly] {
+      background: rgba(118,185,29,.055);
+      border-color: rgba(118,185,29,.24);
+      color: #4f7e13;
+    }
+
     #ertrades-app.theme-light select,
     #ertrades-app.theme-light .field input,
     #ertrades-app.theme-light .field select,
@@ -5457,8 +5490,9 @@
                 <input id="lot-size" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
               </div>
               <div class="field">
-                <label for="risk-percent">Risk %</label>
-                <input id="risk-percent" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
+                <label for="risk-percent">Risk % <span class="auto-field-badge">AUTO</span></label>
+                <input id="risk-percent" class="auto-calculated-input" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00" readonly aria-readonly="true">
+                <div class="field-note risk-auto-note" id="risk-auto-note">Enter Risk Amount and eRTrades will calculate Risk % automatically.</div>
               </div>
               <div class="field">
                 <label for="risk-amount">Risk Amount</label>
@@ -6183,6 +6217,7 @@
       const lotSize = root.querySelector('#lot-size');
       const riskPercent = root.querySelector('#risk-percent');
       const riskAmount = root.querySelector('#risk-amount');
+      const riskAutoNote = root.querySelector('#risk-auto-note');
       const profitLoss = root.querySelector('#profit-loss');
       const tradeResult = root.querySelector('#trade-result');
       const tradeResultBtn = root.querySelector('#trade-result-btn');
@@ -7735,6 +7770,71 @@
           return String(a.id).localeCompare(String(b.id));
         });
 
+      const riskPercentBaseBalance = () => {
+        const account = currentAccount();
+        if (!account) return 0;
+
+        let balance = Number(account.startingBalance) || 0;
+        const targetDate = /^\d{4}-\d{2}-\d{2}$/.test(tradeDate.value || '')
+          ? tradeDate.value
+          : getLocalDateValue();
+        const chronological = currentTradesChronological();
+
+        if (editingTradeId) {
+          const editingTrade = trades.find((trade) => trade.id === editingTradeId && trade.accountId === selectedAccountId);
+          const editingCreatedAt = Number(editingTrade?.createdAt) || 0;
+
+          chronological.forEach((trade) => {
+            if (trade.id === editingTradeId) return;
+            const tradeDateValue = /^\d{4}-\d{2}-\d{2}$/.test(trade.date || '') ? trade.date : '1970-01-01';
+            const createdAt = Number(trade.createdAt) || 0;
+            const beforeTarget = tradeDateValue < targetDate
+              || (tradeDateValue === targetDate && createdAt < editingCreatedAt);
+            if (beforeTarget) balance += Number(trade.profitLoss) || 0;
+          });
+          return balance;
+        }
+
+        chronological.forEach((trade) => {
+          const tradeDateValue = /^\d{4}-\d{2}-\d{2}$/.test(trade.date || '') ? trade.date : '1970-01-01';
+          if (tradeDateValue <= targetDate) balance += Number(trade.profitLoss) || 0;
+        });
+        return balance;
+      };
+
+      const updateAutomaticRiskPercent = () => {
+        const account = currentAccount();
+        const amount = parseOptionalNumber(riskAmount);
+        const baseBalance = riskPercentBaseBalance();
+
+        if (!account) {
+          riskPercent.value = '';
+          riskAutoNote.textContent = 'Select a Trading Account to calculate Risk %.';
+          return null;
+        }
+        if (amount === null) {
+          riskPercent.value = '';
+          riskAutoNote.textContent = 'Enter Risk Amount. Risk % = Risk Amount ÷ balance before this trade.';
+          return null;
+        }
+        if (!Number.isFinite(amount) || amount < 0) {
+          riskPercent.value = '';
+          riskAutoNote.textContent = 'Enter a valid Risk Amount to calculate Risk %.';
+          return null;
+        }
+        if (!(baseBalance > 0)) {
+          riskPercent.value = '';
+          riskAutoNote.textContent = 'Risk % cannot be calculated because the account balance before this trade is 0 or below.';
+          return null;
+        }
+
+        const percent = (amount / baseBalance) * 100;
+        const rounded = Math.round(percent * 10000) / 10000;
+        riskPercent.value = Number.isFinite(rounded) ? String(rounded) : '';
+        riskAutoNote.textContent = `Auto: ${formatMoney(amount, account.currency)} ÷ ${formatMoney(baseBalance, account.currency)} balance before trade = ${percent.toFixed(2)}%.`;
+        return Number.isFinite(rounded) ? rounded : null;
+      };
+
       const buildEquityHistory = () => {
         const account = currentAccount();
         if (!account) return [];
@@ -8531,8 +8631,8 @@
         stopLoss.value = draft.stopLoss ?? '';
         takeProfit.value = draft.takeProfit ?? '';
         lotSize.value = draft.lotSize ?? '';
-        riskPercent.value = draft.riskPercent ?? '';
         riskAmount.value = draft.riskAmount ?? '';
+        updateAutomaticRiskPercent();
         profitLoss.value = draft.profitLoss ?? '';
         tradeResult.value = ['WIN', 'LOSS', 'BREAK EVEN'].includes(draft.result) ? draft.result : '';
         syncTradeResultUi();
@@ -8994,6 +9094,7 @@
         renderCalendar();
         renderAnalytics();
         renderTrades();
+        if (tradeFormCard.classList.contains('visible')) updateAutomaticRiskPercent();
       };
 
       const renderAccountSelector = () => {
@@ -9289,6 +9390,7 @@
         }
         if (!restored && !tradeDate.value) tradeDate.value = getLocalDateValue();
         syncTradeDateDisplay();
+        updateAutomaticRiskPercent();
         syncTradeSessionUi();
         syncTradeResultUi();
         syncPsychologyUi();
@@ -9312,8 +9414,8 @@
         stopLoss.value = trade.stopLoss ?? '';
         takeProfit.value = trade.takeProfit ?? '';
         lotSize.value = trade.lotSize ?? '';
-        riskPercent.value = trade.riskPercent ?? '';
         riskAmount.value = trade.riskAmount ?? '';
+        updateAutomaticRiskPercent();
         profitLoss.value = trade.profitLoss ?? '';
         tradeResult.value = trade.result || '';
         syncTradeResultUi();
@@ -9363,6 +9465,8 @@
         tradeDate.value = getLocalDateValue();
         syncTradeDateDisplay();
         tradeSession.value = 'Asia';
+        riskPercent.value = '';
+        updateAutomaticRiskPercent();
         psychologyBefore.value = '';
         psychologyAfter.value = '';
         selectedRating = 0;
@@ -10908,8 +11012,14 @@
 
       newTrade.addEventListener('click', openTradeForm);
 
-      tradeDate.addEventListener('input', syncTradeDateDisplay);
-      tradeDate.addEventListener('change', syncTradeDateDisplay);
+      tradeDate.addEventListener('input', () => {
+        syncTradeDateDisplay();
+        updateAutomaticRiskPercent();
+      });
+      tradeDate.addEventListener('change', () => {
+        syncTradeDateDisplay();
+        updateAutomaticRiskPercent();
+      });
 
       directionButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -10920,6 +11030,9 @@
       });
 
       [entryPrice, stopLoss, takeProfit].forEach((input) => input.addEventListener('input', calculatePlannedRr));
+
+      riskAmount.addEventListener('input', updateAutomaticRiskPercent);
+      riskAmount.addEventListener('change', updateAutomaticRiskPercent);
 
       [entryPrice, stopLoss, takeProfit, riskAmount, profitLoss, tradeResult].forEach((input) => {
         input.addEventListener('input', updateRealizedRPreview);
@@ -10939,7 +11052,6 @@
         stopLoss,
         takeProfit,
         lotSize,
-        riskPercent,
         riskAmount,
         profitLoss,
         tradeResult,
@@ -11475,6 +11587,8 @@
           showTradeError('Result is required.', tradeResult);
           return;
         }
+
+        updateAutomaticRiskPercent();
 
         const numericFields = [
           ['Entry Price', entryPrice],
