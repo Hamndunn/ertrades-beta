@@ -1,13 +1,17 @@
 {
+  "id": "/",
   "name": "eRTrades",
   "short_name": "eRTrades",
   "description": "Personal trading journal.",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "scope": "/",
-  "display": "standalone",
+  "display": "minimal-ui",
+  "display_override": [
+    "minimal-ui",
+    "browser"
+  ],
   "background_color": "#070b0d",
   "theme_color": "#070b0d",
-  "orientation": "any",
   "icons": [
     {
       "src": "/pwa-icon-192.png?v=82c",
