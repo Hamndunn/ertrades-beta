@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83e-auth-resend-eye">
+<meta name="ertrades-build" content="v83f-light-theme-contrast-fix">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3330,9 +3330,30 @@
     #ertrades-app.theme-light .calendar-cell,
     #ertrades-app.theme-light .equity-filter,
     #ertrades-app.theme-light .screenshot-slot,
-    #ertrades-app.theme-light .auth-tab,
-    #ertrades-app.theme-light .password-eye-btn {
+    #ertrades-app.theme-light .auth-tab {
+      background: #ffffff;
       color: #67737a;
+    }
+
+    #ertrades-app.theme-light .password-eye-btn {
+      background: transparent;
+      color: #67737a;
+    }
+
+    #ertrades-app.theme-light .calendar-stat strong,
+    #ertrades-app.theme-light .analytics-stat strong,
+    #ertrades-app.theme-light .analytics-section-title,
+    #ertrades-app.theme-light .calendar-day-number {
+      color: var(--text);
+    }
+
+    #ertrades-app.theme-light .direction-btn.active,
+    #ertrades-app.theme-light .analytics-filter.active,
+    #ertrades-app.theme-light .equity-filter.active,
+    #ertrades-app.theme-light .auth-tab.active {
+      border-color: rgba(118,185,29,.38);
+      background: var(--accent-dark);
+      color: #4f7e13;
     }
 
     #ertrades-app.theme-light .auth-resend-btn {
@@ -3350,10 +3371,31 @@
       background: #ffffff;
     }
 
+    #ertrades-app.theme-light .calendar-week-pl.positive,
+    #ertrades-app.theme-light .calendar-cell.profitable {
+      border-color: rgba(22,138,83,.22);
+      background: rgba(22,138,83,.055);
+    }
+
+    #ertrades-app.theme-light .calendar-week-pl.negative,
+    #ertrades-app.theme-light .calendar-cell.losing {
+      border-color: rgba(215,71,85,.22);
+      background: rgba(215,71,85,.055);
+    }
+
+    #ertrades-app.theme-light .calendar-cell.break-even {
+      border-color: #cfd8dc;
+      background: #ffffff;
+    }
+
     #ertrades-app.theme-light .settings-logout {
       border-color: rgba(205, 45, 67, .42);
       background: rgba(205, 45, 67, .08);
       color: #c92f45;
+    }
+
+    #ertrades-app.theme-light .settings-email {
+      color: var(--text);
     }
 
     #ertrades-app.theme-light .summary-card {
