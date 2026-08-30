@@ -7562,15 +7562,15 @@
           index += 1;
 
           const delay =
-            character === '.' ? 360 :
-            character === ',' ? 190 :
-            character === ' ' ? 34 :
-            48;
+            character === '.' ? 140 :
+            character === ',' ? 90 :
+            character === ' ' ? 20 :
+            30;
 
           landingTypingTimer = window.setTimeout(typeNextCharacter, delay);
         };
 
-        landingTypingTimer = window.setTimeout(typeNextCharacter, 480);
+        landingTypingTimer = window.setTimeout(typeNextCharacter, 250);
       };
 
       const showLanding = ({ replaceHistory = false } = {}) => {
