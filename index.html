@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83m-focus-notifications">
+<meta name="ertrades-build" content="v83n-desktop-sidebar">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -6935,6 +6935,87 @@
           <p>This navigation item is reserved for a later development step. No extra functionality has been added yet.</p>
         </div>
       </section>
+
+      <style id="er-desktop-sidebar-v83n">
+        /* v83n — Desktop only: move the existing bottom navigation to a left sidebar.
+           Mobile/tablet narrow layouts keep the original bottom navigation unchanged. */
+        @media (min-width: 1024px) {
+          #ertrades-app.authenticated {
+            --er-desktop-sidebar-width: 208px;
+            --er-desktop-sidebar-left: 22px;
+            --er-desktop-sidebar-gap: 24px;
+          }
+
+          #ertrades-app.authenticated .nav-shell {
+            left: var(--er-desktop-sidebar-left);
+            top: 96px;
+            bottom: 24px;
+            width: var(--er-desktop-sidebar-width);
+            max-width: none;
+            height: auto;
+            margin: 0;
+            padding: 10px;
+            transform: none;
+            border-radius: 18px;
+            overflow: visible;
+          }
+
+          #ertrades-app.authenticated .nav-shell::before,
+          #ertrades-app.authenticated .nav-shell::after {
+            display: none;
+          }
+
+          #ertrades-app.authenticated .bottom-nav {
+            width: 100%;
+            height: 100%;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 6px;
+          }
+
+          #ertrades-app.authenticated .nav-btn {
+            width: 100%;
+            min-width: 0;
+            min-height: 52px;
+            padding: 0 14px;
+            border-radius: 12px;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+            text-align: left;
+            font-size: 12px;
+            line-height: 1;
+          }
+
+          #ertrades-app.authenticated .nav-btn svg {
+            width: 20px;
+            height: 20px;
+            flex: 0 0 20px;
+          }
+
+          #ertrades-app.authenticated .nav-btn[data-page="Settings"] {
+            margin-top: auto;
+          }
+
+          #ertrades-app.authenticated .shell {
+            width: calc(100% - (var(--er-desktop-sidebar-left) + var(--er-desktop-sidebar-width) + var(--er-desktop-sidebar-gap)));
+            max-width: 1480px;
+            margin-left: calc(var(--er-desktop-sidebar-left) + var(--er-desktop-sidebar-width) + var(--er-desktop-sidebar-gap));
+            margin-right: auto;
+            padding-bottom: 36px;
+          }
+
+          #ertrades-app.authenticated .top-nav-shell {
+            left: calc(var(--er-desktop-sidebar-left) + var(--er-desktop-sidebar-width) + var(--er-desktop-sidebar-gap));
+            width: calc(100% - (var(--er-desktop-sidebar-left) + var(--er-desktop-sidebar-width) + var(--er-desktop-sidebar-gap) + 32px));
+            max-width: 1416px;
+            transform: none;
+          }
+        }
+      </style>
 
       <nav class="nav-shell" aria-label="Primary navigation">
         <div class="bottom-nav">
