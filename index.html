@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83j-focus-time-ios-fix">
+<meta name="ertrades-build" content="v83k-focus-time-wrapper">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3319,7 +3319,6 @@
       max-width: 100%;
     }
 
-    #ertrades-app .focus-field input,
     #ertrades-app .focus-field select {
       display: block;
       width: 100%;
@@ -3335,16 +3334,61 @@
       outline: none;
     }
 
-    /* iOS Safari can give time inputs a larger intrinsic width than their grid cell. */
-    #ertrades-app #focus-start-time,
-    #ertrades-app #focus-end-time {
-      box-sizing: border-box;
-      min-width: 0 !important;
-      max-width: 100% !important;
-      width: 100% !important;
+    /*
+      iOS Safari gives native time inputs an intrinsic width that can escape a
+      narrow Settings card. The visible box is therefore owned by this wrapper,
+      while the real time input sits transparently on top and still opens the
+      native iOS time picker when tapped.
+    */
+    #ertrades-app .focus-time-wrap {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      min-height: 46px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--panel);
     }
 
-    #ertrades-app .focus-field input:focus,
+    #ertrades-app .focus-time-display {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      font-size: 16px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    #ertrades-app .focus-time-wrap input[type="time"] {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100% !important;
+      height: 100%;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: transparent;
+      opacity: .01;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    #ertrades-app .focus-time-wrap:focus-within,
     #ertrades-app .focus-field select:focus {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
@@ -6360,11 +6404,17 @@
             <div class="focus-form-grid">
               <div class="field focus-field">
                 <label for="focus-start-time">Start</label>
-                <input id="focus-start-time" type="time" value="22:00">
+                <div class="focus-time-wrap">
+                  <div class="focus-time-display" id="focus-start-time-display" aria-hidden="true">22.00</div>
+                  <input id="focus-start-time" type="time" value="22:00" aria-label="Focus Mode start time">
+                </div>
               </div>
               <div class="field focus-field">
                 <label for="focus-end-time">End</label>
-                <input id="focus-end-time" type="time" value="07:00">
+                <div class="focus-time-wrap">
+                  <div class="focus-time-display" id="focus-end-time-display" aria-hidden="true">07.00</div>
+                  <input id="focus-end-time" type="time" value="07:00" aria-label="Focus Mode end time">
+                </div>
               </div>
               <div class="field focus-field focus-reason-field">
                 <label for="focus-reason">Purpose</label>
@@ -12278,6 +12328,8 @@
       const focusModeEnabled = root.querySelector('#focus-mode-enabled');
       const focusStartTime = root.querySelector('#focus-start-time');
       const focusEndTime = root.querySelector('#focus-end-time');
+      const focusStartTimeDisplay = root.querySelector('#focus-start-time-display');
+      const focusEndTimeDisplay = root.querySelector('#focus-end-time-display');
       const focusReason = root.querySelector('#focus-reason');
       const focusDayButtons = Array.from(root.querySelectorAll('[data-focus-day]'));
       const focusPlatformButtons = Array.from(root.querySelectorAll('[data-focus-platform]'));
@@ -12399,6 +12451,16 @@
 
       const focusDayShort = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
+      const formatFocusClockForDisplay = (value) => {
+        const match = /^(\d{2}):(\d{2})$/.exec(String(value || ''));
+        return match ? `${match[1]}.${match[2]}` : '—';
+      };
+
+      const syncFocusTimeDisplays = () => {
+        if (focusStartTimeDisplay) focusStartTimeDisplay.textContent = formatFocusClockForDisplay(focusStartTime?.value);
+        if (focusEndTimeDisplay) focusEndTimeDisplay.textContent = formatFocusClockForDisplay(focusEndTime?.value);
+      };
+
       const collectFocusConfigFromUi = () => normalizeFocusConfig({
         enabled: Boolean(focusModeEnabled?.checked),
         start: focusStartTime?.value || '22:00',
@@ -12413,6 +12475,7 @@
         focusModeEnabled.checked = Boolean(config.enabled);
         focusStartTime.value = config.start;
         focusEndTime.value = config.end;
+        syncFocusTimeDisplays();
         focusReason.value = config.reason;
         focusDayButtons.forEach((button) => button.classList.toggle('active', config.days.includes(Number(button.dataset.focusDay))));
         focusPlatformButtons.forEach((button) => button.classList.toggle('active', config.platforms.includes(button.dataset.focusPlatform)));
@@ -12463,8 +12526,8 @@
       if (focusModeEnabled) {
         applyFocusConfigToUi(readFocusConfig());
         focusModeEnabled.addEventListener('change', persistAndRenderFocusMode);
-        focusStartTime.addEventListener('change', persistAndRenderFocusMode);
-        focusEndTime.addEventListener('change', persistAndRenderFocusMode);
+        focusStartTime.addEventListener('change', () => { syncFocusTimeDisplays(); persistAndRenderFocusMode(); });
+        focusEndTime.addEventListener('change', () => { syncFocusTimeDisplays(); persistAndRenderFocusMode(); });
         focusReason.addEventListener('change', persistAndRenderFocusMode);
 
         focusDayButtons.forEach((button) => {
