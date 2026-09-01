@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83n-desktop-sidebar">
+<meta name="ertrades-build" content="v83o-desktop-journal-spacing">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -5345,9 +5345,15 @@
           "filters results";
         align-items: start;
         column-gap: 16px;
+        row-gap: 16px;
         border: 0;
         background: transparent;
         overflow: visible;
+      }
+
+      /* v83o — keep desktop Journal cards separated and shrink-safe. */
+      #ertrades-app .journal-page.visible > * {
+        min-width: 0;
       }
 
       #ertrades-app .journal-head {
