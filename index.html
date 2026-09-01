@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83l-focus-popups">
+<meta name="ertrades-build" content="v83m-focus-notifications">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3431,6 +3431,46 @@
       color: var(--accent);
     }
 
+    #ertrades-app .focus-notification-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+
+    #ertrades-app .focus-notification-copy {
+      min-width: 0;
+    }
+
+    #ertrades-app .focus-notification-copy strong {
+      display: block;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 820;
+    }
+
+    #ertrades-app .focus-notification-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    #ertrades-app .focus-notification-status {
+      margin-top: 6px !important;
+      color: var(--soft) !important;
+      font-weight: 720;
+    }
+
+    #ertrades-app .focus-notification-status.ready { color: var(--accent) !important; }
+    #ertrades-app .focus-notification-status.error { color: var(--red) !important; }
+
     #ertrades-app .focus-web-note {
       display: grid;
       gap: 3px;
@@ -4288,6 +4328,7 @@
     #ertrades-app.theme-light .focus-chip,
     #ertrades-app.theme-light .focus-platform,
     #ertrades-app.theme-light .focus-status-card,
+    #ertrades-app.theme-light .focus-notification-card,
     #ertrades-app.theme-light .focus-toggle-track {
       background: #ffffff;
     }
@@ -6653,9 +6694,21 @@
               </div>
             </div>
 
+            <div class="focus-notification-card">
+              <div class="focus-notification-copy">
+                <strong>Focus Notifications</strong>
+                <span>Get a phone notification when Focus Mode is scheduled, starts, and ends.</span>
+                <span class="focus-notification-status" id="focus-notification-status" role="status" aria-live="polite">Notifications are off.</span>
+              </div>
+              <label class="focus-toggle" for="focus-notifications-enabled">
+                <input id="focus-notifications-enabled" type="checkbox" aria-label="Enable Focus Mode notifications">
+                <span class="focus-toggle-track" aria-hidden="true"><span></span></span>
+              </label>
+            </div>
+
             <div class="focus-web-note">
               <strong>Web Focus Mode</strong>
-              <span>eRTrades cannot close or block other iPhone/Android apps. This schedule works as a discipline reminder inside eRTrades and shows when your no-chart period is active.</span>
+              <span>eRTrades cannot close or block other iPhone/Android apps. This schedule works as a discipline reminder inside eRTrades and shows when your no-chart period is active. Focus notifications can appear on your phone after permission is granted; exact start/end alerts while eRTrades is fully closed require a push-notification server.</span>
             </div>
           </section>
 
@@ -12559,8 +12612,12 @@
       const focusActiveDialogPlatforms = root.querySelector('#focus-active-dialog-platforms');
       const focusActiveOpenJournal = root.querySelector('#focus-active-open-journal');
       const focusActiveContinue = root.querySelector('#focus-active-continue');
+      const focusNotificationsEnabled = root.querySelector('#focus-notifications-enabled');
+      const focusNotificationStatus = root.querySelector('#focus-notification-status');
       let focusModeTimer = null;
       let focusActivePromptKey = '';
+      let focusPreviousWindowActive = null;
+      let focusPreviousWindowEndKey = '';
 
       const defaultFocusConfig = () => ({
         enabled: false,
@@ -12568,7 +12625,8 @@
         end: '07:00',
         reason: 'Stop Overtrading',
         days: [1,2,3,4,5],
-        platforms: ['TradingView','MT5']
+        platforms: ['TradingView','MT5'],
+        notifications: false
       });
 
       const normalizeFocusConfig = (value) => {
@@ -12589,7 +12647,8 @@
             ? source.reason
             : fallback.reason,
           days: days.length ? Array.from(new Set(days)) : fallback.days,
-          platforms: platforms.length ? Array.from(new Set(platforms)) : fallback.platforms
+          platforms: platforms.length ? Array.from(new Set(platforms)) : fallback.platforms,
+          notifications: Boolean(source.notifications)
         };
       };
 
@@ -12717,6 +12776,110 @@
         openFocusDialog(focusActiveDialog);
       };
 
+      const isStandaloneWebApp = () => {
+        try {
+          return Boolean(window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true);
+        } catch (_) {
+          return false;
+        }
+      };
+
+      const setFocusNotificationStatus = (text, state = '') => {
+        if (!focusNotificationStatus) return;
+        focusNotificationStatus.textContent = text;
+        focusNotificationStatus.classList.toggle('ready', state === 'ready');
+        focusNotificationStatus.classList.toggle('error', state === 'error');
+      };
+
+      const getFocusNotificationRegistration = async () => {
+        if (!('serviceWorker' in navigator)) return null;
+        try {
+          const existing = await navigator.serviceWorker.getRegistration('/');
+          if (existing) return existing;
+          if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') return null;
+          return await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        } catch (_) {
+          return null;
+        }
+      };
+
+      const showFocusSystemNotification = async (title, body, tag) => {
+        if (!focusNotificationsEnabled?.checked || !('Notification' in window) || Notification.permission !== 'granted') return false;
+        const options = {
+          body,
+          tag: tag || 'ertrades-focus',
+          renotify: false,
+          icon: '/favicon.png?v=82c',
+          badge: '/favicon-32x32.png?v=82c',
+          data: { url: window.location.origin + window.location.pathname, source: 'focus-mode' }
+        };
+        try {
+          const registration = await getFocusNotificationRegistration();
+          if (registration && typeof registration.showNotification === 'function') {
+            await registration.showNotification(title, options);
+            return true;
+          }
+        } catch (_) {}
+        try {
+          // Non-iOS fallback for browsers that allow page-created notifications.
+          if (!isIosDevice()) {
+            new Notification(title, options);
+            return true;
+          }
+        } catch (_) {}
+        return false;
+      };
+
+      const updateFocusNotificationUi = (config = collectFocusConfigFromUi?.()) => {
+        if (!focusNotificationsEnabled) return;
+        focusNotificationsEnabled.checked = Boolean(config?.notifications);
+        if (!('Notification' in window)) {
+          focusNotificationsEnabled.checked = false;
+          focusNotificationsEnabled.disabled = true;
+          setFocusNotificationStatus('System notifications are not supported in this browser.', 'error');
+          return;
+        }
+        focusNotificationsEnabled.disabled = false;
+        if (Notification.permission === 'denied') {
+          focusNotificationsEnabled.checked = false;
+          setFocusNotificationStatus('Notifications are blocked in browser/iPhone settings.', 'error');
+          return;
+        }
+        if (config?.notifications && Notification.permission === 'granted') {
+          if (isIosDevice() && !isStandaloneWebApp()) {
+            setFocusNotificationStatus('On iPhone, add eRTrades to Home Screen to receive web-app notifications.');
+          } else {
+            setFocusNotificationStatus('Notifications are ready.', 'ready');
+          }
+          return;
+        }
+        setFocusNotificationStatus('Notifications are off.');
+      };
+
+      const requestFocusNotificationPermission = async () => {
+        if (!('Notification' in window)) {
+          setFocusNotificationStatus('System notifications are not supported in this browser.', 'error');
+          return false;
+        }
+        if (isIosDevice() && !isStandaloneWebApp()) {
+          setFocusNotificationStatus('Add eRTrades to your Home Screen first, then enable notifications from the installed app.', 'error');
+          return false;
+        }
+        try {
+          const permission = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+          if (permission !== 'granted') {
+            setFocusNotificationStatus(permission === 'denied' ? 'Notification permission was denied.' : 'Notification permission was not granted.', 'error');
+            return false;
+          }
+          await getFocusNotificationRegistration();
+          setFocusNotificationStatus('Notifications are ready.', 'ready');
+          return true;
+        } catch (_) {
+          setFocusNotificationStatus('Unable to enable notifications on this device.', 'error');
+          return false;
+        }
+      };
+
       const formatFocusClockForDisplay = (value) => {
         const match = /^(\d{2}):(\d{2})$/.exec(String(value || ''));
         return match ? `${match[1]}.${match[2]}` : '—';
@@ -12733,7 +12896,8 @@
         end: focusEndTime?.value || '07:00',
         reason: focusReason?.value || 'Stop Overtrading',
         days: focusDayButtons.filter((button) => button.classList.contains('active')).map((button) => Number(button.dataset.focusDay)),
-        platforms: focusPlatformButtons.filter((button) => button.classList.contains('active')).map((button) => button.dataset.focusPlatform)
+        platforms: focusPlatformButtons.filter((button) => button.classList.contains('active')).map((button) => button.dataset.focusPlatform),
+        notifications: Boolean(focusNotificationsEnabled?.checked)
       });
 
       const applyFocusConfigToUi = (config) => {
@@ -12745,6 +12909,8 @@
         focusReason.value = config.reason;
         focusDayButtons.forEach((button) => button.classList.toggle('active', config.days.includes(Number(button.dataset.focusDay))));
         focusPlatformButtons.forEach((button) => button.classList.toggle('active', config.platforms.includes(button.dataset.focusPlatform)));
+        if (focusNotificationsEnabled) focusNotificationsEnabled.checked = Boolean(config.notifications);
+        updateFocusNotificationUi(config);
       };
 
       const renderFocusMode = () => {
@@ -12754,11 +12920,23 @@
         const state = getFocusWindowState(config, now);
         const platformText = config.platforms.join(' · ');
 
+        if (config.notifications && Notification.permission === 'granted') {
+          const endKey = state.endAt ? String(state.endAt.getTime()) : '';
+          if (focusPreviousWindowActive === false && state.active && endKey && focusPreviousWindowEndKey !== endKey) {
+            focusPreviousWindowEndKey = endKey;
+            showFocusSystemNotification('Focus Mode is now active 🔒', `${config.reason}. Step away from ${platformText} and review your trading instead.`, `ertrades-focus-start-${endKey}`);
+          } else if (focusPreviousWindowActive === true && !state.active) {
+            showFocusSystemNotification('Focus Mode completed 🔓', 'Your quiet trading hours are over. Stay disciplined and trade your plan.', `ertrades-focus-end-${Date.now()}`);
+          }
+        }
+        focusPreviousWindowActive = state.active;
+
         focusStatusCard?.classList.toggle('active', state.active);
         focusActiveBanner?.classList.toggle('visible', state.active);
         if (focusActiveBanner) focusActiveBanner.hidden = !state.active;
 
         if (!config.enabled) {
+          focusPreviousWindowActive = false;
           focusStatusTitle.textContent = 'Focus Mode is off';
           focusStatusCopy.textContent = 'Turn it on to follow your quiet-hours schedule.';
           focusCountdown.textContent = '—';
@@ -12797,8 +12975,13 @@
         applyFocusConfigToUi(readFocusConfig());
         focusModeEnabled.addEventListener('change', () => {
           persistAndRenderFocusMode();
-          if (focusModeEnabled.checked) showFocusActivatedDialog(collectFocusConfigFromUi());
-          else {
+          if (focusModeEnabled.checked) {
+            const config = collectFocusConfigFromUi();
+            showFocusActivatedDialog(config);
+            if (config.notifications && Notification.permission === 'granted') {
+              showFocusSystemNotification('Focus Mode scheduled', `${config.start}–${config.end} · ${config.reason}`, `ertrades-focus-scheduled-${config.start}-${config.end}`);
+            }
+          } else {
             closeFocusDialog(focusActivatedDialog);
             closeFocusDialog(focusActiveDialog);
             focusActivePromptKey = '';
@@ -12808,6 +12991,18 @@
         focusStartTime.addEventListener('change', () => { syncFocusTimeDisplays(); persistAndRenderFocusMode(); });
         focusEndTime.addEventListener('change', () => { syncFocusTimeDisplays(); persistAndRenderFocusMode(); });
         focusReason.addEventListener('change', persistAndRenderFocusMode);
+
+        focusNotificationsEnabled?.addEventListener('change', async () => {
+          if (focusNotificationsEnabled.checked) {
+            const granted = await requestFocusNotificationPermission();
+            if (!granted) focusNotificationsEnabled.checked = false;
+          }
+          persistAndRenderFocusMode();
+          updateFocusNotificationUi(collectFocusConfigFromUi());
+          if (focusNotificationsEnabled.checked && Notification.permission === 'granted') {
+            showFocusSystemNotification('Focus notifications enabled', 'eRTrades can now notify you while the web app is running.', 'ertrades-focus-enabled');
+          }
+        });
 
         focusDayButtons.forEach((button) => {
           button.addEventListener('click', () => {
