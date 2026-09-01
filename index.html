@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83i-focus-mode-settings">
+<meta name="ertrades-build" content="v83j-focus-time-ios-fix">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3314,9 +3314,17 @@
 
     #ertrades-app .focus-reason-field { grid-column: 1 / -1; }
 
+    #ertrades-app .focus-field {
+      min-width: 0;
+      max-width: 100%;
+    }
+
     #ertrades-app .focus-field input,
     #ertrades-app .focus-field select {
+      display: block;
       width: 100%;
+      min-width: 0;
+      max-width: 100%;
       min-height: 46px;
       padding: 0 12px;
       border: 1px solid var(--border);
@@ -3325,6 +3333,15 @@
       color: var(--text);
       font-size: 16px;
       outline: none;
+    }
+
+    /* iOS Safari can give time inputs a larger intrinsic width than their grid cell. */
+    #ertrades-app #focus-start-time,
+    #ertrades-app #focus-end-time {
+      box-sizing: border-box;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
     }
 
     #ertrades-app .focus-field input:focus,
