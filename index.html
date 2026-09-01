@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83h-auto-risk-percent">
+<meta name="ertrades-build" content="v83i-focus-mode-settings">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3134,6 +3134,325 @@
       overflow-wrap: anywhere;
     }
 
+
+    #ertrades-app .settings-page-head {
+      background: linear-gradient(180deg, rgba(184,255,79,.025), transparent);
+    }
+
+    #ertrades-app .settings-group {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: rgba(10,16,19,.76);
+    }
+
+    #ertrades-app .settings-group-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    #ertrades-app .settings-group-head.compact { margin-bottom: 10px; }
+
+    #ertrades-app .settings-group-title {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 820;
+      letter-spacing: -.015em;
+    }
+
+    #ertrades-app .settings-group-copy {
+      margin-top: 4px;
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .settings-group-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    #ertrades-app .settings-group-grid.two-col {
+      grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+
+    #ertrades-app .settings-group .settings-account-card {
+      background: var(--panel);
+    }
+
+    #ertrades-app .focus-settings-group {
+      border-color: rgba(184,255,79,.20);
+      background: linear-gradient(145deg, rgba(184,255,79,.032), rgba(10,16,19,.78) 42%);
+    }
+
+    #ertrades-app .focus-group-head { align-items: center; }
+
+    #ertrades-app .focus-toggle {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      cursor: pointer;
+    }
+
+    #ertrades-app .focus-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #ertrades-app .focus-toggle-track {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #10171a;
+      transition: border-color .18s ease, background .18s ease;
+    }
+
+    #ertrades-app .focus-toggle-track span {
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #7a888f;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    #ertrades-app .focus-toggle input:checked + .focus-toggle-track {
+      border-color: rgba(184,255,79,.55);
+      background: var(--accent-dark);
+    }
+
+    #ertrades-app .focus-toggle input:checked + .focus-toggle-track span {
+      transform: translateX(20px);
+      background: var(--accent);
+    }
+
+    #ertrades-app .focus-toggle input:focus-visible + .focus-toggle-track {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    #ertrades-app .focus-status-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--panel);
+    }
+
+    #ertrades-app .focus-status-card.active {
+      border-color: rgba(184,255,79,.34);
+      background: rgba(184,255,79,.045);
+    }
+
+    #ertrades-app .focus-status-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #ertrades-app .focus-status-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #56646a;
+      box-shadow: 0 0 0 4px rgba(86,100,106,.08);
+    }
+
+    #ertrades-app .focus-status-card.active .focus-status-dot {
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(184,255,79,.10);
+    }
+
+    #ertrades-app .focus-status-title {
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    #ertrades-app .focus-status-copy {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    #ertrades-app .focus-countdown {
+      flex: 0 0 auto;
+      color: var(--soft);
+      font-size: 12px;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .focus-status-card.active .focus-countdown { color: var(--accent); }
+
+    #ertrades-app .focus-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    #ertrades-app .focus-reason-field { grid-column: 1 / -1; }
+
+    #ertrades-app .focus-field input,
+    #ertrades-app .focus-field select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+    }
+
+    #ertrades-app .focus-field input:focus,
+    #ertrades-app .focus-field select:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    #ertrades-app .focus-block {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    #ertrades-app .focus-day-grid,
+    #ertrades-app .focus-platform-grid {
+      display: grid;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    #ertrades-app .focus-day-grid { grid-template-columns: repeat(7,minmax(0,1fr)); }
+    #ertrades-app .focus-platform-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+
+    #ertrades-app .focus-chip,
+    #ertrades-app .focus-platform {
+      min-width: 0;
+      min-height: 40px;
+      padding: 0 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 820;
+      cursor: pointer;
+    }
+
+    #ertrades-app .focus-chip.active,
+    #ertrades-app .focus-platform.active {
+      border-color: rgba(184,255,79,.42);
+      background: var(--accent-dark);
+      color: var(--accent);
+    }
+
+    #ertrades-app .focus-web-note {
+      display: grid;
+      gap: 3px;
+      margin-top: 12px;
+      padding: 11px 12px;
+      border: 1px solid rgba(215,168,74,.22);
+      border-radius: 11px;
+      background: rgba(215,168,74,.045);
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .focus-web-note strong {
+      color: #d7a84a;
+      font-size: 10px;
+    }
+
+    #ertrades-app .settings-support-links { margin-top: 0; }
+
+    #ertrades-app .settings-session-group .settings-logout { margin-top: 0; }
+
+    #ertrades-app .focus-active-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 12px;
+      border: 1px solid rgba(184,255,79,.28);
+      border-radius: 14px;
+      background: rgba(184,255,79,.045);
+    }
+
+    #ertrades-app .focus-active-banner.visible { display: flex; }
+
+    #ertrades-app .focus-active-banner-copy {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #ertrades-app .focus-active-banner-icon {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(184,255,79,.24);
+      border-radius: 10px;
+      color: var(--accent);
+      background: var(--accent-dark);
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    #ertrades-app .focus-active-banner-copy strong {
+      display: block;
+      color: var(--text);
+      font-size: 11px;
+    }
+
+    #ertrades-app .focus-active-banner-copy span:last-child {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    #ertrades-app .focus-banner-action {
+      min-height: 38px;
+      flex: 0 0 auto;
+      padding: 0 11px;
+      border: 1px solid rgba(184,255,79,.34);
+      border-radius: 10px;
+      background: var(--accent-dark);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
     #ertrades-app .journal-data-copy {
       margin: 7px 0 0;
       color: var(--muted);
@@ -3432,6 +3751,16 @@
     }
 
     @media (max-width: 560px) {
+      #ertrades-app .settings-group-grid.two-col,
+      #ertrades-app .focus-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #ertrades-app .focus-reason-field { grid-column: auto; }
+      #ertrades-app .focus-day-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+      #ertrades-app .focus-active-banner { align-items: flex-start; }
+      #ertrades-app .focus-banner-action { align-self: center; }
+
       #ertrades-app .journal-data-actions,
       #ertrades-app .journal-import-target-options,
       #ertrades-app .journal-import-new-grid {
@@ -3742,6 +4071,29 @@
 
     #ertrades-app.theme-light .settings-email {
       color: var(--text);
+    }
+
+
+    #ertrades-app.theme-light .settings-group,
+    #ertrades-app.theme-light .focus-field input,
+    #ertrades-app.theme-light .focus-field select,
+    #ertrades-app.theme-light .focus-chip,
+    #ertrades-app.theme-light .focus-platform,
+    #ertrades-app.theme-light .focus-status-card,
+    #ertrades-app.theme-light .focus-toggle-track {
+      background: #ffffff;
+    }
+
+    #ertrades-app.theme-light .focus-settings-group {
+      background: linear-gradient(145deg, rgba(91,154,0,.035), #ffffff 42%);
+    }
+
+    #ertrades-app.theme-light .focus-chip.active,
+    #ertrades-app.theme-light .focus-platform.active,
+    #ertrades-app.theme-light .focus-toggle input:checked + .focus-toggle-track,
+    #ertrades-app.theme-light .focus-active-banner-icon,
+    #ertrades-app.theme-light .focus-banner-action {
+      background: var(--accent-dark);
     }
 
     #ertrades-app.theme-light .summary-card {
@@ -4893,25 +5245,35 @@
       /* ---------- SETTINGS ---------- */
       #ertrades-app .settings-body {
         grid-template-columns: repeat(2,minmax(0,1fr));
+        align-items: start;
         gap: 14px;
         padding: 20px;
       }
 
-      #ertrades-app .settings-account-card {
-        min-height: 112px;
+      #ertrades-app .settings-group {
         padding: 17px;
       }
 
-      #ertrades-app .settings-body .settings-account-card:nth-child(3) {
+      #ertrades-app .settings-body > .focus-settings-group,
+      #ertrades-app .settings-body > .settings-danger-card {
         grid-column: 1 / -1;
       }
 
-      #ertrades-app .settings-logout {
-        min-height: 52px;
+      #ertrades-app .settings-account-card {
+        min-height: 106px;
+        padding: 17px;
       }
+
+      #ertrades-app .focus-form-grid {
+        grid-template-columns: minmax(0,.8fr) minmax(0,.8fr) minmax(0,1.4fr);
+      }
+
+      #ertrades-app .focus-reason-field { grid-column: auto; }
+      #ertrades-app .focus-platform-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+
+      #ertrades-app .settings-logout { min-height: 52px; }
 
       #ertrades-app .settings-danger-card {
-        grid-column: 1 / -1;
         padding: 18px;
       }
 
@@ -5369,6 +5731,16 @@
           <button class="primary-btn" id="import-local-btn" type="button">Import to My Account</button>
           <button class="secondary-btn" id="skip-import-btn" type="button">Skip</button>
         </div>
+      </section>
+      <section class="focus-active-banner" id="focus-active-banner" hidden aria-live="polite">
+        <div class="focus-active-banner-copy">
+          <span class="focus-active-banner-icon" aria-hidden="true">◷</span>
+          <div>
+            <strong>Focus Mode active</strong>
+            <span id="focus-active-banner-text">No-chart period is active.</span>
+          </div>
+        </div>
+        <button class="focus-banner-action" id="focus-review-journal-btn" type="button">Review Journal</button>
       </section>
       <section class="account-form-card" id="account-form-card" aria-labelledby="account-form-title">
         <div class="account-form-head">
@@ -5916,37 +6288,133 @@
       </section>
 
       <section class="settings-page" id="settings-page" aria-labelledby="settings-title">
-        <div class="section-head">
+        <div class="section-head settings-page-head">
           <div>
             <div class="section-kicker">Settings</div>
-            <div class="section-title" id="settings-title">Account Information</div>
+            <div class="section-title" id="settings-title">Preferences &amp; Account</div>
           </div>
         </div>
         <div class="settings-body">
-          <div class="settings-account-card">
-            <div class="detail-label">Email</div>
-            <div class="settings-email" id="settings-email">—</div>
-          </div>
-          <div class="settings-account-card">
-            <div class="detail-label">Theme</div>
-            <div class="theme-options" role="group" aria-label="App theme">
-              <button class="theme-option active" id="theme-dark-btn" type="button">Dark</button>
-              <button class="theme-option" id="theme-light-btn" type="button">Light</button>
+          <section class="settings-group" aria-labelledby="settings-account-group-title">
+            <div class="settings-group-head">
+              <div>
+                <div class="settings-group-title" id="settings-account-group-title">Account &amp; Appearance</div>
+                <div class="settings-group-copy">Your profile and how eRTrades looks on this device.</div>
+              </div>
             </div>
-          </div>
-          <div class="settings-account-card journal-data-card">
-            <div class="detail-label">Journal Data</div>
-            <p class="journal-data-copy">Backup your eRTrades journal or import trades from eRTrades, CSV, JSON, Excel, and other journal exports.</p>
-            <div class="journal-data-actions">
-              <button class="secondary-btn" id="journal-export-btn" type="button">Export Journal</button>
-              <button class="primary-btn" id="journal-import-btn" type="button">Import Journal</button>
+            <div class="settings-group-grid two-col">
+              <div class="settings-account-card">
+                <div class="detail-label">Email</div>
+                <div class="settings-email" id="settings-email">—</div>
+              </div>
+              <div class="settings-account-card">
+                <div class="detail-label">Theme</div>
+                <div class="theme-options" role="group" aria-label="App theme">
+                  <button class="theme-option active" id="theme-dark-btn" type="button">Dark</button>
+                  <button class="theme-option" id="theme-light-btn" type="button">Light</button>
+                </div>
+              </div>
             </div>
-            <div class="journal-data-status" id="journal-data-status" role="status" aria-live="polite"></div>
-          </div>
+          </section>
 
-          <div class="settings-account-card">
-            <div class="detail-label">Support</div>
-            <div class="support-links">
+          <section class="settings-group focus-settings-group" aria-labelledby="focus-mode-title">
+            <div class="settings-group-head focus-group-head">
+              <div>
+                <div class="settings-group-title" id="focus-mode-title">Focus Mode</div>
+                <div class="settings-group-copy">Set quiet trading hours so you can stop checking charts and focus on your review.</div>
+              </div>
+              <label class="focus-toggle" for="focus-mode-enabled">
+                <input id="focus-mode-enabled" type="checkbox" aria-label="Enable Focus Mode">
+                <span class="focus-toggle-track" aria-hidden="true"><span></span></span>
+              </label>
+            </div>
+
+            <div class="focus-status-card" id="focus-status-card">
+              <div class="focus-status-main">
+                <span class="focus-status-dot" id="focus-status-dot" aria-hidden="true"></span>
+                <div>
+                  <div class="focus-status-title" id="focus-status-title">Focus Mode is off</div>
+                  <div class="focus-status-copy" id="focus-status-copy">Turn it on to follow your quiet-hours schedule.</div>
+                </div>
+              </div>
+              <div class="focus-countdown" id="focus-countdown">—</div>
+            </div>
+
+            <div class="focus-form-grid">
+              <div class="field focus-field">
+                <label for="focus-start-time">Start</label>
+                <input id="focus-start-time" type="time" value="22:00">
+              </div>
+              <div class="field focus-field">
+                <label for="focus-end-time">End</label>
+                <input id="focus-end-time" type="time" value="07:00">
+              </div>
+              <div class="field focus-field focus-reason-field">
+                <label for="focus-reason">Purpose</label>
+                <select id="focus-reason">
+                  <option value="Stop Overtrading">Stop Overtrading</option>
+                  <option value="Trading Session Finished">Trading Session Finished</option>
+                  <option value="Rest & Reset">Rest &amp; Reset</option>
+                  <option value="No Chart Checking">No Chart Checking</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="focus-block">
+              <div class="detail-label">Active Days</div>
+              <div class="focus-day-grid" id="focus-day-grid" role="group" aria-label="Focus Mode active days">
+                <button class="focus-chip active" type="button" data-focus-day="1">Mon</button>
+                <button class="focus-chip active" type="button" data-focus-day="2">Tue</button>
+                <button class="focus-chip active" type="button" data-focus-day="3">Wed</button>
+                <button class="focus-chip active" type="button" data-focus-day="4">Thu</button>
+                <button class="focus-chip active" type="button" data-focus-day="5">Fri</button>
+                <button class="focus-chip" type="button" data-focus-day="6">Sat</button>
+                <button class="focus-chip" type="button" data-focus-day="0">Sun</button>
+              </div>
+            </div>
+
+            <div class="focus-block">
+              <div class="detail-label">Platforms To Avoid</div>
+              <div class="focus-platform-grid" id="focus-platform-grid" role="group" aria-label="Trading platforms to avoid during Focus Mode">
+                <button class="focus-platform active" type="button" data-focus-platform="TradingView">TradingView</button>
+                <button class="focus-platform active" type="button" data-focus-platform="MT5">MT5</button>
+                <button class="focus-platform" type="button" data-focus-platform="MT4">MT4</button>
+                <button class="focus-platform" type="button" data-focus-platform="cTrader">cTrader</button>
+              </div>
+            </div>
+
+            <div class="focus-web-note">
+              <strong>Web Focus Mode</strong>
+              <span>eRTrades cannot close or block other iPhone/Android apps. This schedule works as a discipline reminder inside eRTrades and shows when your no-chart period is active.</span>
+            </div>
+          </section>
+
+          <section class="settings-group" aria-labelledby="settings-data-group-title">
+            <div class="settings-group-head">
+              <div>
+                <div class="settings-group-title" id="settings-data-group-title">Data &amp; Backup</div>
+                <div class="settings-group-copy">Keep a portable copy of your journal or bring trading history into eRTrades.</div>
+              </div>
+            </div>
+            <div class="settings-account-card journal-data-card">
+              <div class="detail-label">Journal Data</div>
+              <p class="journal-data-copy">Backup your eRTrades journal or import trades from eRTrades, CSV, JSON, Excel, and other journal exports.</p>
+              <div class="journal-data-actions">
+                <button class="secondary-btn" id="journal-export-btn" type="button">Export Journal</button>
+                <button class="primary-btn" id="journal-import-btn" type="button">Import Journal</button>
+              </div>
+              <div class="journal-data-status" id="journal-data-status" role="status" aria-live="polite"></div>
+            </div>
+          </section>
+
+          <section class="settings-group" aria-labelledby="settings-support-group-title">
+            <div class="settings-group-head">
+              <div>
+                <div class="settings-group-title" id="settings-support-group-title">Support</div>
+                <div class="settings-group-copy">Follow eRTrades or reach the project through social media.</div>
+              </div>
+            </div>
+            <div class="support-links settings-support-links">
               <a class="support-link" href="https://www.instagram.com/rdtilhamm?igsi=MTQ0emltYXBwaTAxbQ%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">
                 <span>Instagram</span>
                 <span>@rdtilhamm</span>
@@ -5956,8 +6424,17 @@
                 <span>@eraditfx44</span>
               </a>
             </div>
-          </div>
-          <button class="secondary-btn settings-logout" id="settings-logout-btn" type="button">Logout</button>
+          </section>
+
+          <section class="settings-group settings-session-group" aria-labelledby="settings-session-group-title">
+            <div class="settings-group-head compact">
+              <div>
+                <div class="settings-group-title" id="settings-session-group-title">Session</div>
+                <div class="settings-group-copy">Sign out from eRTrades on this device.</div>
+              </div>
+            </div>
+            <button class="secondary-btn settings-logout" id="settings-logout-btn" type="button">Logout</button>
+          </section>
 
           <div class="settings-danger-card">
             <div class="danger-zone-label">Danger Zone</div>
@@ -11777,6 +12254,225 @@
             exitPreview.href = '/';
           }
         }
+      }
+
+      // Focus Mode (web/PWA): scheduled discipline reminder. It does not control other apps.
+      const FOCUS_MODE_STORAGE_KEY = 'ertrades-focus-mode-v1';
+      const focusModeEnabled = root.querySelector('#focus-mode-enabled');
+      const focusStartTime = root.querySelector('#focus-start-time');
+      const focusEndTime = root.querySelector('#focus-end-time');
+      const focusReason = root.querySelector('#focus-reason');
+      const focusDayButtons = Array.from(root.querySelectorAll('[data-focus-day]'));
+      const focusPlatformButtons = Array.from(root.querySelectorAll('[data-focus-platform]'));
+      const focusStatusCard = root.querySelector('#focus-status-card');
+      const focusStatusTitle = root.querySelector('#focus-status-title');
+      const focusStatusCopy = root.querySelector('#focus-status-copy');
+      const focusCountdown = root.querySelector('#focus-countdown');
+      const focusActiveBanner = root.querySelector('#focus-active-banner');
+      const focusActiveBannerText = root.querySelector('#focus-active-banner-text');
+      const focusReviewJournalBtn = root.querySelector('#focus-review-journal-btn');
+      let focusModeTimer = null;
+
+      const defaultFocusConfig = () => ({
+        enabled: false,
+        start: '22:00',
+        end: '07:00',
+        reason: 'Stop Overtrading',
+        days: [1,2,3,4,5],
+        platforms: ['TradingView','MT5']
+      });
+
+      const normalizeFocusConfig = (value) => {
+        const fallback = defaultFocusConfig();
+        const source = value && typeof value === 'object' ? value : {};
+        const days = Array.isArray(source.days)
+          ? source.days.map(Number).filter((day) => Number.isInteger(day) && day >= 0 && day <= 6)
+          : fallback.days;
+        const allowedPlatforms = ['TradingView','MT5','MT4','cTrader'];
+        const platforms = Array.isArray(source.platforms)
+          ? source.platforms.filter((name) => allowedPlatforms.includes(name))
+          : fallback.platforms;
+        return {
+          enabled: Boolean(source.enabled),
+          start: /^\d{2}:\d{2}$/.test(String(source.start || '')) ? String(source.start) : fallback.start,
+          end: /^\d{2}:\d{2}$/.test(String(source.end || '')) ? String(source.end) : fallback.end,
+          reason: ['Stop Overtrading','Trading Session Finished','Rest & Reset','No Chart Checking'].includes(source.reason)
+            ? source.reason
+            : fallback.reason,
+          days: days.length ? Array.from(new Set(days)) : fallback.days,
+          platforms: platforms.length ? Array.from(new Set(platforms)) : fallback.platforms
+        };
+      };
+
+      const readFocusConfig = () => {
+        try {
+          const stored = localStorage.getItem(FOCUS_MODE_STORAGE_KEY);
+          return normalizeFocusConfig(stored ? JSON.parse(stored) : null);
+        } catch (_) {
+          return defaultFocusConfig();
+        }
+      };
+
+      const writeFocusConfig = (config) => {
+        try { localStorage.setItem(FOCUS_MODE_STORAGE_KEY, JSON.stringify(normalizeFocusConfig(config))); } catch (_) {}
+      };
+
+      const minutesFromClock = (value) => {
+        const match = /^(\d{2}):(\d{2})$/.exec(String(value || ''));
+        if (!match) return 0;
+        return Math.min(1439, Math.max(0, Number(match[1]) * 60 + Number(match[2])));
+      };
+
+      const getFocusWindowState = (config, now = new Date()) => {
+        const start = minutesFromClock(config.start);
+        const end = minutesFromClock(config.end);
+        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+        const day = now.getDay();
+        const previousDay = (day + 6) % 7;
+        let active = false;
+        let endAt = null;
+
+        if (config.enabled) {
+          if (start === end) {
+            active = config.days.includes(day);
+            if (active) endAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+          } else if (start < end) {
+            active = config.days.includes(day) && nowMinutes >= start && nowMinutes < end;
+            if (active) {
+              endAt = new Date(now);
+              endAt.setHours(Math.floor(end / 60), end % 60, 0, 0);
+            }
+          } else {
+            if (nowMinutes >= start && config.days.includes(day)) {
+              active = true;
+              endAt = new Date(now);
+              endAt.setDate(endAt.getDate() + 1);
+              endAt.setHours(Math.floor(end / 60), end % 60, 0, 0);
+            } else if (nowMinutes < end && config.days.includes(previousDay)) {
+              active = true;
+              endAt = new Date(now);
+              endAt.setHours(Math.floor(end / 60), end % 60, 0, 0);
+            }
+          }
+        }
+        return { active, endAt };
+      };
+
+      const formatFocusDuration = (milliseconds) => {
+        const total = Math.max(0, Math.floor(milliseconds / 1000));
+        const hours = Math.floor(total / 3600);
+        const minutes = Math.floor((total % 3600) / 60);
+        const seconds = total % 60;
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      };
+
+      const getNextFocusStart = (config, now = new Date()) => {
+        if (!config.enabled || !config.days.length) return null;
+        const startMinutes = minutesFromClock(config.start);
+        for (let offset = 0; offset < 8; offset += 1) {
+          const candidate = new Date(now);
+          candidate.setDate(candidate.getDate() + offset);
+          candidate.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0, 0);
+          if (!config.days.includes(candidate.getDay())) continue;
+          if (candidate.getTime() > now.getTime()) return candidate;
+        }
+        return null;
+      };
+
+      const focusDayShort = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+      const collectFocusConfigFromUi = () => normalizeFocusConfig({
+        enabled: Boolean(focusModeEnabled?.checked),
+        start: focusStartTime?.value || '22:00',
+        end: focusEndTime?.value || '07:00',
+        reason: focusReason?.value || 'Stop Overtrading',
+        days: focusDayButtons.filter((button) => button.classList.contains('active')).map((button) => Number(button.dataset.focusDay)),
+        platforms: focusPlatformButtons.filter((button) => button.classList.contains('active')).map((button) => button.dataset.focusPlatform)
+      });
+
+      const applyFocusConfigToUi = (config) => {
+        if (!focusModeEnabled) return;
+        focusModeEnabled.checked = Boolean(config.enabled);
+        focusStartTime.value = config.start;
+        focusEndTime.value = config.end;
+        focusReason.value = config.reason;
+        focusDayButtons.forEach((button) => button.classList.toggle('active', config.days.includes(Number(button.dataset.focusDay))));
+        focusPlatformButtons.forEach((button) => button.classList.toggle('active', config.platforms.includes(button.dataset.focusPlatform)));
+      };
+
+      const renderFocusMode = () => {
+        if (!focusModeEnabled) return;
+        const config = collectFocusConfigFromUi();
+        const now = new Date();
+        const state = getFocusWindowState(config, now);
+        const platformText = config.platforms.join(' · ');
+
+        focusStatusCard?.classList.toggle('active', state.active);
+        focusActiveBanner?.classList.toggle('visible', state.active);
+        if (focusActiveBanner) focusActiveBanner.hidden = !state.active;
+
+        if (!config.enabled) {
+          focusStatusTitle.textContent = 'Focus Mode is off';
+          focusStatusCopy.textContent = 'Turn it on to follow your quiet-hours schedule.';
+          focusCountdown.textContent = '—';
+          return;
+        }
+
+        if (state.active && state.endAt) {
+          focusStatusTitle.textContent = 'No-chart period active';
+          focusStatusCopy.textContent = `${config.reason} · ${platformText}`;
+          focusCountdown.textContent = formatFocusDuration(state.endAt.getTime() - now.getTime());
+          if (focusActiveBannerText) {
+            focusActiveBannerText.textContent = `${config.reason} · ${platformText} · ${focusCountdown.textContent} left`;
+          }
+          return;
+        }
+
+        const nextStart = getNextFocusStart(config, now);
+        focusStatusTitle.textContent = 'Focus Mode scheduled';
+        focusStatusCopy.textContent = `${config.start}–${config.end} · ${config.days.slice().sort((a,b) => a-b).map((day) => focusDayShort[day]).join(', ')}`;
+        focusCountdown.textContent = nextStart
+          ? `${focusDayShort[nextStart.getDay()]} ${config.start}`
+          : 'Scheduled';
+      };
+
+      const persistAndRenderFocusMode = () => {
+        const config = collectFocusConfigFromUi();
+        writeFocusConfig(config);
+        renderFocusMode();
+      };
+
+      if (focusModeEnabled) {
+        applyFocusConfigToUi(readFocusConfig());
+        focusModeEnabled.addEventListener('change', persistAndRenderFocusMode);
+        focusStartTime.addEventListener('change', persistAndRenderFocusMode);
+        focusEndTime.addEventListener('change', persistAndRenderFocusMode);
+        focusReason.addEventListener('change', persistAndRenderFocusMode);
+
+        focusDayButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            button.classList.toggle('active');
+            if (!focusDayButtons.some((item) => item.classList.contains('active'))) button.classList.add('active');
+            persistAndRenderFocusMode();
+          });
+        });
+
+        focusPlatformButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            button.classList.toggle('active');
+            if (!focusPlatformButtons.some((item) => item.classList.contains('active'))) button.classList.add('active');
+            persistAndRenderFocusMode();
+          });
+        });
+
+        focusReviewJournalBtn?.addEventListener('click', () => showPage('Journal'));
+        renderFocusMode();
+        focusModeTimer = window.setInterval(renderFocusMode, 1000);
+        window.addEventListener('pagehide', () => {
+          if (focusModeTimer) window.clearInterval(focusModeTimer);
+          focusModeTimer = null;
+        }, { once: true });
       }
 
       initializeData();
