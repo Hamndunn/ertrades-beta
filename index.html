@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83r-journal-custom-filters-collapse">
+<meta name="ertrades-build" content="v85-ttfm-course">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -695,14 +695,14 @@
     #ertrades-app .nav-shell::-webkit-scrollbar { display: none; }
 
     #ertrades-app .bottom-nav {
-      min-width: 350px;
+      min-width: 420px;
       display: grid;
-      grid-template-columns: repeat(6,1fr);
+      grid-template-columns: repeat(7,1fr);
       gap: 3px;
     }
 
     #ertrades-app .nav-btn {
-      min-width: 72px;
+      min-width: 56px;
       min-height: 57px;
       border: 0;
       border-radius: 12px;
@@ -6105,7 +6105,366 @@
       #ertrades-app .nav-btn,
       #ertrades-app .metric { transition: .16s ease; }
     }
-  </style>
+  
+
+    /* ---------- v85 TTFM COURSE ---------- */
+    #ertrades-app .course-page {
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    #ertrades-app .course-page.visible { display: block; }
+    #ertrades-app .course-page-head { background: linear-gradient(180deg, rgba(184,255,79,.025), transparent); }
+    #ertrades-app .course-body { padding: 14px; display: grid; gap: 14px; }
+
+    #ertrades-app .course-hero {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #0a1013;
+    }
+
+    #ertrades-app .course-video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #050809;
+    }
+
+    #ertrades-app .course-video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    #ertrades-app .course-hero-copy h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.25;
+      letter-spacing: -.02em;
+    }
+
+    #ertrades-app .course-hero-copy p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    #ertrades-app .course-source-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 11px;
+    }
+
+    #ertrades-app .course-source-link {
+      min-height: 36px;
+      padding: 0 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--soft);
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 820;
+    }
+
+    #ertrades-app .course-source-link.primary {
+      border-color: rgba(184,255,79,.30);
+      background: var(--accent-dark);
+      color: var(--accent);
+    }
+
+    #ertrades-app .course-progress-card {
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #0a1013;
+    }
+
+    #ertrades-app .course-progress-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    #ertrades-app .course-progress-head span {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 820;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    #ertrades-app .course-progress-head strong {
+      color: var(--soft);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #ertrades-app .course-progress-track {
+      height: 7px;
+      margin-top: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #131d21;
+    }
+
+    #ertrades-app .course-progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width .22s ease;
+    }
+
+    #ertrades-app .course-layout { display: grid; gap: 12px; }
+
+    #ertrades-app .course-lessons {
+      display: grid;
+      gap: 7px;
+      align-content: start;
+    }
+
+    #ertrades-app .course-lesson-btn {
+      width: 100%;
+      min-height: 58px;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a1013;
+      color: var(--soft);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 30px minmax(0,1fr) 22px;
+      align-items: center;
+      gap: 9px;
+    }
+
+    #ertrades-app .course-lesson-btn.active {
+      border-color: rgba(184,255,79,.34);
+      background: var(--accent-dark);
+    }
+
+    #ertrades-app .course-lesson-index {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    #ertrades-app .course-lesson-btn.active .course-lesson-index {
+      border-color: rgba(184,255,79,.35);
+      color: var(--accent);
+    }
+
+    #ertrades-app .course-lesson-title {
+      min-width: 0;
+      color: var(--soft);
+      font-size: 11px;
+      line-height: 1.35;
+      font-weight: 820;
+    }
+
+    #ertrades-app .course-lesson-check {
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: transparent;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    #ertrades-app .course-lesson-btn.complete .course-lesson-check {
+      border-color: rgba(184,255,79,.38);
+      background: var(--accent-dark);
+      color: var(--accent);
+    }
+
+    #ertrades-app .course-content-card {
+      min-width: 0;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #0a1013;
+    }
+
+    #ertrades-app .course-content-kicker {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+
+    #ertrades-app .course-content-title {
+      margin-top: 5px;
+      color: var(--text);
+      font-size: 19px;
+      line-height: 1.2;
+      font-weight: 900;
+      letter-spacing: -.03em;
+    }
+
+    #ertrades-app .course-content-summary {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    #ertrades-app .course-diagram {
+      margin-top: 14px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #070b0d;
+      overflow: hidden;
+    }
+
+    #ertrades-app .course-diagram svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    #ertrades-app .course-points {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+    }
+
+    #ertrades-app .course-points li {
+      position: relative;
+      padding: 9px 10px 9px 30px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--soft);
+      background: var(--panel);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .course-points li::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 14px;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(184,255,79,.07);
+    }
+
+    #ertrades-app .course-rule-box {
+      margin-top: 12px;
+      padding: 11px 12px;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 11px 11px 0;
+      background: rgba(184,255,79,.045);
+    }
+
+    #ertrades-app .course-rule-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    #ertrades-app .course-rule-box strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--soft);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    #ertrades-app .course-actions {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      gap: 8px;
+    }
+
+    #ertrades-app .course-action-btn {
+      min-height: 42px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: transparent;
+      color: var(--soft);
+      font: inherit;
+      font-size: 10px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    #ertrades-app .course-action-btn.complete {
+      border-color: rgba(184,255,79,.34);
+      background: var(--accent-dark);
+      color: var(--accent);
+    }
+
+    #ertrades-app .course-action-btn:disabled {
+      opacity: .38;
+      cursor: default;
+    }
+
+    #ertrades-app .course-disclaimer {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    #ertrades-app.theme-light .course-hero,
+    #ertrades-app.theme-light .course-progress-card,
+    #ertrades-app.theme-light .course-lesson-btn,
+    #ertrades-app.theme-light .course-content-card,
+    #ertrades-app.theme-light .course-diagram {
+      background: #ffffff;
+    }
+
+    #ertrades-app.theme-light .course-progress-track { background: #e7ecef; }
+
+    @media (min-width: 760px) {
+      #ertrades-app .course-hero { grid-template-columns: minmax(0,1.2fr) minmax(260px,.8fr); align-items: center; }
+      #ertrades-app .course-layout { grid-template-columns: minmax(210px,.34fr) minmax(0,.66fr); align-items: start; }
+      #ertrades-app .course-lessons { position: sticky; top: calc(var(--top-nav-space, 98px) + 10px); }
+    }
+</style>
 
   <div class="shell">
     <div class="top-nav-shell" id="top-nav-shell">
@@ -7291,6 +7650,94 @@
         </div>
       </section>
 
+
+      <section class="course-page" id="course-page" aria-labelledby="course-title">
+        <div class="section-head course-page-head">
+          <div>
+            <div class="section-kicker">eRTrades Course</div>
+            <div class="section-title" id="course-title">TTFM Trading Model</div>
+          </div>
+          <span class="section-meta">7 lessons</span>
+        </div>
+
+        <div class="course-body">
+          <section class="course-hero" aria-label="Course introduction">
+            <div class="course-video-wrap">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/v1X8UMWgWmI"
+                title="Best Trading Strategy for 2026 - TTFM by TTrades"
+                loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+            </div>
+            <div class="course-hero-copy">
+              <div class="section-kicker">Original Lesson</div>
+              <h3>Best Trading Strategy for 2026 — TTFM</h3>
+              <p>Course ini merangkum model TTrades menjadi alur belajar yang lebih ringkas: Daily Bias → Candle 2 / Candle 3 → CISD → Protected Swing → Daily / 4H / 15M alignment → continuation entry.</p>
+              <div class="course-source-actions">
+                <a class="course-source-link primary" href="https://www.youtube.com/watch?v=v1X8UMWgWmI" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+                <a class="course-source-link" href="https://ttrades.com/best-trading-strategy-for-2026-ttfm/" target="_blank" rel="noopener noreferrer">TTrades Source</a>
+              </div>
+            </div>
+          </section>
+
+          <section class="course-progress-card" aria-label="Course progress">
+            <div class="course-progress-head">
+              <span>Course Progress</span>
+              <strong id="course-progress-text">0 / 7 complete</strong>
+            </div>
+            <div class="course-progress-track" aria-hidden="true">
+              <div class="course-progress-fill" id="course-progress-fill"></div>
+            </div>
+          </section>
+
+          <div class="course-layout">
+            <nav class="course-lessons" id="course-lessons" aria-label="TTFM lessons">
+              <button class="course-lesson-btn active" type="button" data-course-lesson="0">
+                <span class="course-lesson-index">01</span><span class="course-lesson-title">Model Overview</span><span class="course-lesson-check">✓</span>
+              </button>
+              <button class="course-lesson-btn" type="button" data-course-lesson="1">
+                <span class="course-lesson-index">02</span><span class="course-lesson-title">Daily Bias</span><span class="course-lesson-check">✓</span>
+              </button>
+              <button class="course-lesson-btn" type="button" data-course-lesson="2">
+                <span class="course-lesson-index">03</span><span class="course-lesson-title">Candle 2 &amp; Candle 3</span><span class="course-lesson-check">✓</span>
+              </button>
+              <button class="course-lesson-btn" type="button" data-course-lesson="3">
+                <span class="course-lesson-index">04</span><span class="course-lesson-title">CISD &amp; Protected Swing</span><span class="course-lesson-check">✓</span>
+              </button>
+              <button class="course-lesson-btn" type="button" data-course-lesson="4">
+                <span class="course-lesson-index">05</span><span class="course-lesson-title">Daily → 4H → 15M</span><span class="course-lesson-check">✓</span>
+              </button>
+              <button class="course-lesson-btn" type="button" data-course-lesson="5">
+                <span class="course-lesson-index">06</span><span class="course-lesson-title">Continuation Entry</span><span class="course-lesson-check">✓</span>
+              </button>
+              <button class="course-lesson-btn" type="button" data-course-lesson="6">
+                <span class="course-lesson-index">07</span><span class="course-lesson-title">Trading Checklist</span><span class="course-lesson-check">✓</span>
+              </button>
+            </nav>
+
+            <article class="course-content-card" aria-live="polite">
+              <div class="course-content-kicker" id="course-content-kicker">Lesson 01</div>
+              <div class="course-content-title" id="course-content-title">Model Overview</div>
+              <p class="course-content-summary" id="course-content-summary"></p>
+              <div class="course-diagram" id="course-diagram"></div>
+              <ul class="course-points" id="course-points"></ul>
+              <div class="course-rule-box">
+                <span>Key Rule</span>
+                <strong id="course-key-rule"></strong>
+              </div>
+              <div class="course-actions">
+                <button class="course-action-btn" id="course-complete-btn" type="button">Mark Complete</button>
+                <button class="course-action-btn" id="course-next-btn" type="button">Next Lesson</button>
+              </div>
+            </article>
+          </div>
+
+          <div class="course-disclaimer">Materi diringkas dari video dan artikel TTrades untuk tujuan edukasi. Bukan financial advice.</div>
+        </div>
+      </section>
+
       <section class="settings-page" id="settings-page" aria-labelledby="settings-title">
         <div class="section-head settings-page-head">
           <div>
@@ -7738,6 +8185,10 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 20v-6h6v6M8.5 10.5h.01M15.5 10.5h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Prop Firm
           </button>
+          <button class="nav-btn" type="button" data-page="Course">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5.5A2.5 2.5 0 017.5 3H11v16H7.5A2.5 2.5 0 005 21V5.5zM19 5.5A2.5 2.5 0 0016.5 3H13v16h3.5A2.5 2.5 0 0119 21V5.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            Course
+          </button>
           <button class="nav-btn" type="button" data-page="Settings">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M19 12a7.2 7.2 0 00-.1-1.1l2-1.5-2-3.4-2.5 1a7.4 7.4 0 00-1.9-1.1L14.2 3h-4.4l-.4 2.9A7.4 7.4 0 007.5 7L5 6 3 9.4l2 1.5A7.2 7.2 0 005 13.1l-2 1.5L5 18l2.5-1a7.4 7.4 0 001.9 1.1l.4 2.9h4.4l.4-2.9a7.4 7.4 0 001.9-1.1l2.5 1 2-3.4-2-1.5A7.2 7.2 0 0019 12z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
             Settings
@@ -7974,6 +8425,18 @@
       const importBanner = root.querySelector('#import-banner');
       const importLocalBtn = root.querySelector('#import-local-btn');
       const skipImportBtn = root.querySelector('#skip-import-btn');
+      const coursePage = root.querySelector('#course-page');
+      const courseLessonButtons = Array.from(root.querySelectorAll('[data-course-lesson]'));
+      const courseProgressText = root.querySelector('#course-progress-text');
+      const courseProgressFill = root.querySelector('#course-progress-fill');
+      const courseContentKicker = root.querySelector('#course-content-kicker');
+      const courseContentTitle = root.querySelector('#course-content-title');
+      const courseContentSummary = root.querySelector('#course-content-summary');
+      const courseDiagram = root.querySelector('#course-diagram');
+      const coursePoints = root.querySelector('#course-points');
+      const courseKeyRule = root.querySelector('#course-key-rule');
+      const courseCompleteBtn = root.querySelector('#course-complete-btn');
+      const courseNextBtn = root.querySelector('#course-next-btn');
       const settingsPage = root.querySelector('#settings-page');
       const settingsEmail = root.querySelector('#settings-email');
       const journalExportBtn = root.querySelector('#journal-export-btn');
@@ -8187,6 +8650,173 @@
         try {
           localStorage.removeItem(key);
         } catch (_) {}
+      };
+
+
+      const COURSE_PROGRESS_PREFIX = 'ertrades-course-ttfm-progress-v1:';
+      let courseCurrentLesson = 0;
+      let courseCompleted = new Set();
+
+      const courseLessons = [
+        {
+          title: 'Model Overview',
+          summary: 'TTFM berfokus pada expansion setelah swing point terkonfirmasi. Ide utamanya adalah menyelaraskan arah beberapa timeframe, bukan mengejar entry ketika struktur belum lengkap.',
+          points: [
+            'Mulai dari Daily untuk menentukan arah expansion yang sedang dicari.',
+            'Gunakan Candle 2 atau Candle 3 untuk membaca closure dan potensi continuation.',
+            'CISD digunakan untuk mengonfirmasi swing point sebelum entry.',
+            'Turun ke 4H lalu 15M hanya jika struktur tetap searah.'
+          ],
+          rule: 'Bias → Confirmation → Alignment → Execution.',
+          diagram: 'overview'
+        },
+        {
+          title: 'Daily Bias',
+          summary: 'Model dimulai dengan mengantisipasi daily expansion candle. Daily bias dibentuk dari Candle 2 closure atau Candle 3 closure, lalu dikonfirmasi dengan perubahan delivery.',
+          points: [
+            'Bullish: price dapat trade lower lebih dulu untuk membentuk lower wick sebelum expand higher.',
+            'Bearish: logikanya dibalik; price dapat sweep higher sebelum expand lower.',
+            'Closure adalah bagian penting—sekadar sweep tanpa closure belum cukup.',
+            'Jika bias Daily tidak jelas, lower timeframe tidak dipakai untuk memaksa setup.'
+          ],
+          rule: 'Tentukan arah Daily terlebih dahulu sebelum mencari 4H dan 15M.',
+          diagram: 'daily'
+        },
+        {
+          title: 'Candle 2 & Candle 3',
+          summary: 'Candle 2 closure terjadi ketika price menyapu high/low candle sebelumnya lalu close kembali ke dalam range. Jika Candle 2 gagal memberi closure yang diperlukan, Candle 3 dapat memberi engulfing closure untuk mengonfirmasi reversal.',
+          points: [
+            'Candle 2 sweep + close kembali ke range dapat mengantisipasi Candle 3 expansion.',
+            'Jika Candle 2 tidak close dengan benar, tunggu Candle 3.',
+            'Candle 3 closure yang kuat dapat membuka kemungkinan Candle 4 continuation.',
+            'CISD tetap diperlukan; pattern candle saja bukan alasan entry.'
+          ],
+          rule: 'Candle setup tanpa CISD = setup belum terkonfirmasi.',
+          diagram: 'c23'
+        },
+        {
+          title: 'CISD & Protected Swing',
+          summary: 'Change in State of Delivery (CISD) dipakai untuk mengonfirmasi perubahan delivery. Setelah price close melalui rangkaian candle yang membentuk swing, swing tersebut diperlakukan sebagai confirmed/protected swing.',
+          points: [
+            'Identifikasi high atau low yang sedang dibentuk.',
+            'Cari seri candle yang bertanggung jawab membentuk swing tersebut.',
+            'Tunggu price close melewati seri candle itu.',
+            'Protected swing menjadi referensi struktur dan invalidation.'
+          ],
+          rule: 'Tanpa confirmation closure, swing belum dianggap protected.',
+          diagram: 'cisd'
+        },
+        {
+          title: 'Daily → 4H → 15M',
+          summary: 'TTFM menerapkan logika yang sama secara fractal. Daily menentukan bias, 4H mencari swing yang membentuk wick Daily, lalu 15M digunakan untuk continuation entry.',
+          points: [
+            'Daily: tentukan expansion yang sedang diantisipasi.',
+            '4H: cari Candle 2 / Candle 3 dan confirmed swing searah Daily.',
+            '15M: tunggu struktur continuation dan execution.',
+            'Idealnya ketiga timeframe mengarah ke expansion yang sama.'
+          ],
+          rule: 'Daily expansion + 4H expansion + 15M continuation = alignment terbaik.',
+          diagram: 'mtf'
+        },
+        {
+          title: 'Continuation Entry',
+          summary: 'Video membedakan reversal entry dan continuation entry. Continuation menunggu structure confirmation sehingga entry lebih terlambat, tetapi biasanya memiliki confirmation yang lebih bersih dan stop yang lebih terstruktur.',
+          points: [
+            'Reversal entry masuk lebih awal setelah liquidity sweep, biasanya dengan stop lebih lebar.',
+            'Continuation entry menunggu confirmed structure sebelum execution.',
+            'Protected swing dapat dipakai sebagai referensi invalidation.',
+            'Point of interest yang disebut termasuk FVG, previous highs/lows, dan equal highs/lows.'
+          ],
+          rule: 'Prioritaskan confirmed continuation dibanding menebak reversal terlalu awal.',
+          diagram: 'entry'
+        },
+        {
+          title: 'Trading Checklist',
+          summary: 'Sebelum mengambil trade, pastikan semua komponen model benar-benar terbentuk. Salah satu prinsip terpenting dalam video adalah menerima no trade ketika lower timeframe tidak memberi swing yang diperlukan.',
+          points: [
+            'Apakah Daily bias dan expansion direction jelas?',
+            'Apakah Candle 2 atau Candle 3 closure valid?',
+            'Apakah CISD sudah mengonfirmasi protected swing?',
+            'Apakah 4H searah dengan Daily?',
+            'Apakah 15M memberikan continuation entry?',
+            'Jika 4H swing tidak terbentuk: no trade.'
+          ],
+          rule: 'Tidak ada alignment lengkap → tidak ada trade.',
+          diagram: 'checklist'
+        }
+      ];
+
+      const courseProgressKey = () => `${COURSE_PROGRESS_PREFIX}${currentUser?.id || 'local'}`;
+
+      const loadCourseProgress = () => {
+        try {
+          const raw = safeLocalGet(courseProgressKey());
+          const parsed = raw ? JSON.parse(raw) : [];
+          courseCompleted = new Set(Array.isArray(parsed) ? parsed.filter((n) => Number.isInteger(n) && n >= 0 && n < courseLessons.length) : []);
+        } catch (_) {
+          courseCompleted = new Set();
+        }
+      };
+
+      const saveCourseProgress = () => {
+        safeLocalSet(courseProgressKey(), JSON.stringify(Array.from(courseCompleted).sort((a,b) => a-b)));
+      };
+
+      const candle = (x, openY, closeY, highY, lowY, bullish = true, width = 28) => {
+        const bodyTop = Math.min(openY, closeY);
+        const bodyHeight = Math.max(5, Math.abs(closeY - openY));
+        const body = bullish ? '#A5D6A7' : '#5A5B63';
+        return `<g><line x1="${x}" y1="${highY}" x2="${x}" y2="${lowY}" stroke="#5A5B63" stroke-width="3"/><rect x="${x-width/2}" y="${bodyTop}" width="${width}" height="${bodyHeight}" rx="0" fill="${body}" stroke="#5A5B63" stroke-width="2"/></g>`;
+      };
+
+      const courseDiagramMarkup = (type) => {
+        const grid = `<g opacity=".16" stroke="currentColor" stroke-width="1"><line x1="20" y1="45" x2="620" y2="45"/><line x1="20" y1="110" x2="620" y2="110"/><line x1="20" y1="175" x2="620" y2="175"/></g>`;
+        if (type === 'overview') return `<svg viewBox="0 0 640 230" role="img" aria-label="TTFM model overview">${grid}<g fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"><path d="M105 115H210"/><path d="M280 115H385"/><path d="M455 115H555"/></g><g font-family="inherit" text-anchor="middle"><rect x="25" y="78" width="150" height="74" rx="10" fill="#0a1013" stroke="#29373d"/><text x="100" y="105" fill="#a5d6a7" font-size="12" font-weight="800">DAILY BIAS</text><text x="100" y="129" fill="#809097" font-size="10">C2 / C3 Closure</text><rect x="210" y="78" width="150" height="74" rx="10" fill="#0a1013" stroke="#29373d"/><text x="285" y="105" fill="#a5d6a7" font-size="12" font-weight="800">CISD</text><text x="285" y="129" fill="#809097" font-size="10">Protected Swing</text><rect x="385" y="78" width="150" height="74" rx="10" fill="#0a1013" stroke="#29373d"/><text x="460" y="105" fill="#a5d6a7" font-size="12" font-weight="800">ALIGNMENT</text><text x="460" y="129" fill="#809097" font-size="10">Daily → 4H → 15M</text><text x="585" y="119" fill="#b8ff4f" font-size="22">→</text></g></svg>`;
+        if (type === 'daily') return `<svg viewBox="0 0 640 230" role="img" aria-label="Bullish daily expansion schematic">${grid}${candle(105,145,105,82,176,true,34)}${candle(205,108,145,88,177,false,34)}${candle(305,148,92,72,171,true,34)}${candle(405,95,60,44,118,true,34)}<path d="M176 176H232" stroke="#b8ff4f" stroke-width="1.5" stroke-dasharray="5 5"/><text x="204" y="201" text-anchor="middle" fill="#809097" font-size="10">liquidity sweep</text><text x="305" y="213" text-anchor="middle" fill="#a5d6a7" font-size="11" font-weight="800">daily expansion</text></svg>`;
+        if (type === 'c23') return `<svg viewBox="0 0 640 230" role="img" aria-label="Candle 2 and Candle 3 schematic">${grid}${candle(90,145,100,75,175,true,34)}${candle(190,105,142,70,188,false,34)}${candle(290,145,85,67,165,true,34)}${candle(390,88,55,42,110,true,34)}<path d="M56 176H224" stroke="#5A5B63" stroke-width="1" stroke-dasharray="4 4"/><text x="190" y="207" text-anchor="middle" fill="#809097" font-size="10">C2 sweeps then closure / C3 confirmation</text><text x="90" y="28" text-anchor="middle" fill="#809097" font-size="10">C1</text><text x="190" y="28" text-anchor="middle" fill="#809097" font-size="10">C2</text><text x="290" y="28" text-anchor="middle" fill="#809097" font-size="10">C3</text><text x="390" y="28" text-anchor="middle" fill="#809097" font-size="10">Expansion</text></svg>`;
+        if (type === 'cisd') return `<svg viewBox="0 0 640 230" role="img" aria-label="CISD protected swing schematic">${grid}${candle(90,90,125,70,145,false,28)}${candle(145,122,150,102,168,false,28)}${candle(200,148,165,132,188,false,28)}${candle(255,162,128,118,180,true,28)}${candle(310,130,96,82,148,true,28)}${candle(365,98,68,55,115,true,28)}<line x1="78" y1="120" x2="240" y2="120" stroke="#b8ff4f" stroke-width="1.5" stroke-dasharray="5 5"/><path d="M250 183 L250 199 L265 199" fill="none" stroke="#a5d6a7" stroke-width="2"/><text x="285" y="211" fill="#a5d6a7" font-size="10" font-weight="800">protected low</text><text x="395" y="73" fill="#b8ff4f" font-size="10" font-weight="800">CISD closure</text></svg>`;
+        if (type === 'mtf') return `<svg viewBox="0 0 640 230" role="img" aria-label="Daily 4H 15M alignment flow"><g font-family="inherit"><rect x="28" y="67" width="160" height="98" rx="12" fill="#0a1013" stroke="#29373d"/><text x="108" y="94" text-anchor="middle" fill="#a5d6a7" font-size="13" font-weight="900">DAILY</text><text x="108" y="119" text-anchor="middle" fill="#809097" font-size="10">Expansion Bias</text><text x="108" y="140" text-anchor="middle" fill="#809097" font-size="10">C2 / C3 + CISD</text><rect x="240" y="67" width="160" height="98" rx="12" fill="#0a1013" stroke="#29373d"/><text x="320" y="94" text-anchor="middle" fill="#a5d6a7" font-size="13" font-weight="900">4H</text><text x="320" y="119" text-anchor="middle" fill="#809097" font-size="10">Confirmed Swing</text><text x="320" y="140" text-anchor="middle" fill="#809097" font-size="10">Forms Daily Wick</text><rect x="452" y="67" width="160" height="98" rx="12" fill="#0a1013" stroke="#29373d"/><text x="532" y="94" text-anchor="middle" fill="#a5d6a7" font-size="13" font-weight="900">15M</text><text x="532" y="119" text-anchor="middle" fill="#809097" font-size="10">Continuation</text><text x="532" y="140" text-anchor="middle" fill="#809097" font-size="10">Execution</text><text x="214" y="121" text-anchor="middle" fill="#b8ff4f" font-size="24">→</text><text x="426" y="121" text-anchor="middle" fill="#b8ff4f" font-size="24">→</text></g></svg>`;
+        if (type === 'entry') return `<svg viewBox="0 0 640 230" role="img" aria-label="Reversal versus continuation entry schematic">${grid}${candle(90,95,128,75,148,false,26)}${candle(135,125,150,108,175,false,26)}${candle(180,148,160,132,192,false,26)}${candle(225,160,126,118,180,true,26)}${candle(270,128,98,88,145,true,26)}${candle(315,100,78,65,116,true,26)}${candle(360,80,58,44,94,true,26)}<line x1="55" y1="176" x2="205" y2="176" stroke="#5A5B63" stroke-width="1.3" stroke-dasharray="5 5"/><text x="155" y="207" text-anchor="middle" fill="#809097" font-size="10">liquidity sweep</text><circle cx="225" cy="126" r="6" fill="#5A5B63" stroke="#a5d6a7" stroke-width="2"/><text x="225" y="111" text-anchor="middle" fill="#809097" font-size="9">reversal</text><circle cx="315" cy="78" r="6" fill="#b8ff4f"/><text x="345" y="84" fill="#b8ff4f" font-size="9" font-weight="800">continuation</text></svg>`;
+        return `<svg viewBox="0 0 640 230" role="img" aria-label="TTFM trading checklist"><g font-family="inherit"><rect x="30" y="26" width="580" height="178" rx="12" fill="#0a1013" stroke="#29373d"/><g font-size="11" fill="#dbe4e7"><text x="74" y="62">✓ Daily bias jelas</text><text x="74" y="92">✓ C2 / C3 closure valid</text><text x="74" y="122">✓ CISD confirms swing</text><text x="342" y="62">✓ 4H aligned</text><text x="342" y="92">✓ 15M continuation</text><text x="342" y="122">✓ Risk / invalidation jelas</text></g><rect x="74" y="151" width="492" height="28" rx="8" fill="rgba(184,255,79,.06)" stroke="rgba(184,255,79,.24)"/><text x="320" y="170" text-anchor="middle" fill="#b8ff4f" font-size="11" font-weight="900">MISSING ALIGNMENT = NO TRADE</text></g></svg>`;
+      };
+
+      const renderCourse = () => {
+        if (!coursePage) return;
+        const lesson = courseLessons[courseCurrentLesson] || courseLessons[0];
+        courseContentKicker.textContent = `Lesson ${String(courseCurrentLesson + 1).padStart(2,'0')}`;
+        courseContentTitle.textContent = lesson.title;
+        courseContentSummary.textContent = lesson.summary;
+        courseDiagram.innerHTML = courseDiagramMarkup(lesson.diagram);
+        coursePoints.innerHTML = '';
+        lesson.points.forEach((point) => {
+          const li = document.createElement('li');
+          li.textContent = point;
+          coursePoints.appendChild(li);
+        });
+        courseKeyRule.textContent = lesson.rule;
+
+        courseLessonButtons.forEach((button, index) => {
+          button.classList.toggle('active', index === courseCurrentLesson);
+          button.classList.toggle('complete', courseCompleted.has(index));
+        });
+
+        const isComplete = courseCompleted.has(courseCurrentLesson);
+        courseCompleteBtn.textContent = isComplete ? 'Completed ✓' : 'Mark Complete';
+        courseCompleteBtn.classList.toggle('complete', isComplete);
+        courseNextBtn.disabled = courseCurrentLesson >= courseLessons.length - 1;
+        courseNextBtn.textContent = courseCurrentLesson >= courseLessons.length - 1 ? 'Course Finished' : 'Next Lesson';
+
+        const count = courseCompleted.size;
+        courseProgressText.textContent = `${count} / ${courseLessons.length} complete`;
+        courseProgressFill.style.width = `${(count / courseLessons.length) * 100}%`;
+      };
+
+      const openCourseLesson = (index) => {
+        courseCurrentLesson = Math.max(0, Math.min(courseLessons.length - 1, Number(index) || 0));
+        renderCourse();
+        if (coursePage?.classList.contains('visible')) {
+          coursePage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       };
 
       const currentUserDraftScope = () => currentUser?.id || 'local';
@@ -11320,9 +11950,10 @@
         calendarPage.classList.toggle('visible', page === 'Calendar');
         analyticsPage.classList.toggle('visible', page === 'Analytics');
         propFirmPage.classList.toggle('visible', page === 'Prop Firm');
+        coursePage.classList.toggle('visible', page === 'Course');
         tradeDetailPage.classList.toggle('visible', page === 'Trade Detail');
         settingsPage.classList.toggle('visible', page === 'Settings');
-        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'Prop Firm' && page !== 'Trade Detail' && page !== 'Settings') {
+        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'Prop Firm' && page !== 'Course' && page !== 'Trade Detail' && page !== 'Settings') {
           placeholder.classList.add('visible');
           placeholderTitle.textContent = page;
         } else {
@@ -11331,6 +11962,7 @@
         if (page === 'Calendar') renderCalendar();
         if (page === 'Analytics') renderAnalytics();
         if (page === 'Prop Firm') renderPropFirm();
+        if (page === 'Course') { loadCourseProgress(); renderCourse(); }
 
         const activePageElement =
           page === 'Dashboard' ? dashboard :
@@ -11338,6 +11970,7 @@
           page === 'Calendar' ? calendarPage :
           page === 'Analytics' ? analyticsPage :
           page === 'Prop Firm' ? propFirmPage :
+          page === 'Course' ? coursePage :
           page === 'Trade Detail' ? tradeDetailPage :
           page === 'Settings' ? settingsPage :
           placeholder;
@@ -13016,6 +13649,23 @@
         });
       });
 
+
+      courseLessonButtons.forEach((button) => {
+        button.addEventListener('click', () => openCourseLesson(Number(button.dataset.courseLesson) || 0));
+      });
+
+      courseCompleteBtn?.addEventListener('click', () => {
+        if (courseCompleted.has(courseCurrentLesson)) courseCompleted.delete(courseCurrentLesson);
+        else courseCompleted.add(courseCurrentLesson);
+        saveCourseProgress();
+        renderCourse();
+      });
+
+      courseNextBtn?.addEventListener('click', () => {
+        if (courseCurrentLesson >= courseLessons.length - 1) return;
+        openCourseLesson(courseCurrentLesson + 1);
+      });
+
       newTrade.addEventListener('click', openTradeForm);
 
       tradeDate.addEventListener('input', () => {
@@ -14372,6 +15022,8 @@
         }, { once: true });
       }
 
+      loadCourseProgress();
+      renderCourse();
       initializeData();
     })();
   </script>
