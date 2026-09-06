@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83o-desktop-journal-spacing">
+<meta name="ertrades-build" content="v83p-prop-firm-calendar-heatmap">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -697,7 +697,7 @@
     #ertrades-app .bottom-nav {
       min-width: 350px;
       display: grid;
-      grid-template-columns: repeat(5,1fr);
+      grid-template-columns: repeat(6,1fr);
       gap: 3px;
     }
 
@@ -4585,6 +4585,209 @@
       text-align: center;
     }
 
+
+    /* ---------- v83p CALENDAR HEATMAP ---------- */
+    #ertrades-app .calendar-heatmap-legend {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    #ertrades-app .calendar-heatmap-copy strong {
+      display: block;
+      color: var(--soft);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    #ertrades-app .calendar-heatmap-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    #ertrades-app .calendar-heatmap-scale {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    #ertrades-app .heat-swatch {
+      width: 15px;
+      height: 15px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+
+    #ertrades-app .heat-divider { width: 6px; }
+    #ertrades-app .heat-swatch.profit.heat-1 { background: rgba(99,230,161,.07); }
+    #ertrades-app .heat-swatch.profit.heat-2 { background: rgba(99,230,161,.13); }
+    #ertrades-app .heat-swatch.profit.heat-3 { background: rgba(99,230,161,.20); }
+    #ertrades-app .heat-swatch.profit.heat-4 { background: rgba(99,230,161,.30); }
+    #ertrades-app .heat-swatch.loss.heat-1 { background: rgba(255,107,121,.07); }
+    #ertrades-app .heat-swatch.loss.heat-2 { background: rgba(255,107,121,.13); }
+    #ertrades-app .heat-swatch.loss.heat-3 { background: rgba(255,107,121,.20); }
+    #ertrades-app .heat-swatch.loss.heat-4 { background: rgba(255,107,121,.30); }
+
+    #ertrades-app .calendar-cell.profitable.heat-1 { background: rgba(99,230,161,.055); }
+    #ertrades-app .calendar-cell.profitable.heat-2 { background: rgba(99,230,161,.10); border-color: rgba(99,230,161,.34); }
+    #ertrades-app .calendar-cell.profitable.heat-3 { background: rgba(99,230,161,.16); border-color: rgba(99,230,161,.42); }
+    #ertrades-app .calendar-cell.profitable.heat-4 { background: rgba(99,230,161,.24); border-color: rgba(99,230,161,.55); }
+    #ertrades-app .calendar-cell.losing.heat-1 { background: rgba(255,107,121,.055); }
+    #ertrades-app .calendar-cell.losing.heat-2 { background: rgba(255,107,121,.10); border-color: rgba(255,107,121,.34); }
+    #ertrades-app .calendar-cell.losing.heat-3 { background: rgba(255,107,121,.16); border-color: rgba(255,107,121,.42); }
+    #ertrades-app .calendar-cell.losing.heat-4 { background: rgba(255,107,121,.24); border-color: rgba(255,107,121,.55); }
+
+    /* ---------- v83p PROP FIRM MODE ---------- */
+    #ertrades-app .prop-firm-page {
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    #ertrades-app .prop-firm-page.visible { display: block; }
+    #ertrades-app .prop-firm-body { padding: 14px; }
+    #ertrades-app .prop-firm-page-head { background: linear-gradient(180deg, rgba(184,255,79,.025), transparent); }
+    #ertrades-app .prop-firm-dashboard[hidden],
+    #ertrades-app .prop-firm-form[hidden],
+    #ertrades-app .prop-firm-empty[hidden] { display: none; }
+
+    #ertrades-app .prop-firm-empty {
+      min-height: 300px;
+      padding: 28px 18px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      background: #0a1013;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    #ertrades-app .prop-firm-empty-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(184,255,79,.18);
+      border-radius: 16px;
+      background: rgba(184,255,79,.045);
+      color: var(--accent);
+    }
+
+    #ertrades-app .prop-firm-empty-icon svg { width: 27px; height: 27px; }
+    #ertrades-app .prop-firm-empty strong { display: block; font-size: 15px; }
+    #ertrades-app .prop-firm-empty p { max-width: 560px; margin: 7px auto 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    #ertrades-app .prop-firm-setup-btn { min-width: 190px; }
+
+    #ertrades-app .prop-firm-dashboard { display: grid; gap: 12px; }
+    #ertrades-app .prop-firm-hero-card,
+    #ertrades-app .prop-rule-card,
+    #ertrades-app .prop-payout-card,
+    #ertrades-app .prop-monitor-card,
+    #ertrades-app .prop-firm-form {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #0a1013;
+    }
+
+    #ertrades-app .prop-firm-hero-card { padding: 15px; background: linear-gradient(145deg, rgba(184,255,79,.035), #0a1013 42%); }
+    #ertrades-app .prop-firm-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    #ertrades-app .prop-firm-hero-copy { min-width: 0; flex: 1 1 220px; }
+    #ertrades-app .prop-firm-program { margin-top: 4px; color: var(--text); font-size: 17px; font-weight: 820; letter-spacing: -.02em; overflow-wrap: anywhere; }
+    #ertrades-app .prop-firm-journal-note { margin-top: 6px; color: var(--muted); font-size: 9px; line-height: 1.45; }
+    #ertrades-app .prop-firm-hero-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    #ertrades-app .prop-firm-edit-btn { min-height: 38px; padding: 0 11px; }
+
+    #ertrades-app .prop-firm-status {
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .06em;
+    }
+    #ertrades-app .prop-firm-status.safe { color: var(--green); border-color: rgba(99,230,161,.28); background: rgba(99,230,161,.055); }
+    #ertrades-app .prop-firm-status.watch { color: #f1c56b; border-color: rgba(241,197,107,.28); background: rgba(241,197,107,.055); }
+    #ertrades-app .prop-firm-status.danger,
+    #ertrades-app .prop-firm-status.breach { color: var(--red); border-color: rgba(255,107,121,.32); background: rgba(255,107,121,.06); }
+
+    #ertrades-app .prop-firm-balance-line {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 10px;
+    }
+    #ertrades-app .prop-firm-balance-line div { min-width: 0; }
+    #ertrades-app .prop-firm-balance-line span { display: block; color: var(--muted); font-size: 9px; font-weight: 750; }
+    #ertrades-app .prop-firm-balance-line strong { display: block; margin-top: 5px; color: var(--text); font-size: 16px; font-weight: 820; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+
+    #ertrades-app .prop-firm-rule-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+    #ertrades-app .prop-rule-card { padding: 12px; }
+    #ertrades-app .prop-rule-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    #ertrades-app .prop-rule-head span { color: var(--muted); font-size: 10px; font-weight: 780; }
+    #ertrades-app .prop-rule-head strong { max-width: 58%; color: var(--soft); font-size: 11px; font-weight: 820; text-align: right; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    #ertrades-app .prop-progress { height: 7px; margin-top: 11px; overflow: hidden; border-radius: 999px; background: #182126; }
+    #ertrades-app .prop-progress.large { height: 8px; }
+    #ertrades-app .prop-progress > span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--accent); transition: width .25s ease; }
+    #ertrades-app .prop-rule-card.watch .prop-progress > span { background: #f1c56b; }
+    #ertrades-app .prop-rule-card.danger .prop-progress > span,
+    #ertrades-app .prop-rule-card.breach .prop-progress > span { background: var(--red); }
+    #ertrades-app .prop-rule-foot { margin-top: 7px; color: var(--muted); font-size: 9px; line-height: 1.4; }
+
+    #ertrades-app .prop-firm-lower-grid { display: grid; gap: 8px; }
+    #ertrades-app .prop-payout-card,
+    #ertrades-app .prop-monitor-card { padding: 14px; }
+    #ertrades-app .prop-card-kicker { color: var(--muted); font-size: 9px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    #ertrades-app .prop-readiness-row { margin-top: 10px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+    #ertrades-app .prop-readiness-row strong { color: var(--text); font-size: 31px; line-height: 1; font-weight: 850; letter-spacing: -.035em; }
+    #ertrades-app .prop-readiness-row span { padding: 4px 7px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 8px; font-weight: 850; }
+    #ertrades-app .prop-payout-details { margin-top: 13px; display: grid; gap: 7px; }
+    #ertrades-app .prop-payout-details div { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    #ertrades-app .prop-payout-details span { color: var(--muted); font-size: 10px; }
+    #ertrades-app .prop-payout-details strong { color: var(--soft); font-size: 11px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-align: right; }
+    #ertrades-app .prop-monitor-title { margin-top: 10px; color: var(--text); font-size: 14px; font-weight: 820; line-height: 1.35; }
+    #ertrades-app .prop-monitor-card p { margin: 7px 0 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
+    #ertrades-app .prop-quick-rules { margin-top: 12px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+    #ertrades-app .prop-quick-rule { min-width: 0; padding: 9px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); }
+    #ertrades-app .prop-quick-rule span { display: block; color: var(--muted); font-size: 8px; font-weight: 760; }
+    #ertrades-app .prop-quick-rule strong { display: block; margin-top: 4px; color: var(--soft); font-size: 10px; font-weight: 820; overflow-wrap: anywhere; }
+
+    #ertrades-app .prop-firm-form { padding: 15px; }
+    #ertrades-app .prop-form-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    #ertrades-app .prop-form-grid { margin-top: 15px; display: grid; gap: 11px; }
+    #ertrades-app .prop-form-note { margin-top: 12px; padding: 11px; border: 1px solid var(--border); border-radius: 11px; background: var(--panel); color: var(--muted); font-size: 9px; line-height: 1.5; }
+    #ertrades-app .prop-form-actions { grid-template-columns: 1fr; }
+    #ertrades-app .prop-form-actions .secondary-btn,
+    #ertrades-app .prop-form-actions .primary-btn { min-height: 44px; }
+
+    #ertrades-app.theme-light .prop-firm-empty,
+    #ertrades-app.theme-light .prop-firm-hero-card,
+    #ertrades-app.theme-light .prop-rule-card,
+    #ertrades-app.theme-light .prop-payout-card,
+    #ertrades-app.theme-light .prop-monitor-card,
+    #ertrades-app.theme-light .prop-firm-form { background: #ffffff; }
+    #ertrades-app.theme-light .prop-quick-rule { background: #f6f8f9; }
+    #ertrades-app.theme-light .prop-progress { background: #e7ecee; }
+
     #ertrades-app .equity-tools {
       display: flex;
       align-items: center;
@@ -4940,10 +5143,10 @@
       }
 
       #ertrades-app .nav-btn {
-        min-width: 56px;
+        min-width: 0;
         min-height: 54px;
-        padding: 4px 2px;
-        font-size: 8px;
+        padding: 4px 1px;
+        font-size: 7.5px;
       }
 
       #ertrades-app .analytics-chart {
@@ -5413,6 +5616,7 @@
       /* ---------- CALENDAR ---------- */
       #ertrades-app .calendar-page,
       #ertrades-app .analytics-page,
+      #ertrades-app .prop-firm-page,
       #ertrades-app .settings-page,
       #ertrades-app .trade-detail-page {
         border-radius: 19px;
@@ -5531,6 +5735,17 @@
       #ertrades-app .settings-danger-card {
         padding: 18px;
       }
+
+      /* ---------- PROP FIRM ---------- */
+      #ertrades-app .prop-firm-page { border-radius: 19px; }
+      #ertrades-app .prop-firm-body { padding: 18px; }
+      #ertrades-app .prop-firm-dashboard { gap: 14px; }
+      #ertrades-app .prop-firm-rule-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+      #ertrades-app .prop-rule-card { min-height: 118px; padding: 14px; }
+      #ertrades-app .prop-firm-lower-grid { grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 10px; }
+      #ertrades-app .prop-form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+      #ertrades-app .prop-form-actions { grid-template-columns: auto auto minmax(180px,.55fr); justify-content: end; }
+      #ertrades-app .calendar-summary { grid-template-columns: repeat(4,minmax(0,1fr)); }
 
       /* ---------- TRADE FORM / DETAIL ---------- */
       #ertrades-app .trade-form-card {
@@ -6500,6 +6715,17 @@
           <div class="calendar-month" id="calendar-month-label">—</div>
           <button class="calendar-nav-btn" id="calendar-next" type="button" aria-label="Next month">›</button>
         </div>
+        <div class="calendar-heatmap-legend" aria-label="Calendar heatmap legend">
+          <div class="calendar-heatmap-copy">
+            <strong>P/L Heatmap</strong>
+            <span>Darker cells = larger daily P/L.</span>
+          </div>
+          <div class="calendar-heatmap-scale" aria-hidden="true">
+            <span class="heat-swatch loss heat-1"></span><span class="heat-swatch loss heat-2"></span><span class="heat-swatch loss heat-3"></span><span class="heat-swatch loss heat-4"></span>
+            <span class="heat-divider"></span>
+            <span class="heat-swatch profit heat-1"></span><span class="heat-swatch profit heat-2"></span><span class="heat-swatch profit heat-3"></span><span class="heat-swatch profit heat-4"></span>
+          </div>
+        </div>
         <div class="calendar-summary" aria-label="Monthly trading summary">
           <div class="calendar-stat"><div class="metric-label">Monthly P/L</div><strong id="calendar-monthly-pl">$0.00</strong></div>
           <div class="calendar-stat"><div class="metric-label">Trading Days</div><strong id="calendar-trading-days">0</strong></div>
@@ -6507,6 +6733,8 @@
           <div class="calendar-stat"><div class="metric-label">Losing Days</div><strong id="calendar-losing-days">0</strong></div>
           <div class="calendar-stat"><div class="metric-label">Best Day</div><strong id="calendar-best-day">$0.00</strong></div>
           <div class="calendar-stat"><div class="metric-label">Worst Day</div><strong id="calendar-worst-day">$0.00</strong></div>
+          <div class="calendar-stat"><div class="metric-label">Best Streak</div><strong id="calendar-best-streak">0 days</strong></div>
+          <div class="calendar-stat"><div class="metric-label">Avg Trading Day</div><strong id="calendar-average-day">$0.00</strong></div>
         </div>
         <div class="calendar-weekly" aria-label="Weekly profit and loss">
           <div class="calendar-weekly-head">
@@ -6530,6 +6758,120 @@
           </div>
           <div class="calendar-day-empty" id="calendar-day-empty">Tap a date to view its trades.</div>
           <div class="journal-list" id="calendar-day-list"></div>
+        </div>
+      </section>
+
+
+      <section class="prop-firm-page" id="prop-firm-page" aria-labelledby="prop-firm-title">
+        <div class="section-head prop-firm-page-head">
+          <div>
+            <div class="section-kicker">Funded Account Control</div>
+            <div class="section-title" id="prop-firm-title">Prop Firm Mode</div>
+          </div>
+          <span class="section-meta" id="prop-firm-account-name">No account</span>
+        </div>
+
+        <div class="prop-firm-body">
+          <div class="prop-firm-empty" id="prop-firm-empty">
+            <div class="prop-firm-empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 20v-6h6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <strong>Set up your funded account rules</strong>
+              <p>Track daily loss, maximum loss, consistency, trading days, and payout readiness from the trades already saved in eRTrades.</p>
+            </div>
+            <button class="primary-btn prop-firm-setup-btn" id="prop-firm-setup-btn" type="button">Set Up Prop Firm Mode</button>
+          </div>
+
+          <div class="prop-firm-dashboard" id="prop-firm-dashboard" hidden>
+            <div class="prop-firm-hero-card">
+              <div class="prop-firm-hero-top">
+                <div class="prop-firm-hero-copy">
+                  <div class="section-kicker" id="prop-firm-name">Prop Firm</div>
+                  <div class="prop-firm-program" id="prop-firm-program">Funded Account</div>
+                  <div class="prop-firm-journal-note">Rule monitoring is based on closed trades recorded in this journal.</div>
+                </div>
+                <div class="prop-firm-hero-actions">
+                  <span class="prop-firm-status safe" id="prop-firm-status">SAFE</span>
+                  <button class="secondary-btn prop-firm-edit-btn" id="prop-firm-edit-btn" type="button">Edit Rules</button>
+                </div>
+              </div>
+              <div class="prop-firm-balance-line">
+                <div><span>Current Balance</span><strong id="prop-firm-current-balance">$0.00</strong></div>
+                <div><span>Net P/L</span><strong id="prop-firm-net-pl">$0.00</strong></div>
+              </div>
+            </div>
+
+            <div class="prop-firm-rule-grid">
+              <article class="prop-rule-card" id="prop-daily-card">
+                <div class="prop-rule-head"><span>Daily Loss</span><strong id="prop-daily-value">$0 / $0</strong></div>
+                <div class="prop-progress"><span id="prop-daily-bar"></span></div>
+                <div class="prop-rule-foot" id="prop-daily-foot">No daily loss used.</div>
+              </article>
+              <article class="prop-rule-card" id="prop-max-card">
+                <div class="prop-rule-head"><span>Maximum Loss</span><strong id="prop-max-value">$0 / $0</strong></div>
+                <div class="prop-progress"><span id="prop-max-bar"></span></div>
+                <div class="prop-rule-foot" id="prop-max-foot">No maximum loss used.</div>
+              </article>
+              <article class="prop-rule-card" id="prop-consistency-card">
+                <div class="prop-rule-head"><span>Consistency</span><strong id="prop-consistency-value">—</strong></div>
+                <div class="prop-progress"><span id="prop-consistency-bar"></span></div>
+                <div class="prop-rule-foot" id="prop-consistency-foot">Waiting for profitable days.</div>
+              </article>
+              <article class="prop-rule-card" id="prop-days-card">
+                <div class="prop-rule-head"><span>Trading Days</span><strong id="prop-days-value">0 / 0</strong></div>
+                <div class="prop-progress"><span id="prop-days-bar"></span></div>
+                <div class="prop-rule-foot" id="prop-days-foot">No trading days yet.</div>
+              </article>
+            </div>
+
+            <div class="prop-firm-lower-grid">
+              <article class="prop-payout-card">
+                <div class="prop-card-kicker">Payout / Target Readiness</div>
+                <div class="prop-readiness-row"><strong id="prop-readiness-value">0%</strong><span id="prop-readiness-label">NOT READY</span></div>
+                <div class="prop-progress large"><span id="prop-readiness-bar"></span></div>
+                <div class="prop-payout-details">
+                  <div><span>Current Profit</span><strong id="prop-current-profit">$0.00</strong></div>
+                  <div><span>Target</span><strong id="prop-target-profit">$0.00</strong></div>
+                  <div><span>Still Needed</span><strong id="prop-profit-needed">$0.00</strong></div>
+                </div>
+              </article>
+
+              <article class="prop-monitor-card">
+                <div class="prop-card-kicker">Rule Monitor</div>
+                <div class="prop-monitor-title" id="prop-monitor-title">Account is within the configured rules.</div>
+                <p id="prop-monitor-copy">Keep recording trades to update the rule monitor.</p>
+                <div class="prop-quick-rules" id="prop-quick-rules"></div>
+              </article>
+            </div>
+          </div>
+
+          <form class="prop-firm-form" id="prop-firm-form" hidden>
+            <div class="prop-form-head">
+              <div>
+                <div class="section-kicker">Rule Setup</div>
+                <div class="section-title">Configure Prop Firm Mode</div>
+              </div>
+              <button class="account-close" id="prop-firm-form-close" type="button" aria-label="Close prop firm setup">×</button>
+            </div>
+            <div class="prop-form-grid">
+              <label class="field"><span>Prop Firm Name</span><input id="prop-firm-name-input" type="text" maxlength="60" placeholder="e.g. Blue Guardian" required></label>
+              <label class="field"><span>Program / Account Type</span><input id="prop-firm-program-input" type="text" maxlength="80" placeholder="e.g. Instant Funded" required></label>
+              <label class="field"><span>Daily Loss Limit (%)</span><input id="prop-daily-limit-input" type="number" min="0.01" max="100" step="0.01" inputmode="decimal" placeholder="3" required></label>
+              <label class="field"><span>Maximum Loss Limit (%)</span><input id="prop-max-limit-input" type="number" min="0.01" max="100" step="0.01" inputmode="decimal" placeholder="5" required></label>
+              <label class="field"><span>Maximum Loss Type</span><select id="prop-max-mode-input"><option value="static">Static from starting balance</option><option value="trailing">Trailing from closed-balance peak</option></select></label>
+              <label class="field"><span>Consistency Limit (%)</span><input id="prop-consistency-limit-input" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="20"></label>
+              <label class="field"><span>Minimum Trading Days</span><input id="prop-min-days-input" type="number" min="0" max="365" step="1" inputmode="numeric" placeholder="5"></label>
+              <label class="field"><span>Profit / Payout Target (%)</span><input id="prop-target-input" type="number" min="0" max="1000" step="0.01" inputmode="decimal" placeholder="5"></label>
+            </div>
+            <div class="form-error" id="prop-firm-form-error"></div>
+            <div class="prop-form-note">eRTrades can monitor only the closed trades saved in your journal. Floating P/L, platform-side equity, commissions, and firm-specific intraday calculations are not available to the web journal.</div>
+            <div class="form-actions prop-form-actions">
+              <button class="secondary-btn" id="prop-firm-disable-btn" type="button">Disable Mode</button>
+              <button class="secondary-btn" id="prop-firm-cancel-btn" type="button">Cancel</button>
+              <button class="primary-btn" type="submit">Save Rules</button>
+            </div>
+          </form>
         </div>
       </section>
 
@@ -7041,6 +7383,10 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19V9m5 10V5m5 14v-7m4 7V8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
             Analytics
           </button>
+          <button class="nav-btn" type="button" data-page="Prop Firm">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M9 20v-6h6v6M8.5 10.5h.01M15.5 10.5h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Prop Firm
+          </button>
           <button class="nav-btn" type="button" data-page="Settings">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M19 12a7.2 7.2 0 00-.1-1.1l2-1.5-2-3.4-2.5 1a7.4 7.4 0 00-1.9-1.1L14.2 3h-4.4l-.4 2.9A7.4 7.4 0 007.5 7L5 6 3 9.4l2 1.5A7.2 7.2 0 005 13.1l-2 1.5L5 18l2.5-1a7.4 7.4 0 001.9 1.1l.4 2.9h4.4l.4-2.9a7.4 7.4 0 001.9-1.1l2.5 1 2-3.4-2-1.5A7.2 7.2 0 0019 12z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
             Settings
@@ -7060,6 +7406,55 @@
       const dashboard = root.querySelector('#dashboard-content');
       const journalPage = root.querySelector('#journal-page');
       const calendarPage = root.querySelector('#calendar-page');
+      const propFirmPage = root.querySelector('#prop-firm-page');
+      const propFirmAccountName = root.querySelector('#prop-firm-account-name');
+      const propFirmEmpty = root.querySelector('#prop-firm-empty');
+      const propFirmDashboard = root.querySelector('#prop-firm-dashboard');
+      const propFirmSetupBtn = root.querySelector('#prop-firm-setup-btn');
+      const propFirmEditBtn = root.querySelector('#prop-firm-edit-btn');
+      const propFirmStatus = root.querySelector('#prop-firm-status');
+      const propFirmName = root.querySelector('#prop-firm-name');
+      const propFirmProgram = root.querySelector('#prop-firm-program');
+      const propFirmCurrentBalance = root.querySelector('#prop-firm-current-balance');
+      const propFirmNetPl = root.querySelector('#prop-firm-net-pl');
+      const propDailyCard = root.querySelector('#prop-daily-card');
+      const propDailyValue = root.querySelector('#prop-daily-value');
+      const propDailyBar = root.querySelector('#prop-daily-bar');
+      const propDailyFoot = root.querySelector('#prop-daily-foot');
+      const propMaxCard = root.querySelector('#prop-max-card');
+      const propMaxValue = root.querySelector('#prop-max-value');
+      const propMaxBar = root.querySelector('#prop-max-bar');
+      const propMaxFoot = root.querySelector('#prop-max-foot');
+      const propConsistencyCard = root.querySelector('#prop-consistency-card');
+      const propConsistencyValue = root.querySelector('#prop-consistency-value');
+      const propConsistencyBar = root.querySelector('#prop-consistency-bar');
+      const propConsistencyFoot = root.querySelector('#prop-consistency-foot');
+      const propDaysCard = root.querySelector('#prop-days-card');
+      const propDaysValue = root.querySelector('#prop-days-value');
+      const propDaysBar = root.querySelector('#prop-days-bar');
+      const propDaysFoot = root.querySelector('#prop-days-foot');
+      const propReadinessValue = root.querySelector('#prop-readiness-value');
+      const propReadinessLabel = root.querySelector('#prop-readiness-label');
+      const propReadinessBar = root.querySelector('#prop-readiness-bar');
+      const propCurrentProfit = root.querySelector('#prop-current-profit');
+      const propTargetProfit = root.querySelector('#prop-target-profit');
+      const propProfitNeeded = root.querySelector('#prop-profit-needed');
+      const propMonitorTitle = root.querySelector('#prop-monitor-title');
+      const propMonitorCopy = root.querySelector('#prop-monitor-copy');
+      const propQuickRules = root.querySelector('#prop-quick-rules');
+      const propFirmForm = root.querySelector('#prop-firm-form');
+      const propFirmFormClose = root.querySelector('#prop-firm-form-close');
+      const propFirmCancelBtn = root.querySelector('#prop-firm-cancel-btn');
+      const propFirmDisableBtn = root.querySelector('#prop-firm-disable-btn');
+      const propFirmFormError = root.querySelector('#prop-firm-form-error');
+      const propFirmNameInput = root.querySelector('#prop-firm-name-input');
+      const propFirmProgramInput = root.querySelector('#prop-firm-program-input');
+      const propDailyLimitInput = root.querySelector('#prop-daily-limit-input');
+      const propMaxLimitInput = root.querySelector('#prop-max-limit-input');
+      const propMaxModeInput = root.querySelector('#prop-max-mode-input');
+      const propConsistencyLimitInput = root.querySelector('#prop-consistency-limit-input');
+      const propMinDaysInput = root.querySelector('#prop-min-days-input');
+      const propTargetInput = root.querySelector('#prop-target-input');
       const placeholder = root.querySelector('#placeholder-page');
       const placeholderTitle = root.querySelector('#placeholder-title');
       const newTrade = root.querySelector('#new-trade');
@@ -7278,6 +7673,8 @@
       const calendarLosingDays = root.querySelector('#calendar-losing-days');
       const calendarBestDay = root.querySelector('#calendar-best-day');
       const calendarWorstDay = root.querySelector('#calendar-worst-day');
+      const calendarBestStreak = root.querySelector('#calendar-best-streak');
+      const calendarAverageDay = root.querySelector('#calendar-average-day');
       const calendarWeeklyGrid = root.querySelector('#calendar-weekly-grid');
       const calendarGrid = root.querySelector('#calendar-grid');
       const calendarSelectedDate = root.querySelector('#calendar-selected-date');
@@ -8984,9 +9381,26 @@
         calendarLosingDays.textContent = String(losingDays);
         calendarBestDay.textContent = formatMoney(dailyValues.length ? Math.max(...dailyValues) : 0, currency);
         calendarWorstDay.textContent = formatMoney(dailyValues.length ? Math.min(...dailyValues) : 0, currency);
+        calendarAverageDay.textContent = formatMoney(dailyValues.length ? monthlyPl / dailyValues.length : 0, currency);
+
+        let bestStreak = 0;
+        let currentStreak = 0;
+        const daysInStreakMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+        for (let day = 1; day <= daysInStreakMonth; day += 1) {
+          const dateString = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const value = Number(daily.get(dateString)?.pl) || 0;
+          if (value > 0) {
+            currentStreak += 1;
+            bestStreak = Math.max(bestStreak, currentStreak);
+          } else {
+            currentStreak = 0;
+          }
+        }
+        calendarBestStreak.textContent = `${bestStreak} ${bestStreak === 1 ? 'day' : 'days'}`;
         renderCalendarWeeklyPl(daily, currency);
 
         calendarGrid.innerHTML = '';
+        const maxHeatValue = dailyValues.length ? Math.max(...dailyValues.map((value) => Math.abs(value))) : 0;
         const firstWeekday = new Date(calendarYear, calendarMonth, 1).getDay();
         const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
         for (let index = 0; index < 42; index += 1) {
@@ -9002,7 +9416,14 @@
             const dateString = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
             button.dataset.date = dateString;
             const entry = daily.get(dateString);
-            if (entry) button.classList.add(entry.pl > 0 ? 'profitable' : entry.pl < 0 ? 'losing' : 'break-even');
+            if (entry) {
+              button.classList.add(entry.pl > 0 ? 'profitable' : entry.pl < 0 ? 'losing' : 'break-even');
+              if (entry.pl !== 0 && maxHeatValue > 0) {
+                const heatLevel = Math.max(1, Math.min(4, Math.ceil((Math.abs(entry.pl) / maxHeatValue) * 4)));
+                button.classList.add(`heat-${heatLevel}`);
+              }
+              button.setAttribute('aria-label', `${dateString}: ${formatMoney(entry.pl, currency)}`);
+            }
             if (selectedCalendarDate === dateString) button.classList.add('selected');
             const dayLabel = document.createElement('span');
             dayLabel.className = 'calendar-day-number';
@@ -9020,6 +9441,243 @@
           calendarGrid.appendChild(button);
         }
         renderCalendarSelectedDay();
+      };
+
+
+      const clampPercent = (value) => Math.max(0, Math.min(100, Number.isFinite(value) ? value : 0));
+
+      const propFirmDailyMap = () => {
+        const map = new Map();
+        currentTradesChronological().forEach((trade) => {
+          if (!trade.date) return;
+          map.set(trade.date, (map.get(trade.date) || 0) + (Number(trade.profitLoss) || 0));
+        });
+        return map;
+      };
+
+      const propFirmMetrics = (config) => {
+        const account = currentAccount();
+        if (!account || !config) return null;
+        const accountTrades = currentTradesChronological();
+        const starting = Math.max(0, Number(account.startingBalance) || 0);
+        const totalPl = accountTrades.reduce((sum, trade) => sum + (Number(trade.profitLoss) || 0), 0);
+        const balance = starting + totalPl;
+        const dailyMap = propFirmDailyMap();
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const todayPl = Number(dailyMap.get(today)) || 0;
+        const dailyUsed = Math.max(0, -todayPl);
+        const dailyLimit = starting * (Math.max(0, Number(config.dailyLossPct) || 0) / 100);
+
+        let runningBalance = starting;
+        let peakBalance = starting;
+        accountTrades.forEach((trade) => {
+          runningBalance += Number(trade.profitLoss) || 0;
+          peakBalance = Math.max(peakBalance, runningBalance);
+        });
+        const maxLimit = starting * (Math.max(0, Number(config.maxLossPct) || 0) / 100);
+        const maxUsed = config.maxLossMode === 'trailing'
+          ? Math.max(0, peakBalance - balance)
+          : Math.max(0, starting - balance);
+
+        const tradingDays = new Set(accountTrades.map((trade) => trade.date).filter(Boolean)).size;
+        const minDays = Math.max(0, Math.round(Number(config.minTradingDays) || 0));
+        const positiveDays = Array.from(dailyMap.values()).filter((value) => Number(value) > 0);
+        const bestDay = positiveDays.length ? Math.max(...positiveDays) : 0;
+        const consistency = totalPl > 0 && bestDay > 0 ? (bestDay / totalPl) * 100 : null;
+        const consistencyLimit = Math.max(0, Number(config.consistencyPct) || 0);
+        const target = starting * (Math.max(0, Number(config.profitTargetPct) || 0) / 100);
+        const currentProfit = Math.max(0, totalPl);
+
+        const dailyRatio = dailyLimit > 0 ? dailyUsed / dailyLimit : 0;
+        const maxRatio = maxLimit > 0 ? maxUsed / maxLimit : 0;
+        const profitProgress = target > 0 ? clampPercent((currentProfit / target) * 100) : 100;
+        const daysProgress = minDays > 0 ? clampPercent((tradingDays / minDays) * 100) : 100;
+        const consistencyPass = consistencyLimit <= 0 || consistency === null || consistency <= consistencyLimit;
+        const consistencyProgress = consistencyLimit <= 0 || consistency === null
+          ? 100
+          : clampPercent((consistencyLimit / Math.max(consistency, .0001)) * 100);
+        const safetyPass = dailyRatio < 1 && maxRatio < 1;
+        const readiness = Math.round((profitProgress + daysProgress + consistencyProgress + (safetyPass ? 100 : 0)) / 4);
+        const ready = safetyPass && profitProgress >= 100 && daysProgress >= 100 && consistencyPass;
+
+        let status = 'SAFE';
+        if (!safetyPass) status = 'BREACH';
+        else if (dailyRatio >= .8 || maxRatio >= .8) status = 'DANGER';
+        else if (dailyRatio >= .6 || maxRatio >= .6 || !consistencyPass) status = 'WATCH';
+
+        return {
+          starting, totalPl, balance, todayPl, dailyUsed, dailyLimit, dailyRatio,
+          maxUsed, maxLimit, maxRatio, tradingDays, minDays, consistency,
+          consistencyLimit, target, currentProfit, profitProgress, daysProgress,
+          consistencyPass, readiness, ready, status, peakBalance
+        };
+      };
+
+      const setPropRuleState = (card, ratio) => {
+        card.classList.remove('safe', 'watch', 'danger', 'breach');
+        if (ratio >= 1) card.classList.add('breach');
+        else if (ratio >= .8) card.classList.add('danger');
+        else if (ratio >= .6) card.classList.add('watch');
+        else card.classList.add('safe');
+      };
+
+      const renderPropFirm = () => {
+        const account = currentAccount();
+        const config = account?.propFirmConfig || null;
+        const currency = account?.currency || 'USD';
+        propFirmAccountName.textContent = account?.name || 'No account';
+
+        if (!account) {
+          propFirmEmpty.hidden = false;
+          propFirmDashboard.hidden = true;
+          propFirmForm.hidden = true;
+          propFirmSetupBtn.disabled = true;
+          propFirmEmpty.querySelector('strong').textContent = 'Create a trading account first';
+          propFirmEmpty.querySelector('p').textContent = 'Prop Firm Mode attaches rules to the currently selected trading account.';
+          return;
+        }
+
+        propFirmSetupBtn.disabled = false;
+        propFirmEmpty.querySelector('strong').textContent = 'Set up your funded account rules';
+        propFirmEmpty.querySelector('p').textContent = 'Track daily loss, maximum loss, consistency, trading days, and payout readiness from the trades already saved in eRTrades.';
+
+        if (!config) {
+          propFirmEmpty.hidden = false;
+          propFirmDashboard.hidden = true;
+          if (propFirmForm.hidden) propFirmDisableBtn.hidden = true;
+          return;
+        }
+
+        propFirmEmpty.hidden = true;
+        propFirmDashboard.hidden = false;
+        propFirmDisableBtn.hidden = false;
+        const metrics = propFirmMetrics(config);
+        if (!metrics) return;
+
+        propFirmName.textContent = config.firmName || 'Prop Firm';
+        propFirmProgram.textContent = config.programName || 'Funded Account';
+        propFirmCurrentBalance.textContent = formatMoney(metrics.balance, currency);
+        propFirmNetPl.textContent = formatMoney(metrics.totalPl, currency);
+        propFirmNetPl.classList.remove('value-positive', 'value-negative', 'value-flat');
+        propFirmNetPl.classList.add(metrics.totalPl > 0 ? 'value-positive' : metrics.totalPl < 0 ? 'value-negative' : 'value-flat');
+
+        propFirmStatus.textContent = metrics.status;
+        propFirmStatus.className = `prop-firm-status ${metrics.status.toLowerCase()}`;
+
+        propDailyValue.textContent = `${formatMoney(metrics.dailyUsed, currency)} / ${formatMoney(metrics.dailyLimit, currency)}`;
+        propDailyBar.style.width = `${clampPercent(metrics.dailyRatio * 100)}%`;
+        propDailyFoot.textContent = metrics.dailyUsed > 0
+          ? `${formatMoney(Math.max(0, metrics.dailyLimit - metrics.dailyUsed), currency)} daily buffer remaining.`
+          : 'No closed-trade daily loss used today.';
+        setPropRuleState(propDailyCard, metrics.dailyRatio);
+
+        propMaxValue.textContent = `${formatMoney(metrics.maxUsed, currency)} / ${formatMoney(metrics.maxLimit, currency)}`;
+        propMaxBar.style.width = `${clampPercent(metrics.maxRatio * 100)}%`;
+        propMaxFoot.textContent = `${formatMoney(Math.max(0, metrics.maxLimit - metrics.maxUsed), currency)} ${config.maxLossMode === 'trailing' ? 'trailing' : 'static'} buffer remaining.`;
+        setPropRuleState(propMaxCard, metrics.maxRatio);
+
+        if (metrics.consistency === null) {
+          propConsistencyValue.textContent = '—';
+          propConsistencyBar.style.width = '0%';
+          propConsistencyFoot.textContent = 'Needs positive net profit to calculate.';
+          propConsistencyCard.className = 'prop-rule-card safe';
+        } else {
+          propConsistencyValue.textContent = `${metrics.consistency.toFixed(2)}% / ≤${metrics.consistencyLimit.toFixed(2)}%`;
+          const consistencyRatio = metrics.consistencyLimit > 0 ? metrics.consistency / metrics.consistencyLimit : 0;
+          propConsistencyBar.style.width = `${clampPercent(consistencyRatio * 100)}%`;
+          propConsistencyFoot.textContent = metrics.consistencyPass ? 'Consistency rule is currently satisfied.' : 'Best profitable day is too large relative to net profit.';
+          setPropRuleState(propConsistencyCard, consistencyRatio);
+        }
+
+        propDaysValue.textContent = `${metrics.tradingDays} / ${metrics.minDays}`;
+        propDaysBar.style.width = `${metrics.daysProgress}%`;
+        propDaysFoot.textContent = metrics.tradingDays >= metrics.minDays
+          ? 'Minimum trading days completed.'
+          : `${Math.max(0, metrics.minDays - metrics.tradingDays)} trading ${Math.max(0, metrics.minDays - metrics.tradingDays) === 1 ? 'day' : 'days'} remaining.`;
+        propDaysCard.className = 'prop-rule-card safe';
+
+        propReadinessValue.textContent = `${metrics.readiness}%`;
+        propReadinessLabel.textContent = metrics.ready ? 'READY' : 'NOT READY';
+        propReadinessBar.style.width = `${metrics.readiness}%`;
+        propCurrentProfit.textContent = formatMoney(metrics.currentProfit, currency);
+        propTargetProfit.textContent = formatMoney(metrics.target, currency);
+        propProfitNeeded.textContent = formatMoney(Math.max(0, metrics.target - metrics.currentProfit), currency);
+
+        if (metrics.status === 'BREACH') {
+          propMonitorTitle.textContent = 'A configured loss limit has been reached.';
+          propMonitorCopy.textContent = 'Review the prop firm dashboard and the firm’s official platform metrics before taking another trade.';
+        } else if (metrics.status === 'DANGER') {
+          propMonitorTitle.textContent = 'Account is close to a loss limit.';
+          propMonitorCopy.textContent = 'The journal shows less than 20% buffer on at least one configured loss rule.';
+        } else if (!metrics.consistencyPass) {
+          propMonitorTitle.textContent = 'Consistency still needs work.';
+          propMonitorCopy.textContent = 'More distributed net profit is needed before the configured consistency rule is satisfied.';
+        } else if (!metrics.ready) {
+          propMonitorTitle.textContent = 'Account is within the configured rules.';
+          propMonitorCopy.textContent = 'Keep building profit and/or trading days until payout or target requirements are complete.';
+        } else {
+          propMonitorTitle.textContent = 'Journal metrics meet the configured requirements.';
+          propMonitorCopy.textContent = 'Verify the same values on the prop firm dashboard before requesting a payout or completing a phase.';
+        }
+
+        const quickRules = [
+          ['Daily Loss', `${Number(config.dailyLossPct || 0).toFixed(2)}%`],
+          ['Max Loss', `${Number(config.maxLossPct || 0).toFixed(2)}% · ${config.maxLossMode === 'trailing' ? 'Trailing' : 'Static'}`],
+          ['Consistency', Number(config.consistencyPct || 0) > 0 ? `≤${Number(config.consistencyPct).toFixed(2)}%` : 'Off'],
+          ['Min Days', String(Math.max(0, Math.round(Number(config.minTradingDays) || 0)))],
+          ['Target', `${Number(config.profitTargetPct || 0).toFixed(2)}%`]
+        ];
+        propQuickRules.innerHTML = '';
+        quickRules.forEach(([label, value]) => {
+          const item = document.createElement('div');
+          item.className = 'prop-quick-rule';
+          const labelEl = document.createElement('span');
+          labelEl.textContent = label;
+          const valueEl = document.createElement('strong');
+          valueEl.textContent = value;
+          item.append(labelEl, valueEl);
+          propQuickRules.appendChild(item);
+        });
+      };
+
+      const openPropFirmForm = () => {
+        const account = currentAccount();
+        if (!account) return;
+        const config = account.propFirmConfig || {};
+        propFirmNameInput.value = config.firmName || '';
+        propFirmProgramInput.value = config.programName || '';
+        propDailyLimitInput.value = config.dailyLossPct ?? '3';
+        propMaxLimitInput.value = config.maxLossPct ?? '5';
+        propMaxModeInput.value = config.maxLossMode === 'trailing' ? 'trailing' : 'static';
+        propConsistencyLimitInput.value = config.consistencyPct ?? '20';
+        propMinDaysInput.value = config.minTradingDays ?? '5';
+        propTargetInput.value = config.profitTargetPct ?? '5';
+        propFirmFormError.textContent = '';
+        propFirmFormError.classList.remove('show');
+        propFirmDisableBtn.hidden = !account.propFirmConfig;
+        propFirmEmpty.hidden = true;
+        propFirmDashboard.hidden = true;
+        propFirmForm.hidden = false;
+        requestAnimationFrame(() => propFirmNameInput.focus());
+      };
+
+      const closePropFirmForm = () => {
+        propFirmForm.hidden = true;
+        renderPropFirm();
+      };
+
+      const savePropFirmConfig = async (config) => {
+        const account = currentAccount();
+        if (!account) throw new Error('Select a trading account first.');
+        const updated = { ...account, ...(config ? { propFirmConfig: config } : {}), updatedAt: Date.now() };
+        if (!config) delete updated.propFirmConfig;
+        if (usingCloudData) await saveAccountToSupabase(updated);
+        else await saveAccount(updated);
+        accounts = accounts.map((item) => item.id === updated.id ? updated : item);
+        if (usingCloudData) persistCloudState();
+        renderAccountSelector();
+        renderDashboardAccount();
       };
 
       const analyticsTrades = () => {
@@ -9983,6 +10641,7 @@
         renderEquityCurve();
         renderCalendar();
         renderAnalytics();
+        renderPropFirm();
         renderTrades();
         if (tradeFormCard.classList.contains('visible')) updateAutomaticRiskPercent();
       };
@@ -10206,9 +10865,10 @@
         journalPage.classList.toggle('visible', page === 'Journal');
         calendarPage.classList.toggle('visible', page === 'Calendar');
         analyticsPage.classList.toggle('visible', page === 'Analytics');
+        propFirmPage.classList.toggle('visible', page === 'Prop Firm');
         tradeDetailPage.classList.toggle('visible', page === 'Trade Detail');
         settingsPage.classList.toggle('visible', page === 'Settings');
-        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'Trade Detail' && page !== 'Settings') {
+        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'Prop Firm' && page !== 'Trade Detail' && page !== 'Settings') {
           placeholder.classList.add('visible');
           placeholderTitle.textContent = page;
         } else {
@@ -10216,12 +10876,14 @@
         }
         if (page === 'Calendar') renderCalendar();
         if (page === 'Analytics') renderAnalytics();
+        if (page === 'Prop Firm') renderPropFirm();
 
         const activePageElement =
           page === 'Dashboard' ? dashboard :
           page === 'Journal' ? journalPage :
           page === 'Calendar' ? calendarPage :
           page === 'Analytics' ? analyticsPage :
+          page === 'Prop Firm' ? propFirmPage :
           page === 'Trade Detail' ? tradeDetailPage :
           page === 'Settings' ? settingsPage :
           placeholder;
@@ -12292,6 +12954,74 @@
           journalImportConfirmBtn.disabled = false;
           journalImportConfirmBtn.textContent = 'Import Journal';
           setJournalImportStatus(error instanceof Error ? error.message : 'Unable to import this journal.', 'error');
+        }
+      });
+
+
+      propFirmSetupBtn.addEventListener('click', openPropFirmForm);
+      propFirmEditBtn.addEventListener('click', openPropFirmForm);
+      propFirmFormClose.addEventListener('click', closePropFirmForm);
+      propFirmCancelBtn.addEventListener('click', closePropFirmForm);
+
+      propFirmForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const firmName = propFirmNameInput.value.trim();
+        const programName = propFirmProgramInput.value.trim();
+        const dailyLossPct = Number(propDailyLimitInput.value);
+        const maxLossPct = Number(propMaxLimitInput.value);
+        const consistencyPct = propConsistencyLimitInput.value === '' ? 0 : Number(propConsistencyLimitInput.value);
+        const minTradingDays = propMinDaysInput.value === '' ? 0 : Number(propMinDaysInput.value);
+        const profitTargetPct = propTargetInput.value === '' ? 0 : Number(propTargetInput.value);
+
+        const invalid = !firmName || !programName || !Number.isFinite(dailyLossPct) || dailyLossPct <= 0 || !Number.isFinite(maxLossPct) || maxLossPct <= 0 || !Number.isFinite(consistencyPct) || consistencyPct < 0 || !Number.isFinite(minTradingDays) || minTradingDays < 0 || !Number.isFinite(profitTargetPct) || profitTargetPct < 0;
+        if (invalid) {
+          propFirmFormError.textContent = 'Complete the required rules with valid non-negative values.';
+          propFirmFormError.classList.add('show');
+          return;
+        }
+
+        const submit = propFirmForm.querySelector('button[type="submit"]');
+        const oldLabel = submit.textContent;
+        submit.disabled = true;
+        submit.textContent = 'Saving…';
+        propFirmFormError.classList.remove('show');
+        try {
+          await savePropFirmConfig({
+            firmName,
+            programName,
+            dailyLossPct,
+            maxLossPct,
+            maxLossMode: propMaxModeInput.value === 'trailing' ? 'trailing' : 'static',
+            consistencyPct,
+            minTradingDays: Math.round(minTradingDays),
+            profitTargetPct
+          });
+          propFirmForm.hidden = true;
+          renderPropFirm();
+        } catch (error) {
+          propFirmFormError.textContent = error instanceof Error ? error.message : 'Unable to save prop firm rules.';
+          propFirmFormError.classList.add('show');
+        } finally {
+          submit.disabled = false;
+          submit.textContent = oldLabel;
+        }
+      });
+
+      propFirmDisableBtn.addEventListener('click', async () => {
+        if (!currentAccount()?.propFirmConfig) {
+          closePropFirmForm();
+          return;
+        }
+        propFirmDisableBtn.disabled = true;
+        try {
+          await savePropFirmConfig(null);
+          propFirmForm.hidden = true;
+          renderPropFirm();
+        } catch (error) {
+          propFirmFormError.textContent = error instanceof Error ? error.message : 'Unable to disable Prop Firm Mode.';
+          propFirmFormError.classList.add('show');
+        } finally {
+          propFirmDisableBtn.disabled = false;
         }
       });
 
