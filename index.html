@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83p-prop-firm-calendar-heatmap">
+<meta name="ertrades-build" content="v83q-prop-firm-custom-loss-picker">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4772,6 +4772,175 @@
     #ertrades-app .prop-quick-rule strong { display: block; margin-top: 4px; color: var(--soft); font-size: 10px; font-weight: 820; overflow-wrap: anywhere; }
 
     #ertrades-app .prop-firm-form { padding: 15px; }
+
+    /* v83q — eRTrades custom picker for Prop Firm Maximum Loss Type.
+       Replaces the native iOS <select> sheet so this control matches the app UI. */
+    #ertrades-app .prop-loss-type-field {
+      position: relative;
+      overflow: visible;
+    }
+
+    #ertrades-app .prop-loss-type-btn {
+      width: 100%;
+      min-width: 0;
+      min-height: 48px;
+      padding: 0 42px 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0a1013;
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 650;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .prop-loss-type-btn::after {
+      content: "";
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-right: 1.6px solid var(--soft);
+      border-bottom: 1.6px solid var(--soft);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    #ertrades-app .prop-loss-picker-dialog {
+      width: min(92vw, 520px);
+      max-width: 520px;
+      margin: auto;
+      padding: 0;
+      border: 1px solid rgba(184,255,79,.18);
+      border-radius: 24px;
+      background: #0a1013;
+      color: var(--text);
+      box-shadow: 0 28px 80px rgba(0,0,0,.58), inset 0 1px 0 rgba(255,255,255,.025);
+      overflow: hidden;
+    }
+
+    #ertrades-app .prop-loss-picker-dialog::backdrop {
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+
+    #ertrades-app .prop-loss-picker-inner { padding: 18px; }
+    #ertrades-app .prop-loss-picker-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    #ertrades-app .prop-loss-picker-title {
+      margin-top: 3px;
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 850;
+      letter-spacing: -.02em;
+    }
+    #ertrades-app .prop-loss-picker-copy {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    #ertrades-app .prop-loss-picker-close {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--panel);
+      color: var(--soft);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    #ertrades-app .prop-loss-option-list { display: grid; gap: 9px; }
+    #ertrades-app .prop-loss-option {
+      width: 100%;
+      min-width: 0;
+      min-height: 86px;
+      display: grid;
+      grid-template-columns: 30px minmax(0,1fr);
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+    #ertrades-app .prop-loss-option.selected {
+      border-color: rgba(184,255,79,.58);
+      background: linear-gradient(135deg, rgba(184,255,79,.075), rgba(184,255,79,.025));
+      box-shadow: inset 0 0 0 1px rgba(184,255,79,.10);
+    }
+    #ertrades-app .prop-loss-option-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: transparent;
+      font-size: 15px;
+      font-weight: 950;
+    }
+    #ertrades-app .prop-loss-option.selected .prop-loss-option-mark {
+      border-color: var(--accent);
+      color: #071004;
+      background: var(--accent);
+    }
+    #ertrades-app .prop-loss-option-copy { min-width: 0; }
+    #ertrades-app .prop-loss-option-copy strong {
+      display: block;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 820;
+    }
+    #ertrades-app .prop-loss-option-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+    #ertrades-app .prop-loss-picker-actions {
+      display: grid;
+      grid-template-columns: minmax(0,.7fr) minmax(0,1.3fr);
+      gap: 9px;
+      margin-top: 14px;
+    }
+    #ertrades-app .prop-loss-picker-actions button { min-width: 0; min-height: 48px; }
+
+    #ertrades-app.theme-light .prop-loss-type-btn,
+    #ertrades-app.theme-light .prop-loss-picker-dialog { background: #fff; }
+    #ertrades-app.theme-light .prop-loss-option { background: #f8fbfc; }
+
+    @media (max-width: 560px) {
+      #ertrades-app .prop-loss-picker-dialog {
+        width: calc(100% - 24px);
+        max-width: none;
+        margin: auto 12px 18px;
+        border-radius: 24px;
+      }
+      #ertrades-app .prop-loss-picker-inner { padding: 16px; }
+      #ertrades-app .prop-loss-option { min-height: 92px; }
+    }
     #ertrades-app .prop-form-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
     #ertrades-app .prop-form-grid { margin-top: 15px; display: grid; gap: 11px; }
     #ertrades-app .prop-form-note { margin-top: 12px; padding: 11px; border: 1px solid var(--border); border-radius: 11px; background: var(--panel); color: var(--muted); font-size: 9px; line-height: 1.5; }
@@ -6859,7 +7028,11 @@
               <label class="field"><span>Program / Account Type</span><input id="prop-firm-program-input" type="text" maxlength="80" placeholder="e.g. Instant Funded" required></label>
               <label class="field"><span>Daily Loss Limit (%)</span><input id="prop-daily-limit-input" type="number" min="0.01" max="100" step="0.01" inputmode="decimal" placeholder="3" required></label>
               <label class="field"><span>Maximum Loss Limit (%)</span><input id="prop-max-limit-input" type="number" min="0.01" max="100" step="0.01" inputmode="decimal" placeholder="5" required></label>
-              <label class="field"><span>Maximum Loss Type</span><select id="prop-max-mode-input"><option value="static">Static from starting balance</option><option value="trailing">Trailing from closed-balance peak</option></select></label>
+              <div class="field prop-loss-type-field">
+                <span>Maximum Loss Type</span>
+                <button class="prop-loss-type-btn" id="prop-max-mode-btn" type="button" aria-haspopup="dialog" aria-expanded="false">Static from starting balance</button>
+                <input id="prop-max-mode-input" type="hidden" value="static">
+              </div>
               <label class="field"><span>Consistency Limit (%)</span><input id="prop-consistency-limit-input" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="20"></label>
               <label class="field"><span>Minimum Trading Days</span><input id="prop-min-days-input" type="number" min="0" max="365" step="1" inputmode="numeric" placeholder="5"></label>
               <label class="field"><span>Profit / Payout Target (%)</span><input id="prop-target-input" type="number" min="0" max="1000" step="0.01" inputmode="decimal" placeholder="5"></label>
@@ -6872,6 +7045,41 @@
               <button class="primary-btn" type="submit">Save Rules</button>
             </div>
           </form>
+
+          <dialog class="prop-loss-picker-dialog" id="prop-loss-picker-dialog" aria-labelledby="prop-loss-picker-title">
+            <div class="prop-loss-picker-inner">
+              <div class="prop-loss-picker-head">
+                <div>
+                  <div class="section-kicker">Maximum Loss Type</div>
+                  <div class="prop-loss-picker-title" id="prop-loss-picker-title">How should drawdown be calculated?</div>
+                  <div class="prop-loss-picker-copy">Choose the rule that matches your prop firm account. This changes how eRTrades calculates the maximum-loss boundary.</div>
+                </div>
+                <button class="prop-loss-picker-close" id="prop-loss-picker-close" type="button" aria-label="Close Maximum Loss Type picker">×</button>
+              </div>
+
+              <div class="prop-loss-option-list" id="prop-loss-option-list" role="radiogroup" aria-label="Maximum Loss Type">
+                <button class="prop-loss-option selected" type="button" data-prop-loss-mode="static" role="radio" aria-checked="true">
+                  <span class="prop-loss-option-mark" aria-hidden="true">✓</span>
+                  <span class="prop-loss-option-copy">
+                    <strong>Static from starting balance</strong>
+                    <span>The maximum-loss level stays fixed from the account's starting balance.</span>
+                  </span>
+                </button>
+                <button class="prop-loss-option" type="button" data-prop-loss-mode="trailing" role="radio" aria-checked="false">
+                  <span class="prop-loss-option-mark" aria-hidden="true">✓</span>
+                  <span class="prop-loss-option-copy">
+                    <strong>Trailing from closed-balance peak</strong>
+                    <span>The maximum-loss level follows the highest closed balance reached in the journal.</span>
+                  </span>
+                </button>
+              </div>
+
+              <div class="prop-loss-picker-actions">
+                <button class="secondary-btn" id="prop-loss-picker-cancel" type="button">Cancel</button>
+                <button class="primary-btn" id="prop-loss-picker-use" type="button">Use Selection</button>
+              </div>
+            </div>
+          </dialog>
         </div>
       </section>
 
@@ -7452,6 +7660,12 @@
       const propDailyLimitInput = root.querySelector('#prop-daily-limit-input');
       const propMaxLimitInput = root.querySelector('#prop-max-limit-input');
       const propMaxModeInput = root.querySelector('#prop-max-mode-input');
+      const propMaxModeBtn = root.querySelector('#prop-max-mode-btn');
+      const propLossPickerDialog = root.querySelector('#prop-loss-picker-dialog');
+      const propLossPickerClose = root.querySelector('#prop-loss-picker-close');
+      const propLossPickerCancel = root.querySelector('#prop-loss-picker-cancel');
+      const propLossPickerUse = root.querySelector('#prop-loss-picker-use');
+      const propLossOptions = Array.from(root.querySelectorAll('[data-prop-loss-mode]'));
       const propConsistencyLimitInput = root.querySelector('#prop-consistency-limit-input');
       const propMinDaysInput = root.querySelector('#prop-min-days-input');
       const propTargetInput = root.querySelector('#prop-target-input');
@@ -9641,6 +9855,34 @@
         });
       };
 
+      const PROP_LOSS_MODE_LABELS = {
+        static: 'Static from starting balance',
+        trailing: 'Trailing from closed-balance peak'
+      };
+      let propLossModeDraft = 'static';
+
+      const syncPropLossPicker = (mode = propMaxModeInput.value) => {
+        const normalized = mode === 'trailing' ? 'trailing' : 'static';
+        propMaxModeBtn.textContent = PROP_LOSS_MODE_LABELS[normalized];
+        propLossOptions.forEach((button) => {
+          const selected = button.dataset.propLossMode === normalized;
+          button.classList.toggle('selected', selected);
+          button.setAttribute('aria-checked', String(selected));
+        });
+      };
+
+      const openPropLossPicker = () => {
+        propLossModeDraft = propMaxModeInput.value === 'trailing' ? 'trailing' : 'static';
+        syncPropLossPicker(propLossModeDraft);
+        propMaxModeBtn.setAttribute('aria-expanded', 'true');
+        try { propLossPickerDialog.showModal(); } catch (_) { propLossPickerDialog.setAttribute('open', ''); }
+      };
+
+      const closePropLossPicker = () => {
+        propMaxModeBtn.setAttribute('aria-expanded', 'false');
+        try { if (propLossPickerDialog.open) propLossPickerDialog.close(); } catch (_) { propLossPickerDialog.removeAttribute('open'); }
+      };
+
       const openPropFirmForm = () => {
         const account = currentAccount();
         if (!account) return;
@@ -9650,6 +9892,7 @@
         propDailyLimitInput.value = config.dailyLossPct ?? '3';
         propMaxLimitInput.value = config.maxLossPct ?? '5';
         propMaxModeInput.value = config.maxLossMode === 'trailing' ? 'trailing' : 'static';
+        syncPropLossPicker(propMaxModeInput.value);
         propConsistencyLimitInput.value = config.consistencyPct ?? '20';
         propMinDaysInput.value = config.minTradingDays ?? '5';
         propTargetInput.value = config.profitTargetPct ?? '5';
@@ -12957,6 +13200,31 @@
         }
       });
 
+
+      propMaxModeBtn.addEventListener('click', openPropLossPicker);
+      propLossOptions.forEach((button) => {
+        button.addEventListener('click', () => {
+          propLossModeDraft = button.dataset.propLossMode === 'trailing' ? 'trailing' : 'static';
+          syncPropLossPicker(propLossModeDraft);
+        });
+      });
+      propLossPickerUse.addEventListener('click', () => {
+        propMaxModeInput.value = propLossModeDraft;
+        syncPropLossPicker(propMaxModeInput.value);
+        closePropLossPicker();
+      });
+      propLossPickerClose.addEventListener('click', closePropLossPicker);
+      propLossPickerCancel.addEventListener('click', closePropLossPicker);
+      propLossPickerDialog.addEventListener('close', () => {
+        propMaxModeBtn.setAttribute('aria-expanded', 'false');
+        syncPropLossPicker(propMaxModeInput.value);
+      });
+      propLossPickerDialog.addEventListener('click', (event) => {
+        if (event.target !== propLossPickerDialog) return;
+        const rect = propLossPickerDialog.getBoundingClientRect();
+        const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+        if (!inside) closePropLossPicker();
+      });
 
       propFirmSetupBtn.addEventListener('click', openPropFirmForm);
       propFirmEditBtn.addEventListener('click', openPropFirmForm);
