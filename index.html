@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83q-prop-firm-custom-loss-picker">
+<meta name="ertrades-build" content="v83r-journal-custom-filters-collapse">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1538,10 +1538,68 @@
     #ertrades-app .journal-search::placeholder { color: var(--muted); }
 
     #ertrades-app .journal-search:focus,
-    #ertrades-app .journal-filter-select:focus {
+    #ertrades-app .journal-filter-btn:focus-visible,
+    #ertrades-app .journal-filter-toggle:focus-visible {
       border-color: rgba(184,255,79,.55);
       box-shadow: 0 0 0 2px rgba(184,255,79,.08);
+      outline: none;
     }
+
+    /* v83r — collapsible Journal filters + eRTrades custom filter pickers. */
+    #ertrades-app .journal-head-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    #ertrades-app .journal-filter-toggle {
+      min-height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #0a1013;
+      color: var(--soft);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 820;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .journal-filter-toggle svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      transition: transform .18s ease;
+    }
+
+    #ertrades-app .journal-filter-toggle[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+    #ertrades-app .journal-filter-badge {
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: var(--accent-dark);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #ertrades-app .journal-filter-badge[hidden] { display: none !important; }
+    #ertrades-app .journal-filter-panel[hidden] { display: none !important; }
 
     #ertrades-app .journal-filter-grid {
       display: grid;
@@ -1549,19 +1607,65 @@
       gap: 8px;
     }
 
-    #ertrades-app .journal-filter-select {
+    #ertrades-app .journal-filter-picker-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #ertrades-app .journal-filter-btn {
       width: 100%;
       min-width: 0;
-      min-height: 42px;
-      padding: 0 30px 0 11px;
+      min-height: 44px;
+      padding: 0 34px 0 11px;
       border: 1px solid var(--border);
       border-radius: 11px;
       background: #0a1013;
       color: var(--text);
       font: inherit;
       font-size: 13px;
-      font-weight: 650;
-      outline: none;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #ertrades-app .journal-filter-btn::after {
+      content: "";
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid var(--soft);
+      border-bottom: 1.5px solid var(--soft);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    #ertrades-app .journal-filter-btn[aria-expanded="true"] {
+      border-color: rgba(184,255,79,.58);
+      box-shadow: 0 0 0 2px rgba(184,255,79,.07);
+    }
+
+    #ertrades-app .journal-filter-popup {
+      left: 0;
+      top: calc(100% + 6px);
+      width: 100%;
+      min-width: 100%;
+      max-width: none;
+      max-height: 250px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      z-index: 120;
+    }
+
+    #ertrades-app .journal-filter-popup button {
+      width: 100%;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     #ertrades-app .journal-filter-footer {
@@ -4290,7 +4394,8 @@
     #ertrades-app.theme-light .popup-menu,
     #ertrades-app.theme-light .custom-select-btn,
     #ertrades-app.theme-light .journal-search,
-    #ertrades-app.theme-light .journal-filter-select {
+    #ertrades-app.theme-light .journal-filter-btn,
+    #ertrades-app.theme-light .journal-filter-toggle {
       background: #ffffff;
     }
 
@@ -5746,6 +5851,17 @@
         padding: 14px;
       }
 
+      #ertrades-app .journal-page.visible.filters-collapsed {
+        grid-template-columns: minmax(0,1fr);
+        grid-template-areas:
+          "head"
+          "results";
+      }
+
+      #ertrades-app .journal-page.visible.filters-collapsed .journal-filter-panel {
+        display: none !important;
+      }
+
       #ertrades-app .journal-filter-grid {
         grid-template-columns: minmax(0,1fr);
       }
@@ -6810,9 +6926,16 @@
             <div class="section-kicker">Journal</div>
             <div class="section-title" id="journal-title">Saved Trades</div>
           </div>
-          <span class="section-meta" id="journal-count">0 trades</span>
+          <div class="journal-head-actions">
+            <span class="section-meta" id="journal-count">0 trades</span>
+            <button class="journal-filter-toggle" id="journal-filter-toggle" type="button" aria-expanded="false" aria-controls="journal-filter-panel">
+              <span>Filters</span>
+              <span class="journal-filter-badge" id="journal-filter-badge" hidden>0</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
-        <div class="journal-filter-panel" aria-label="Search and filter journal">
+        <div class="journal-filter-panel" id="journal-filter-panel" aria-label="Search and filter journal">
           <input
             class="journal-search"
             id="journal-search"
@@ -6824,32 +6947,52 @@
             aria-label="Search journal"
           />
           <div class="journal-filter-grid">
-            <select class="journal-filter-select" id="journal-instrument-filter" aria-label="Filter by instrument">
-              <option value="ALL">All instruments</option>
-            </select>
-            <select class="journal-filter-select" id="journal-direction-filter" aria-label="Filter by direction">
-              <option value="ALL">BUY + SELL</option>
-              <option value="BUY">BUY</option>
-              <option value="SELL">SELL</option>
-            </select>
-            <select class="journal-filter-select" id="journal-result-filter" aria-label="Filter by result">
-              <option value="ALL">All results</option>
-              <option value="WIN">WIN</option>
-              <option value="LOSS">LOSS</option>
-              <option value="BREAK EVEN">BREAK EVEN</option>
-            </select>
-            <select class="journal-filter-select" id="journal-session-filter" aria-label="Filter by session">
-              <option value="ALL">All sessions</option>
-              <option value="Asia">Asia</option>
-              <option value="London">London</option>
-              <option value="New York">New York</option>
-            </select>
-            <select class="journal-filter-select" id="journal-period-filter" aria-label="Filter by period">
-              <option value="ALL">All dates</option>
-              <option value="7D">Last 7 days</option>
-              <option value="30D">Last 30 days</option>
-              <option value="3M">Last 3 months</option>
-            </select>
+            <div class="journal-filter-picker-wrap">
+              <button class="journal-filter-btn" id="journal-instrument-filter-btn" type="button" aria-haspopup="menu" aria-expanded="false" data-journal-filter-button data-select-id="journal-instrument-filter" data-menu-id="journal-instrument-filter-menu">All instruments</button>
+              <select class="native-select-hidden" id="journal-instrument-filter" aria-label="Filter by instrument" tabindex="-1">
+                <option value="ALL">All instruments</option>
+              </select>
+              <div class="popup-menu journal-filter-popup" id="journal-instrument-filter-menu" role="menu"></div>
+            </div>
+            <div class="journal-filter-picker-wrap">
+              <button class="journal-filter-btn" id="journal-direction-filter-btn" type="button" aria-haspopup="menu" aria-expanded="false" data-journal-filter-button data-select-id="journal-direction-filter" data-menu-id="journal-direction-filter-menu">BUY + SELL</button>
+              <select class="native-select-hidden" id="journal-direction-filter" aria-label="Filter by direction" tabindex="-1">
+                <option value="ALL">BUY + SELL</option>
+                <option value="BUY">BUY</option>
+                <option value="SELL">SELL</option>
+              </select>
+              <div class="popup-menu journal-filter-popup" id="journal-direction-filter-menu" role="menu"></div>
+            </div>
+            <div class="journal-filter-picker-wrap">
+              <button class="journal-filter-btn" id="journal-result-filter-btn" type="button" aria-haspopup="menu" aria-expanded="false" data-journal-filter-button data-select-id="journal-result-filter" data-menu-id="journal-result-filter-menu">All results</button>
+              <select class="native-select-hidden" id="journal-result-filter" aria-label="Filter by result" tabindex="-1">
+                <option value="ALL">All results</option>
+                <option value="WIN">WIN</option>
+                <option value="LOSS">LOSS</option>
+                <option value="BREAK EVEN">BREAK EVEN</option>
+              </select>
+              <div class="popup-menu journal-filter-popup" id="journal-result-filter-menu" role="menu"></div>
+            </div>
+            <div class="journal-filter-picker-wrap">
+              <button class="journal-filter-btn" id="journal-session-filter-btn" type="button" aria-haspopup="menu" aria-expanded="false" data-journal-filter-button data-select-id="journal-session-filter" data-menu-id="journal-session-filter-menu">All sessions</button>
+              <select class="native-select-hidden" id="journal-session-filter" aria-label="Filter by session" tabindex="-1">
+                <option value="ALL">All sessions</option>
+                <option value="Asia">Asia</option>
+                <option value="London">London</option>
+                <option value="New York">New York</option>
+              </select>
+              <div class="popup-menu journal-filter-popup" id="journal-session-filter-menu" role="menu"></div>
+            </div>
+            <div class="journal-filter-picker-wrap">
+              <button class="journal-filter-btn" id="journal-period-filter-btn" type="button" aria-haspopup="menu" aria-expanded="false" data-journal-filter-button data-select-id="journal-period-filter" data-menu-id="journal-period-filter-menu">All dates</button>
+              <select class="native-select-hidden" id="journal-period-filter" aria-label="Filter by period" tabindex="-1">
+                <option value="ALL">All dates</option>
+                <option value="7D">Last 7 days</option>
+                <option value="30D">Last 30 days</option>
+                <option value="3M">Last 3 months</option>
+              </select>
+              <div class="popup-menu journal-filter-popup" id="journal-period-filter-menu" role="menu"></div>
+            </div>
           </div>
           <div class="journal-filter-footer">
             <span class="journal-filter-hint">Filters only change what is shown. Your saved trades are untouched.</span>
@@ -7755,6 +7898,11 @@
       const journalEmptyTitle = root.querySelector('#journal-empty-title');
       const journalEmptyCopy = root.querySelector('#journal-empty-copy');
       const journalCount = root.querySelector('#journal-count');
+      const journalFilterPanel = root.querySelector('#journal-filter-panel');
+      const journalFilterToggle = root.querySelector('#journal-filter-toggle');
+      const journalFilterBadge = root.querySelector('#journal-filter-badge');
+      const journalFilterButtons = Array.from(root.querySelectorAll('[data-journal-filter-button]'));
+      const journalFilterMenus = Array.from(root.querySelectorAll('.journal-filter-popup'));
       const journalSearch = root.querySelector('#journal-search');
       const journalInstrumentFilter = root.querySelector('#journal-instrument-filter');
       const journalDirectionFilter = root.querySelector('#journal-direction-filter');
@@ -10733,6 +10881,64 @@
         );
       };
 
+      const JOURNAL_FILTER_COLLAPSE_KEY = 'ertrades-journal-filters-collapsed-v1';
+
+      const journalFilterEntries = journalFilterButtons.map((button) => {
+        const select = root.querySelector(`#${button.dataset.selectId || ''}`);
+        const menu = root.querySelector(`#${button.dataset.menuId || ''}`);
+        return { button, select, menu };
+      }).filter((entry) => entry.select && entry.menu);
+
+      const closeJournalFilterMenus = (except = null) => {
+        journalFilterEntries.forEach(({ button, menu }) => {
+          if (menu === except) return;
+          menu.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+        });
+      };
+
+      const syncJournalFilterPicker = ({ button, select, menu }) => {
+        const selectedOption = select.options[select.selectedIndex] || select.options[0];
+        button.textContent = selectedOption?.textContent || 'Select';
+        menu.innerHTML = '';
+        Array.from(select.options).forEach((option) => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.setAttribute('role', 'menuitem');
+          item.dataset.journalFilterValue = option.value;
+          item.textContent = option.textContent || option.value;
+          item.classList.toggle('selected', select.value === option.value);
+          menu.appendChild(item);
+        });
+      };
+
+      const syncAllJournalFilterPickers = () => {
+        journalFilterEntries.forEach(syncJournalFilterPicker);
+      };
+
+      const journalActiveFilterCount = () => {
+        let count = Boolean((journalSearch.value || '').trim()) ? 1 : 0;
+        [journalInstrumentFilter, journalDirectionFilter, journalResultFilter, journalSessionFilter, journalPeriodFilter]
+          .forEach((select) => { if ((select.value || 'ALL') !== 'ALL') count += 1; });
+        return count;
+      };
+
+      const syncJournalFilterToggleUi = () => {
+        const collapsed = journalPage.classList.contains('filters-collapsed');
+        const activeCount = journalActiveFilterCount();
+        journalFilterToggle.setAttribute('aria-expanded', String(!collapsed));
+        journalFilterBadge.hidden = activeCount === 0;
+        journalFilterBadge.textContent = String(activeCount);
+      };
+
+      const setJournalFiltersCollapsed = (collapsed, { persist = true } = {}) => {
+        journalPage.classList.toggle('filters-collapsed', Boolean(collapsed));
+        journalFilterPanel.hidden = Boolean(collapsed);
+        if (collapsed) closeJournalFilterMenus();
+        syncJournalFilterToggleUi();
+        if (persist) safeLocalSet(JOURNAL_FILTER_COLLAPSE_KEY, collapsed ? '1' : '0');
+      };
+
       const journalFiltersActive = () => (
         Boolean((journalSearch.value || '').trim()) ||
         journalInstrumentFilter.value !== 'ALL' ||
@@ -10762,6 +10968,8 @@
         });
 
         journalInstrumentFilter.value = instruments.includes(selected) ? selected : 'ALL';
+        const instrumentEntry = journalFilterEntries.find((entry) => entry.select === journalInstrumentFilter);
+        if (instrumentEntry) syncJournalFilterPicker(instrumentEntry);
       };
 
       const journalPeriodStart = (period) => {
@@ -10820,6 +11028,7 @@
         const accountTrades = currentTrades();
         const currency = account?.currency || 'USD';
         syncJournalInstrumentFilter(accountTrades);
+        syncAllJournalFilterPickers();
         const filteredTrades = journalFilteredTrades(accountTrades);
         const filtersActive = journalFiltersActive();
 
@@ -10846,6 +11055,7 @@
 
         filteredTrades.forEach((trade) => journalList.appendChild(makeTradeRow(trade, currency)));
         accountTrades.slice(0, 3).forEach((trade) => recentList.appendChild(makeTradeRow(trade, currency)));
+        syncJournalFilterToggleUi();
       };
 
       const renderDashboardAccount = () => {
@@ -11085,6 +11295,7 @@
       };
 
       const closeCustomMenus = (except = null) => {
+        closeJournalFilterMenus(except);
         [accountSelectMenu, instrumentMenu, tradeSessionMenu, tradeResultMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
           if (menu !== except) menu.classList.remove('open');
         });
@@ -12878,6 +13089,34 @@
         showPage('Trade Detail');
       };
 
+      const savedJournalFilterCollapse = safeLocalGet(JOURNAL_FILTER_COLLAPSE_KEY);
+      setJournalFiltersCollapsed(savedJournalFilterCollapse === null ? true : savedJournalFilterCollapse === '1', { persist: false });
+      syncAllJournalFilterPickers();
+
+      journalFilterToggle.addEventListener('click', () => {
+        setJournalFiltersCollapsed(!journalPage.classList.contains('filters-collapsed'));
+      });
+
+      journalFilterEntries.forEach(({ button, select, menu }) => {
+        button.addEventListener('click', () => {
+          const open = !menu.classList.contains('open');
+          closeCustomMenus(open ? menu : null);
+          syncJournalFilterPicker({ button, select, menu });
+          menu.classList.toggle('open', open);
+          button.setAttribute('aria-expanded', String(open));
+        });
+
+        menu.addEventListener('click', (event) => {
+          const option = event.target.closest('button[data-journal-filter-value]');
+          if (!option) return;
+          select.value = option.dataset.journalFilterValue || 'ALL';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          menu.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+          syncJournalFilterPicker({ button, select, menu });
+        });
+      });
+
       journalSearch.addEventListener('input', renderTrades);
       [
         journalInstrumentFilter,
@@ -12885,7 +13124,10 @@
         journalResultFilter,
         journalSessionFilter,
         journalPeriodFilter
-      ].forEach((filter) => filter.addEventListener('change', renderTrades));
+      ].forEach((filter) => filter.addEventListener('change', () => {
+        syncAllJournalFilterPickers();
+        renderTrades();
+      }));
 
       journalClearFilters.addEventListener('click', () => {
         journalSearch.value = '';
@@ -12894,6 +13136,7 @@
         journalResultFilter.value = 'ALL';
         journalSessionFilter.value = 'ALL';
         journalPeriodFilter.value = 'ALL';
+        syncAllJournalFilterPickers();
         renderTrades();
         journalSearch.focus();
       });
@@ -13418,6 +13661,7 @@
       });
 
       document.addEventListener('click', (event) => {
+        if (!event.target.closest('.journal-filter-picker-wrap')) closeJournalFilterMenus();
         if (!accountMenu.contains(event.target) && event.target !== accountMenuBtn) {
           accountMenu.classList.remove('open');
           accountMenuBtn.setAttribute('aria-expanded', 'false');
