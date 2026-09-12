@@ -18,7 +18,7 @@
   })();
 </script>
 <meta name="theme-color" content="#070b0d">
-<meta name="ertrades-build" content="v83r-journal-custom-filters-collapse">
+<meta name="ertrades-build" content="v84a-ui-polish">
 <meta name="application-name" content="eRTrades">
 <meta name="apple-mobile-web-app-title" content="eRTrades">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -6105,6 +6105,177 @@
       #ertrades-app .nav-btn,
       #ertrades-app .metric { transition: .16s ease; }
     }
+
+    /* ======================================================
+       v84a — UI POLISH PASS
+       Visual refinement only. No app logic changed.
+       ====================================================== */
+    #ertrades-app {
+      --polish-shadow: 0 10px 28px rgba(0,0,0,.10);
+      --polish-shadow-soft: 0 6px 18px rgba(0,0,0,.07);
+      --polish-transition: 170ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    #ertrades-app button,
+    #ertrades-app [role="button"] { -webkit-tap-highlight-color: transparent; }
+
+    #ertrades-app .summary-card,
+    #ertrades-app .metric,
+    #ertrades-app .section-card,
+    #ertrades-app .journal-head,
+    #ertrades-app .journal-filter-panel,
+    #ertrades-app .journal-list,
+    #ertrades-app .journal-empty,
+    #ertrades-app .calendar-page,
+    #ertrades-app .analytics-page,
+    #ertrades-app .settings-page,
+    #ertrades-app .prop-firm-page,
+    #ertrades-app .trade-detail-page {
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.018), var(--polish-shadow-soft);
+    }
+
+    #ertrades-app .summary-card {
+      border-color: rgba(125,145,154,.22);
+      background: linear-gradient(145deg,rgba(255,255,255,.018),transparent 42%), linear-gradient(145deg,#10181b,#0b1013);
+    }
+
+    #ertrades-app .summary-card::before {
+      content: "";
+      position: absolute;
+      left: 19px;
+      top: 0;
+      width: 54px;
+      height: 2px;
+      border-radius: 0 0 999px 999px;
+      background: rgba(184,255,79,.62);
+      pointer-events: none;
+    }
+
+    #ertrades-app .summary-card::after { opacity: .72; }
+    #ertrades-app .summary-foot { border-top-color: rgba(125,145,154,.18); }
+    #ertrades-app .metrics { gap: 10px; }
+
+    #ertrades-app .metric {
+      padding: 15px;
+      min-height: 92px;
+      border-radius: 16px;
+      border-color: rgba(125,145,154,.18);
+      background: linear-gradient(180deg,rgba(255,255,255,.012),transparent 60%), var(--panel);
+      transition: border-color var(--polish-transition), background-color var(--polish-transition), transform var(--polish-transition), box-shadow var(--polish-transition);
+    }
+
+    #ertrades-app .metric-value { margin-top: 10px; font-weight: 760; }
+
+    #ertrades-app .summary-label,
+    #ertrades-app .metric-label,
+    #ertrades-app .section-kicker { letter-spacing: .09em; }
+
+    #ertrades-app .section-card { border-radius: 18px; border-color: rgba(125,145,154,.18); }
+    #ertrades-app .section-head { padding: 16px; border-bottom-color: rgba(125,145,154,.16); }
+    #ertrades-app .section-title { font-weight: 760; letter-spacing: -.015em; }
+
+    #ertrades-app .new-trade,
+    #ertrades-app .nav-btn,
+    #ertrades-app .custom-select-btn,
+    #ertrades-app .account-menu-btn,
+    #ertrades-app .secondary-btn,
+    #ertrades-app .equity-filter,
+    #ertrades-app .analytics-filter,
+    #ertrades-app .calendar-nav-btn,
+    #ertrades-app .theme-option,
+    #ertrades-app .journal-filter-toggle,
+    #ertrades-app .journal-filter-btn,
+    #ertrades-app .prop-loss-type-btn,
+    #ertrades-app .prop-firm-edit-btn {
+      transition: color var(--polish-transition), background-color var(--polish-transition), border-color var(--polish-transition), box-shadow var(--polish-transition), transform var(--polish-transition), opacity var(--polish-transition);
+    }
+
+    #ertrades-app .nav-btn.active { box-shadow: inset 0 0 0 1px rgba(184,255,79,.08); }
+
+    #ertrades-app .new-trade:active,
+    #ertrades-app .secondary-btn:active,
+    #ertrades-app .custom-select-btn:active,
+    #ertrades-app .journal-filter-toggle:active,
+    #ertrades-app .journal-filter-btn:active,
+    #ertrades-app .prop-loss-type-btn:active,
+    #ertrades-app .nav-btn:active { transform: scale(.985); }
+
+    #ertrades-app .popup-menu,
+    #ertrades-app .account-menu { border-color: rgba(125,145,154,.22); box-shadow: 0 18px 44px rgba(0,0,0,.34); }
+
+    #ertrades-app .trade-row,
+    #ertrades-app .calendar-cell,
+    #ertrades-app .analytics-stat,
+    #ertrades-app .analytics-insight,
+    #ertrades-app .settings-account-card,
+    #ertrades-app .prop-rule-card,
+    #ertrades-app .prop-monitor-card,
+    #ertrades-app .prop-payout-card {
+      transition: border-color var(--polish-transition), background-color var(--polish-transition), transform var(--polish-transition), box-shadow var(--polish-transition);
+    }
+
+    #ertrades-app :is(button,input,textarea,select,[tabindex]):focus-visible {
+      outline: 2px solid rgba(184,255,79,.58);
+      outline-offset: 2px;
+    }
+
+    #ertrades-app.theme-light {
+      --polish-shadow: 0 10px 28px rgba(43,55,61,.07);
+      --polish-shadow-soft: 0 6px 18px rgba(43,55,61,.055);
+    }
+
+    #ertrades-app.theme-light .summary-card {
+      border-color: rgba(74,96,105,.15);
+      background: linear-gradient(145deg,rgba(118,185,29,.035),transparent 44%), #ffffff;
+    }
+    #ertrades-app.theme-light .metric,
+    #ertrades-app.theme-light .section-card { border-color: rgba(74,96,105,.14); }
+
+    @media (hover:hover) and (pointer:fine) {
+      #ertrades-app .metric:hover,
+      #ertrades-app .trade-row:hover,
+      #ertrades-app .calendar-cell:not(.outside):hover,
+      #ertrades-app .analytics-stat:hover,
+      #ertrades-app .analytics-insight:hover,
+      #ertrades-app .settings-account-card:hover {
+        border-color: rgba(184,255,79,.22);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.02), var(--polish-shadow);
+        transform: translateY(-1px);
+      }
+      #ertrades-app .new-trade:hover {
+        filter: brightness(1.035);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(184,255,79,.10);
+      }
+      #ertrades-app .nav-btn:hover:not(.active),
+      #ertrades-app .equity-filter:hover,
+      #ertrades-app .analytics-filter:hover,
+      #ertrades-app .journal-filter-toggle:hover,
+      #ertrades-app .journal-filter-btn:hover,
+      #ertrades-app .prop-loss-type-btn:hover {
+        border-color: rgba(184,255,79,.20);
+        color: var(--soft);
+      }
+    }
+
+    @media (min-width:1024px) {
+      #ertrades-app .desktop-layout { gap: 22px; }
+      #ertrades-app .desktop-layout > .workspace { gap: 20px; }
+      #ertrades-app .summary-card { padding: 27px; }
+      #ertrades-app .summary-card::before { left: 27px; width: 66px; }
+      #ertrades-app .metric { min-height: 114px; padding: 18px; }
+      #ertrades-app .metric-value { font-size: 27px; }
+      #ertrades-app .section-head { padding: 19px 20px 17px; }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      #ertrades-app *, #ertrades-app *::before, #ertrades-app *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
   </style>
 
   <div class="shell">
