@@ -10504,7 +10504,12 @@
 
         const dailyRatio = dailyLimit > 0 ? dailyUsed / dailyLimit : 0;
         const maxRatio = maxLimit > 0 ? maxUsed / maxLimit : 0;
-        const profitProgress = target > 0 ? clampPercent((currentProfit / target) * 100) : 100;
+        // Target progress is based ONLY on the manual payout/profit target.
+        // If Current Profit has reached the displayed Target, the card must be 100%.
+        // Keep this independent from profitable days, consistency, daily loss, and max loss.
+        const profitProgress = target > 0
+          ? (currentProfit >= target ? 100 : clampPercent((currentProfit / target) * 100))
+          : 100;
         const daysProgress = minDays > 0 ? clampPercent((profitableDays / minDays) * 100) : 100;
         const consistencyPass = consistencyLimit <= 0 || consistency === null || consistency <= consistencyLimit;
         const consistencyProgress = consistencyLimit <= 0 || consistency === null
@@ -10518,7 +10523,7 @@
         // or consistency progress. The other rules remain visible as
         // separate gates in the Rule Monitor / READY state.
         const readiness = target > 0
-          ? Math.round(clampPercent(profitProgress))
+          ? (currentProfit >= target ? 100 : Math.round(clampPercent((currentProfit / target) * 100)))
           : 0;
         const ready = safetyPass && profitProgress >= 100 && daysProgress >= 100 && consistencyPass;
 
