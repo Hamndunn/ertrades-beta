@@ -4876,7 +4876,29 @@
     #ertrades-app .prop-quick-rule span { display: block; color: var(--muted); font-size: 8px; font-weight: 760; }
     #ertrades-app .prop-quick-rule strong { display: block; margin-top: 4px; color: var(--soft); font-size: 10px; font-weight: 820; overflow-wrap: anywhere; }
 
-    #ertrades-app .prop-firm-form { padding: 15px; }
+    /* Prop Firm setup/edit opens as a modal, matching the New Trade popup. */
+    #ertrades-app .prop-firm-form {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 90;
+      width: min(94%, 900px);
+      max-height: 88vh;
+      margin: 0;
+      padding: 15px;
+      transform: translate(-50%, -50%);
+      overflow-y: auto;
+      box-shadow: 0 0 0 100vmax rgba(0,0,0,.72), 0 24px 70px rgba(0,0,0,.42);
+    }
+
+    #ertrades-app .prop-firm-form[hidden] { display: none !important; }
+
+    @media (max-width: 640px) {
+      #ertrades-app .prop-firm-form {
+        width: min(94%, 560px);
+        max-height: 88vh;
+      }
+    }
 
     /* v83q — eRTrades custom picker for Prop Firm Maximum Loss Type.
        Replaces the native iOS <select> sheet so this control matches the app UI. */
@@ -10448,7 +10470,16 @@
           ? 100
           : clampPercent((consistencyLimit / Math.max(consistency, .0001)) * 100);
         const safetyPass = dailyRatio < 1 && maxRatio < 1;
-        const readiness = Math.round((profitProgress + daysProgress + consistencyProgress + (safetyPass ? 100 : 0)) / 4);
+
+        // Readiness starts at 0% and grows from the actual profit target.
+        // Trading days, consistency and rule safety act as gates instead of
+        // creating artificial readiness when the account has made no profit.
+        const daysFactor = minDays > 0 ? clampPercent((tradingDays / minDays) * 100) / 100 : 1;
+        const consistencyFactor = consistencyPass ? 1 : Math.max(0, consistencyProgress / 100);
+        const safetyFactor = safetyPass ? 1 : 0;
+        const readiness = target > 0
+          ? Math.round(clampPercent(profitProgress) * daysFactor * consistencyFactor * safetyFactor)
+          : 0;
         const ready = safetyPass && profitProgress >= 100 && daysProgress >= 100 && consistencyPass;
 
         let status = 'SAFE';
