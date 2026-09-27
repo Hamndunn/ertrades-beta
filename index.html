@@ -4870,6 +4870,11 @@
     #ertrades-app .prop-payout-details span { color: var(--muted); font-size: 10px; }
     #ertrades-app .prop-payout-details strong { color: var(--soft); font-size: 11px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-align: right; }
     #ertrades-app .prop-monitor-title { margin-top: 10px; color: var(--text); font-size: 14px; font-weight: 820; line-height: 1.35; }
+    #ertrades-app .prop-monitor-card.safe { border-color: rgba(99,230,161,.24); }
+    #ertrades-app .prop-monitor-card.watch { border-color: rgba(241,197,107,.42); background: rgba(241,197,107,.035); }
+    #ertrades-app .prop-monitor-card.danger { border-color: rgba(255,107,121,.48); background: rgba(255,107,121,.045); }
+    #ertrades-app .prop-monitor-card.breach { border-color: rgba(255,107,121,.72); background: rgba(255,107,121,.07); }
+    #ertrades-app .prop-monitor-card.watch .prop-monitor-title, #ertrades-app .prop-monitor-card.danger .prop-monitor-title, #ertrades-app .prop-monitor-card.breach .prop-monitor-title { color: var(--red); }
     #ertrades-app .prop-monitor-card p { margin: 7px 0 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
     #ertrades-app .prop-quick-rules { margin-top: 12px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
     #ertrades-app .prop-quick-rule { min-width: 0; padding: 9px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); }
@@ -7679,7 +7684,7 @@
                 <input id="prop-max-mode-input" type="hidden" value="static">
               </div>
               <label class="field"><span>Consistency Limit (%)</span><input id="prop-consistency-limit-input" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="20"></label>
-              <label class="field"><span>Minimum Trading Days</span><input id="prop-min-days-input" type="number" min="0" max="365" step="1" inputmode="numeric" placeholder="5"></label>
+              <label class="field"><span>Minimum Profitable Days</span><input id="prop-min-days-input" type="number" min="0" max="365" step="1" inputmode="numeric" placeholder="5"></label>
               <label class="field"><span>Profit / Payout Target (%)</span><input id="prop-target-input" type="number" min="0" max="1000" step="0.01" inputmode="decimal" placeholder="5"></label>
             </div>
             <div class="form-error" id="prop-firm-form-error"></div>
@@ -10454,6 +10459,8 @@
 
         const tradingDays = new Set(accountTrades.map((trade) => trade.date).filter(Boolean)).size;
         const minDays = Math.max(0, Math.round(Number(config.minTradingDays) || 0));
+        const profitableDayThreshold = starting * 0.005;
+        const profitableDays = Array.from(dailyMap.values()).filter((value) => Number(value) >= profitableDayThreshold && profitableDayThreshold > 0).length;
         const positiveDays = Array.from(dailyMap.values()).filter((value) => Number(value) > 0);
         const bestDay = positiveDays.length ? Math.max(...positiveDays) : 0;
         const consistency = totalPl > 0 && bestDay > 0 ? (bestDay / totalPl) * 100 : null;
@@ -10464,7 +10471,7 @@
         const dailyRatio = dailyLimit > 0 ? dailyUsed / dailyLimit : 0;
         const maxRatio = maxLimit > 0 ? maxUsed / maxLimit : 0;
         const profitProgress = target > 0 ? clampPercent((currentProfit / target) * 100) : 100;
-        const daysProgress = minDays > 0 ? clampPercent((tradingDays / minDays) * 100) : 100;
+        const daysProgress = minDays > 0 ? clampPercent((profitableDays / minDays) * 100) : 100;
         const consistencyPass = consistencyLimit <= 0 || consistency === null || consistency <= consistencyLimit;
         const consistencyProgress = consistencyLimit <= 0 || consistency === null
           ? 100
@@ -10474,7 +10481,7 @@
         // Readiness starts at 0% and grows from the actual profit target.
         // Trading days, consistency and rule safety act as gates instead of
         // creating artificial readiness when the account has made no profit.
-        const daysFactor = minDays > 0 ? clampPercent((tradingDays / minDays) * 100) / 100 : 1;
+        const daysFactor = minDays > 0 ? clampPercent((profitableDays / minDays) * 100) / 100 : 1;
         const consistencyFactor = consistencyPass ? 1 : Math.max(0, consistencyProgress / 100);
         const safetyFactor = safetyPass ? 1 : 0;
         const readiness = target > 0
@@ -10489,7 +10496,7 @@
 
         return {
           starting, totalPl, balance, todayPl, dailyUsed, dailyLimit, dailyRatio,
-          maxUsed, maxLimit, maxRatio, tradingDays, minDays, consistency,
+          maxUsed, maxLimit, maxRatio, tradingDays, profitableDays, profitableDayThreshold, minDays, consistency,
           consistencyLimit, target, currentProfit, profitProgress, daysProgress,
           consistencyPass, readiness, ready, status, peakBalance
         };
@@ -10571,11 +10578,12 @@
           setPropRuleState(propConsistencyCard, consistencyRatio);
         }
 
-        propDaysValue.textContent = `${metrics.tradingDays} / ${metrics.minDays}`;
+        propDaysValue.textContent = `${metrics.profitableDays} / ${metrics.minDays}`;
         propDaysBar.style.width = `${metrics.daysProgress}%`;
-        propDaysFoot.textContent = metrics.tradingDays >= metrics.minDays
-          ? 'Minimum trading days completed.'
-          : `${Math.max(0, metrics.minDays - metrics.tradingDays)} trading ${Math.max(0, metrics.minDays - metrics.tradingDays) === 1 ? 'day' : 'days'} remaining.`;
+        propDaysFoot.textContent = metrics.profitableDays >= metrics.minDays
+          ? `Minimum profitable days completed. Each day needs ≥${formatMoney(metrics.profitableDayThreshold, currency)} (+0.50% of starting balance).`
+          : `${Math.max(0, metrics.minDays - metrics.profitableDays)} profitable ${Math.max(0, metrics.minDays - metrics.profitableDays) === 1 ? 'day' : 'days'} remaining. Each day needs ≥${formatMoney(metrics.profitableDayThreshold, currency)} (+0.50% of starting balance).`;
+        setPropRuleState(propDaysCard, metrics.minDays > 0 ? metrics.profitableDays / metrics.minDays : 0);
         propDaysCard.className = 'prop-rule-card safe';
 
         propReadinessValue.textContent = `${metrics.readiness}%`;
@@ -10585,14 +10593,17 @@
         propTargetProfit.textContent = formatMoney(metrics.target, currency);
         propProfitNeeded.textContent = formatMoney(Math.max(0, metrics.target - metrics.currentProfit), currency);
 
+        propMonitorCard.classList.remove('safe', 'watch', 'danger', 'breach');
+        propMonitorCard.classList.add(metrics.status === 'BREACH' ? 'breach' : metrics.status === 'DANGER' ? 'danger' : metrics.status === 'WATCH' ? 'watch' : 'safe');
+
         if (metrics.status === 'BREACH') {
-          propMonitorTitle.textContent = 'A configured loss limit has been reached.';
+          propMonitorTitle.textContent = '⚠️ LOSS LIMIT BREACH — STOP & REVIEW';
           propMonitorCopy.textContent = 'Review the prop firm dashboard and the firm’s official platform metrics before taking another trade.';
         } else if (metrics.status === 'DANGER') {
-          propMonitorTitle.textContent = 'Account is close to a loss limit.';
+          propMonitorTitle.textContent = '⚠️ RED ZONE — Loss limit is close.';
           propMonitorCopy.textContent = 'The journal shows less than 20% buffer on at least one configured loss rule.';
         } else if (!metrics.consistencyPass) {
-          propMonitorTitle.textContent = 'Consistency still needs work.';
+          propMonitorTitle.textContent = '⚠️ RED ZONE — Consistency needs attention.';
           propMonitorCopy.textContent = 'More distributed net profit is needed before the configured consistency rule is satisfied.';
         } else if (!metrics.ready) {
           propMonitorTitle.textContent = 'Account is within the configured rules.';
@@ -10606,7 +10617,7 @@
           ['Daily Loss', `${Number(config.dailyLossPct || 0).toFixed(2)}%`],
           ['Max Loss', `${Number(config.maxLossPct || 0).toFixed(2)}% · ${config.maxLossMode === 'trailing' ? 'Trailing' : 'Static'}`],
           ['Consistency', Number(config.consistencyPct || 0) > 0 ? `≤${Number(config.consistencyPct).toFixed(2)}%` : 'Off'],
-          ['Min Days', String(Math.max(0, Math.round(Number(config.minTradingDays) || 0)))],
+          ['Profitable Days', String(Math.max(0, Math.round(Number(config.minTradingDays) || 0)))],
           ['Target', `${Number(config.profitTargetPct || 0).toFixed(2)}%`]
         ];
         propQuickRules.innerHTML = '';
