@@ -8766,6 +8766,20 @@
             const payload = await response.json();
             message = payload?.message || payload?.error || message;
           } catch (_) {}
+          const jwtExpired = response.status === 401 || /jwt expired|invalid jwt|token has expired|invalid token/i.test(message);
+          if (jwtExpired && session?.refresh_token) {
+            const refreshed = await refreshSupabaseSession(session);
+            if (refreshed?.access_token) {
+              const retryHeaders = {
+                apikey: SUPABASE_PUBLISHABLE_KEY,
+                Authorization: `Bearer ${refreshed.access_token}`,
+                ...(options.headers || {})
+              };
+              const retryResponse = await fetch(`${SUPABASE_URL}/storage/v1/object/${SUPABASE_SCREENSHOT_BUCKET}/${encodedPath}`, { ...options, headers: retryHeaders });
+              if (retryResponse.ok) return retryResponse;
+            }
+            throw new Error('Your session expired. Please sign in again.');
+          }
           throw new Error(message);
         }
         return response;
@@ -8867,30 +8881,50 @@
 
       const supabaseRest = async (table, options = {}) => {
         if (!currentUser?.id) throw new Error('Sign in again to sync trading data.');
-        const session = await getValidSupabaseSession();
-        if (!session?.access_token) throw new Error('Sign in again to sync trading data.');
         const query = options.query ? `?${options.query}` : '';
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
-          method: options.method || 'GET',
-          headers: {
-            apikey: SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${session.access_token}`,
-            ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-            ...(options.prefer ? { Prefer: options.prefer } : {})
-          },
-          ...(options.body ? { body: JSON.stringify(options.body) } : {})
-        });
-        if (!response.ok) {
+        let session = await getValidSupabaseSession();
+        if (!session?.access_token) throw new Error('Sign in again to sync trading data.');
+
+        const request = async (activeSession) => {
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+            method: options.method || 'GET',
+            headers: {
+              apikey: SUPABASE_PUBLISHABLE_KEY,
+              Authorization: `Bearer ${activeSession.access_token}`,
+              ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+              ...(options.prefer ? { Prefer: options.prefer } : {})
+            },
+            ...(options.body ? { body: JSON.stringify(options.body) } : {})
+          });
+          if (response.ok) return response;
           let message = `Unable to sync ${table}.`;
           try {
             const payload = await response.json();
-            message = payload?.message || payload?.error || message;
+            message = payload?.message || payload?.error || payload?.msg || message;
           } catch (_) {}
-          throw new Error(message);
+          const error = new Error(message);
+          error.status = response.status;
+          throw error;
+        };
+
+        try {
+          const response = await request(session);
+          if (response.status === 204) return null;
+          const text = await response.text();
+          return text ? JSON.parse(text) : null;
+        } catch (error) {
+          const message = String(error?.message || '');
+          const jwtExpired = error?.status === 401 || /jwt expired|invalid jwt|token has expired|invalid token/i.test(message);
+          if (!jwtExpired || !session?.refresh_token) throw error;
+
+          const refreshed = await refreshSupabaseSession(session);
+          if (!refreshed?.access_token) throw new Error('Your session expired. Please sign in again.');
+          session = refreshed;
+          const response = await request(session);
+          if (response.status === 204) return null;
+          const text = await response.text();
+          return text ? JSON.parse(text) : null;
         }
-        if (response.status === 204) return null;
-        const text = await response.text();
-        return text ? JSON.parse(text) : null;
       };
 
       const restoreAccountsFromSupabase = async () => {
