@@ -11557,15 +11557,32 @@
         const map = metadata?.[DASHBOARD_REMINDER_META_KEY];
         return map && typeof map === 'object' && !Array.isArray(map) ? { ...map } : {};
       };
+      const fetchFreshDashboardReminderMap = async () => {
+        if (!currentUser?.id) return {};
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || session.user?.id !== currentUser.id) return {};
+        try {
+          const freshUser = await supabaseRequest('/auth/v1/user', {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          const nextSession = {
+            ...session,
+            user: { ...session.user, ...(freshUser || {}), user_metadata: freshUser?.user_metadata || session.user?.user_metadata || {} }
+          };
+          saveSupabaseSession(nextSession);
+          return getDashboardReminderMap(nextSession);
+        } catch (_) {
+          return getDashboardReminderMap(session);
+        }
+      };
       const setDashboardReminderLocal = (accountId, value) => {
         if (!accountId || !value) return false;
         return safeLocalSet(`${DASHBOARD_REMINDER_KEY_PREFIX}${currentUser?.id || 'local'}:${accountId}`, value);
       };
       const restoreDashboardRemindersFromSupabase = async () => {
         if (!currentUser?.id) return false;
-        const session = await getValidSupabaseSession();
-        if (!session?.access_token || session.user?.id !== currentUser.id) return false;
-        const map = getDashboardReminderMap(session);
+        const map = await fetchFreshDashboardReminderMap();
         Object.entries(map).forEach(([accountId, value]) => {
           if (typeof value === 'string' && value.trim()) setDashboardReminderLocal(accountId, value.trim());
         });
@@ -11587,7 +11604,7 @@
           headers: { Authorization: `Bearer ${session.access_token}` },
           body: JSON.stringify({ data: nextMetadata })
         });
-        const nextSession = { ...session, user: { ...session.user, ...(updatedUser || {}), user_metadata: nextMetadata } };
+        const nextSession = { ...session, user: { ...session.user, ...(updatedUser || {}), user_metadata: updatedUser?.user_metadata || nextMetadata } };
         saveSupabaseSession(nextSession);
         return true;
       };
