@@ -11546,10 +11546,50 @@
 
 
       const DASHBOARD_REMINDER_KEY_PREFIX = 'ertrades-dashboard-reminder:';
+      const DASHBOARD_REMINDER_META_KEY = 'ertrades_dashboard_reminders';
       const dashboardReminderKey = (accountId = selectedAccountId) => `${DASHBOARD_REMINDER_KEY_PREFIX}${currentUser?.id || 'local'}:${accountId || 'none'}`;
       const getDashboardReminder = () => {
         const saved = safeLocalGet(dashboardReminderKey());
         return saved || 'Protect your capital. Trade your plan, not your emotions.';
+      };
+      const getDashboardReminderMap = (session = null) => {
+        const metadata = session?.user?.user_metadata || {};
+        const map = metadata?.[DASHBOARD_REMINDER_META_KEY];
+        return map && typeof map === 'object' && !Array.isArray(map) ? { ...map } : {};
+      };
+      const setDashboardReminderLocal = (accountId, value) => {
+        if (!accountId || !value) return false;
+        return safeLocalSet(`${DASHBOARD_REMINDER_KEY_PREFIX}${currentUser?.id || 'local'}:${accountId}`, value);
+      };
+      const restoreDashboardRemindersFromSupabase = async () => {
+        if (!currentUser?.id) return false;
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || session.user?.id !== currentUser.id) return false;
+        const map = getDashboardReminderMap(session);
+        Object.entries(map).forEach(([accountId, value]) => {
+          if (typeof value === 'string' && value.trim()) setDashboardReminderLocal(accountId, value.trim());
+        });
+        renderDashboardReminder();
+        return true;
+      };
+      const saveDashboardReminderToSupabase = async (accountId, value) => {
+        if (!currentUser?.id || !accountId || !value) return false;
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || session.user?.id !== currentUser.id) throw new Error('Sign in again to sync your reminder.');
+        const existingMetadata = session.user?.user_metadata && typeof session.user.user_metadata === 'object'
+          ? { ...session.user.user_metadata }
+          : {};
+        const reminderMap = getDashboardReminderMap(session);
+        reminderMap[accountId] = value;
+        const nextMetadata = { ...existingMetadata, [DASHBOARD_REMINDER_META_KEY]: reminderMap };
+        const updatedUser = await supabaseRequest('/auth/v1/user', {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          body: JSON.stringify({ data: nextMetadata })
+        });
+        const nextSession = { ...session, user: { ...session.user, ...(updatedUser || {}), user_metadata: nextMetadata } };
+        saveSupabaseSession(nextSession);
+        return true;
       };
       const renderDashboardReminder = () => {
         if (!dashboardReminder || !dashboardReminderText) return;
@@ -11564,13 +11604,22 @@
           dashboardReminderEditor.classList.add('visible');
           dashboardReminderInput.focus();
         });
-        dashboardReminderEditor.addEventListener('submit', (event) => {
+        dashboardReminderEditor.addEventListener('submit', async (event) => {
           event.preventDefault();
           const value = dashboardReminderInput.value.trim();
           if (!value) return;
-          safeLocalSet(dashboardReminderKey(), value);
+          const accountId = selectedAccountId;
+          setDashboardReminderLocal(accountId, value);
           dashboardReminderText.textContent = value;
           dashboardReminderEditor.classList.remove('visible');
+          if (usingCloudData && currentUser?.id && accountId) {
+            try {
+              await saveDashboardReminderToSupabase(accountId, value);
+            } catch (error) {
+              notice.textContent = error instanceof Error ? error.message : 'Reminder saved locally, but cloud sync failed.';
+              notice.classList.add('show');
+            }
+          }
         });
       }
 
@@ -12883,6 +12932,7 @@
             renderAccountSelector();
             renderDashboardAccount();
             showAuthenticatedApp();
+            try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
 
             try { await restoreAccountsFromSupabase(); } catch (_) {}
             try { await restoreTradesFromSupabase(); } catch (_) {}
@@ -13142,6 +13192,7 @@
             renderAccountSelector();
             renderDashboardAccount();
             showAuthenticatedApp();
+            try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
             await detectExistingLocalData();
           } else {
             const response = await supabaseRequest('/auth/v1/token?grant_type=password', {
@@ -13159,6 +13210,7 @@
             renderAccountSelector();
             renderDashboardAccount();
             showAuthenticatedApp();
+            try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
             await detectExistingLocalData();
           }
           authForm.reset();
