@@ -8572,6 +8572,8 @@
       let recoveryAccessToken = null;
       let currentUser = null;
       let usingCloudData = false;
+      let cloudJournalSyncTimer = null;
+      let cloudJournalSyncInFlight = false;
       let pendingScreenshots = { before: null, after: null };
       let previewUrls = { before: null, after: null };
       let equityFilter = 'ALL';
@@ -9055,6 +9057,72 @@
         persistCloudState();
         return true;
       };
+
+      // Keep every authenticated device aligned with the Supabase source of truth.
+      // This intentionally refreshes the full journal, including empty result sets,
+      // so deletes made on another device are also reflected locally.
+      const syncCloudJournalState = async ({ render = true } = {}) => {
+        if (!usingCloudData || !currentUser?.id || cloudJournalSyncInFlight) return false;
+        cloudJournalSyncInFlight = true;
+        try {
+          const session = await getValidSupabaseSession();
+          if (!session?.access_token) return false;
+          const headers = {
+            apikey: SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${session.access_token}`
+          };
+          const [accountResponse, tradeResponse] = await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/trading_accounts?user_id=eq.${encodeURIComponent(currentUser.id)}&select=*`, { headers }),
+            fetch(`${SUPABASE_URL}/rest/v1/trades?user_id=eq.${encodeURIComponent(currentUser.id)}&select=*`, { headers })
+          ]);
+          if (!accountResponse.ok || !tradeResponse.ok) return false;
+          const [accountRows, tradeRows] = await Promise.all([accountResponse.json(), tradeResponse.json()]);
+          if (!Array.isArray(accountRows) || !Array.isArray(tradeRows)) return false;
+
+          const previousSelectedAccountId = selectedAccountId;
+          accounts = accountRows.map(mapSupabaseAccount);
+          trades = tradeRows.map(mapSupabaseTrade);
+          selectedAccountId = accounts.some((account) => account.id === previousSelectedAccountId)
+            ? previousSelectedAccountId
+            : accounts[0]?.id || null;
+          persistCloudState();
+
+          if (render) {
+            renderAccountSelector();
+            renderDashboardAccount();
+            if (detailTradeId && !trades.some((trade) => trade.id === detailTradeId)) {
+              detailTradeId = null;
+              showPage('Journal');
+            } else if (detailTradeId) {
+              renderTradeDetail();
+            }
+          }
+          return true;
+        } catch (_) {
+          return false;
+        } finally {
+          cloudJournalSyncInFlight = false;
+        }
+      };
+
+      const startCloudJournalSync = () => {
+        if (cloudJournalSyncTimer) clearInterval(cloudJournalSyncTimer);
+        cloudJournalSyncTimer = setInterval(() => {
+          syncCloudJournalState();
+        }, 5000);
+      };
+
+      const stopCloudJournalSync = () => {
+        if (cloudJournalSyncTimer) clearInterval(cloudJournalSyncTimer);
+        cloudJournalSyncTimer = null;
+      };
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && usingCloudData) syncCloudJournalState();
+      });
+      window.addEventListener('focus', () => {
+        if (usingCloudData) syncCloudJournalState();
+      });
 
       const saveSupabaseSession = (session) => {
         if (!session?.access_token || !session?.user?.id) return false;
@@ -9747,6 +9815,7 @@
         }
         loadTheme();
         showPage('Dashboard');
+        startCloudJournalSync();
 
         if (window.history?.replaceState) {
           try {
@@ -13403,6 +13472,7 @@
         safeLocalRemove(SUPABASE_SESSION_KEY);
         safeLocalRemove(AUTH_SESSION_KEY);
         if (logoutUserId) safeLocalRemove(lastActiveKey(logoutUserId));
+        stopCloudJournalSync();
         currentUser = null;
         usingCloudData = false;
         accounts = [];
