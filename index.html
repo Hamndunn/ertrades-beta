@@ -14791,6 +14791,12 @@
           tradeFormSaveDraft.disabled = true;
           tradeFormSaveDraft.textContent = 'Saving…';
           await upsertJournalDraft();
+          // Persistent Draft is already saved; clear the old single-form autosave
+          // so closing the modal later cannot resurrect stale draft data.
+          clearDraft();
+          resetTradeForm();
+          renderDashboardAccount();
+          showPage('Journal');
         } catch (error) {
           showTradeError(error instanceof Error ? error.message : 'Unable to save this draft.');
         } finally {
