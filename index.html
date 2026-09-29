@@ -7306,22 +7306,9 @@
           <div class="form-error" id="trade-form-error" role="alert"></div>
           <div class="trade-form-actions">
             <button class="secondary-btn" id="trade-form-cancel" type="button">Cancel</button>
-            <button class="secondary-btn" id="trade-form-save-draft" type="button">Save Draft</button>
             <button class="primary-btn" type="submit">Save Trade</button>
           </div>
         </form>
-      </dialog>
-
-      <dialog class="drafts-dialog" id="drafts-dialog" aria-labelledby="drafts-title">
-        <div class="drafts-dialog-head">
-          <div>
-            <div class="section-kicker">Journal</div>
-            <div class="section-title" id="drafts-title">Trade Drafts</div>
-          </div>
-          <button class="icon-btn" id="drafts-close" type="button" aria-label="Close drafts">×</button>
-        </div>
-        <div class="drafts-dialog-copy">Open a draft to continue. Drafts do not affect your account matrix, P/L, analytics, equity curve, or Prop Firm rules until you save them as a completed trade.</div>
-        <div class="drafts-list" id="drafts-list"></div>
       </dialog>
 
       <div id="frontend-notice" class="toast" role="status" aria-live="polite">Trade entry is intentionally not included in this frontend-only step.</div>
@@ -7447,7 +7434,6 @@
             <div class="section-title" id="journal-title">Saved Trades</div>
           </div>
           <div class="journal-head-actions">
-            <button class="secondary-btn journal-drafts-btn" id="drafts-btn" type="button">Drafts <span id="drafts-count" class="drafts-count">0</span></button>
             <span class="section-meta" id="journal-count">0 trades</span>
             <button class="journal-filter-toggle" id="journal-filter-toggle" type="button" aria-expanded="false" aria-controls="journal-filter-panel">
               <span>Filters</span>
@@ -8235,25 +8221,7 @@
             transform: none;
           }
         }
-      
-      #ertrades-app .journal-drafts-btn { display:inline-flex; align-items:center; gap:7px; }
-      #ertrades-app .drafts-count { min-width:20px; height:20px; padding:0 6px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; background:rgba(241,197,107,.16); color:var(--yellow); font-size:11px; font-weight:800; }
-      #ertrades-app .drafts-dialog { width:min(94%,720px); max-height:82vh; padding:0; border:1px solid var(--border); border-radius:18px; background:var(--card); color:var(--text); box-shadow:0 24px 80px rgba(0,0,0,.55); }
-      #ertrades-app .drafts-dialog::backdrop { background:rgba(0,0,0,.72); }
-      #ertrades-app .drafts-dialog-head { display:flex; justify-content:space-between; align-items:center; padding:18px 20px 10px; }
-      #ertrades-app .drafts-dialog-copy { padding:0 20px 16px; color:var(--muted); font-size:13px; line-height:1.5; }
-      #ertrades-app .drafts-list { padding:0 14px 16px; display:grid; gap:9px; max-height:58vh; overflow:auto; }
-      #ertrades-app .draft-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px; border:1px solid var(--border); border-radius:13px; background:var(--surface); }
-      #ertrades-app .draft-row-title { display:flex; align-items:center; gap:8px; }
-      #ertrades-app .draft-row-title strong { font-size:14px; }
-      #ertrades-app .draft-row-meta { margin-top:5px; color:var(--muted); font-size:12px; }
-      #ertrades-app .draft-badge { font-size:9px; font-weight:900; letter-spacing:.08em; color:var(--yellow); background:rgba(241,197,107,.12); border:1px solid rgba(241,197,107,.25); padding:4px 6px; border-radius:6px; }
-      #ertrades-app .draft-row-actions { display:flex; gap:6px; flex-shrink:0; }
-      #ertrades-app .drafts-empty { padding:32px 16px; text-align:center; color:var(--muted); display:grid; gap:5px; }
-      #ertrades-app .drafts-empty strong { color:var(--text); }
-      #ertrades-app .danger-btn { border:1px solid rgba(255,107,121,.25); background:rgba(255,107,121,.08); color:var(--red); border-radius:9px; padding:8px 10px; font-weight:700; cursor:pointer; }
-      @media (max-width:640px) { #ertrades-app .draft-row { align-items:flex-start; flex-direction:column; } #ertrades-app .draft-row-actions { width:100%; } #ertrades-app .draft-row-actions button { flex:1; } #ertrades-app .trade-form-actions { flex-wrap:wrap; } #ertrades-app .trade-form-actions > button { flex:1 1 30%; } }
-</style>
+      </style>
 
       <nav class="nav-shell" aria-label="Primary navigation">
         <div class="bottom-nav">
@@ -8379,12 +8347,6 @@
       const tradeFormSubmit = tradeForm.querySelector('button[type="submit"]');
       const tradeFormClose = root.querySelector('#trade-form-close');
       const tradeFormCancel = root.querySelector('#trade-form-cancel');
-      const tradeFormSaveDraft = root.querySelector('#trade-form-save-draft');
-      const draftsBtn = root.querySelector('#drafts-btn');
-      const draftsCount = root.querySelector('#drafts-count');
-      const draftsDialog = root.querySelector('#drafts-dialog');
-      const draftsList = root.querySelector('#drafts-list');
-      const draftsClose = root.querySelector('#drafts-close');
       const tradeFormError = root.querySelector('#trade-form-error');
       const tradeInstrument = root.querySelector('#trade-instrument');
       const instrumentSelectBtn = root.querySelector('#instrument-select-btn');
@@ -8612,9 +8574,6 @@
       const TRADES_STORE = 'trades';
       const SCREENSHOTS_STORE = 'screenshots';
       const DRAFT_PREFIX = 'ertrades-new-trade-draft:';
-      const DRAFTS_META_KEY = 'ertrades_journal_drafts_v1';
-      let currentDraftId = null;
-      let draftCloudSyncTimer = null;
       const SELECTED_ACCOUNT_LOCAL_KEY = 'ertrades-selected-account-id';
       const AUTH_SESSION_KEY = 'ertrades-auth-session-v1';
       const INACTIVITY_TIMEOUT_MS = 12 * 60 * 60 * 1000;
@@ -11184,164 +11143,2713 @@
         return value;
       };
 
+      const collectDraft = () => {
+        const rrResult = calculatePlannedRr();
+        return {
+          instrument: tradeInstrument.value,
+          direction: selectedDirection,
+          date: tradeDate.value,
+          session: tradeSession.value,
+          entryPrice: entryPrice.value,
+          stopLoss: stopLoss.value,
+          takeProfit: takeProfit.value,
+          lotSize: lotSize.value,
+          riskPercent: riskPercent.value,
+          riskAmount: riskAmount.value,
+          profitLoss: profitLoss.value,
+          result: tradeResult.value,
+          notes: tradeNotes.value,
+          mistakes: tradeMistakes.value,
+          psychologyBefore: psychologyBefore.value,
+          psychologyAfter: psychologyAfter.value,
+          rating: selectedRating,
+          plannedRr: rrResult.valid && Number.isFinite(rrResult.value) ? rrResult.value : null,
+          realizedR: updateRealizedRPreview(),
+          updatedAt: Date.now()
+        };
+      };
+
       const draftHasContent = (draft) => {
         if (!draft) return false;
         return Boolean(
-          (draft.instrument || '').trim() || draft.direction ||
-          (draft.entryPrice ?? '') !== '' || (draft.stopLoss ?? '') !== '' ||
-          (draft.takeProfit ?? '') !== '' || (draft.lotSize ?? '') !== '' ||
-          (draft.riskPercent ?? '') !== '' || (draft.riskAmount ?? '') !== '' ||
-          (draft.profitLoss ?? '') !== '' || draft.result ||
-          (draft.notes || '').trim() || (draft.mistakes || '').trim() ||
-          draft.psychologyBefore || draft.psychologyAfter || Number(draft.rating) > 0
+          (draft.instrument || '').trim() ||
+          draft.direction ||
+          (draft.entryPrice ?? '') !== '' ||
+          (draft.stopLoss ?? '') !== '' ||
+          (draft.takeProfit ?? '') !== '' ||
+          (draft.lotSize ?? '') !== '' ||
+          (draft.riskPercent ?? '') !== '' ||
+          (draft.riskAmount ?? '') !== '' ||
+          (draft.profitLoss ?? '') !== '' ||
+          draft.result ||
+          (draft.notes || '').trim() ||
+          (draft.mistakes || '').trim() ||
+          draft.psychologyBefore ||
+          draft.psychologyAfter ||
+          Number(draft.rating) > 0
         );
       };
 
-      const draftStorageKey = (accountId = selectedAccountId) => accountId
-        ? `${DRAFT_PREFIX}${currentUserDraftScope()}:${accountId}:multi`
-        : null;
+      const saveDraftNow = ({ quiet = false } = {}) => {
+        if (editingTradeId) return;
+        const key = draftKey();
+        if (!key || !currentAccount()) return;
+        const draft = collectDraft();
+        if (!draftHasContent(draft)) {
+          safeLocalRemove(key);
+          return;
+        }
+        if (safeLocalSet(key, JSON.stringify(draft)) && !quiet) showDraftSaved();
+      };
 
-      const readDrafts = (accountId = selectedAccountId) => {
-        const key = draftStorageKey(accountId);
-        if (!key) return [];
+      const clearDraft = (accountId = selectedAccountId) => {
+        const key = draftKey(accountId);
+        if (key) safeLocalRemove(key);
+        if (draftStatus) draftStatus.classList.remove('show');
+      };
+
+      const readDraft = (accountId = selectedAccountId) => {
+        const key = draftKey(accountId);
+        if (!key) return null;
+        const raw = safeLocalGet(key);
+        if (!raw) return null;
         try {
-          const parsed = JSON.parse(safeLocalGet(key) || '[]');
-          return Array.isArray(parsed) ? parsed.filter((item) => item && item.id) : [];
-        } catch (_) { return []; }
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === 'object' ? parsed : null;
+        } catch (_) {
+          safeLocalRemove(key);
+          return null;
+        }
       };
 
-      const writeDraftsLocal = (drafts, accountId = selectedAccountId) => {
-        const key = draftStorageKey(accountId);
-        if (!key) return false;
-        return safeLocalSet(key, JSON.stringify(drafts));
+      const restoreDraft = () => {
+        const draft = readDraft();
+        if (!draft) return false;
+        tradeInstrument.value = (draft.instrument || '').trim().toUpperCase();
+        syncInstrumentUi();
+        selectedDirection = draft.direction === 'BUY' || draft.direction === 'SELL' ? draft.direction : '';
+        tradeDate.value = draft.date || getLocalDateValue();
+        syncTradeDateDisplay();
+        tradeSession.value = draft.session === 'Asian'
+          ? 'Asia'
+          : (['Asia', 'London', 'New York'].includes(draft.session) ? draft.session : 'Asia');
+        syncTradeSessionUi();
+        entryPrice.value = draft.entryPrice ?? '';
+        stopLoss.value = draft.stopLoss ?? '';
+        takeProfit.value = draft.takeProfit ?? '';
+        lotSize.value = draft.lotSize ?? '';
+        riskAmount.value = draft.riskAmount ?? '';
+        updateAutomaticRiskPercent();
+        profitLoss.value = draft.profitLoss ?? '';
+        tradeResult.value = ['WIN', 'LOSS', 'BREAK EVEN'].includes(draft.result) ? draft.result : '';
+        syncTradeResultUi();
+        tradeNotes.value = draft.notes || '';
+        tradeMistakes.value = draft.mistakes || '';
+        psychologyBefore.value = typeof draft.psychologyBefore === 'string' ? draft.psychologyBefore : '';
+        const draftStoredAfter = typeof draft.psychologyAfter === 'string' ? draft.psychologyAfter : '';
+        psychologyAfter.value = draftStoredAfter;
+        selectedRating = Number(draft.rating) || parseStoredRating(draftStoredAfter);
+        syncPsychologyUi();
+        updateDirectionButtons();
+        calculatePlannedRr();
+        updateRealizedRPreview();
+        draftStatus.textContent = 'Draft restored';
+        draftStatus.classList.add('show');
+        if (draftStatusTimer) clearTimeout(draftStatusTimer);
+        draftStatusTimer = setTimeout(() => draftStatus.classList.remove('show'), 1800);
+        return true;
       };
 
-      const getDraftMetadata = (session = null) => {
+      const updateDirectionButtons = () => {
+        directionButtons.forEach((button) => button.classList.toggle('active', button.dataset.direction === selectedDirection));
+        calculatePlannedRr();
+        updateRealizedRPreview();
+      };
+
+      const screenshotElements = (slot) => slot === 'before'
+        ? { input: beforeScreenshotInput, preview: beforeScreenshotPreview, status: beforeScreenshotStatus, picker: beforeScreenshotPicker, remove: beforeScreenshotRemove }
+        : { input: afterScreenshotInput, preview: afterScreenshotPreview, status: afterScreenshotStatus, picker: afterScreenshotPicker, remove: afterScreenshotRemove };
+
+      const revokePreviewUrl = (slot) => {
+        if (!previewUrls[slot]) return;
+        try { URL.revokeObjectURL(previewUrls[slot]); } catch (_) {}
+        previewUrls[slot] = null;
+      };
+
+      const setScreenshotUi = (slot, source = null, status = 'Optional') => {
+        const elements = screenshotElements(slot);
+        revokePreviewUrl(slot);
+        if (source) {
+          previewUrls[slot] = URL.createObjectURL(source);
+          elements.preview.src = previewUrls[slot];
+          elements.preview.classList.add('visible');
+          elements.remove.classList.add('visible');
+          elements.picker.textContent = 'Replace Image';
+          elements.status.textContent = status;
+        } else {
+          elements.preview.removeAttribute('src');
+          elements.preview.classList.remove('visible');
+          elements.remove.classList.remove('visible');
+          elements.picker.textContent = 'Choose Image';
+          elements.status.textContent = status;
+          elements.input.value = '';
+        }
+      };
+
+      const resetPendingScreenshots = () => {
+        pendingScreenshots = { before: null, after: null };
+        setScreenshotUi('before');
+        setScreenshotUi('after');
+      };
+
+      const validateScreenshotFile = (file) => {
+        if (!file) return 'No image selected.';
+        const type = (file.type || '').toLowerCase();
+        const name = (file.name || '').toLowerCase();
+        if (!type.startsWith('image/') && !name.endsWith('.jpg') && !name.endsWith('.jpeg') && !name.endsWith('.png') && !name.endsWith('.heic') && !name.endsWith('.heif')) {
+          return 'Choose a JPG, JPEG, PNG, or supported HEIC image.';
+        }
+        if (file.size > 20 * 1024 * 1024) return 'Image is too large. Choose an image under 20 MB.';
+        return '';
+      };
+
+      const chooseScreenshot = (slot, file) => {
+        const error = validateScreenshotFile(file);
+        if (error) {
+          showTradeError(error, screenshotElements(slot).input);
+          return;
+        }
+        pendingScreenshots[slot] = { mode: 'new', file };
+        setScreenshotUi(slot, file, 'Ready');
+      };
+
+      const markScreenshotRemoved = (slot) => {
+        pendingScreenshots[slot] = { mode: 'remove' };
+        setScreenshotUi(slot, null, 'Removed');
+      };
+
+      const removeScreenshotImmediately = (slot) => {
+        markScreenshotRemoved(slot);
+      };
+
+      const screenshotIdFor = (tradeId, slot) => `shot:${currentUser.id}:${tradeId}:${slot}`;
+
+      const loadTradeScreenshots = async (trade) => {
+        resetPendingScreenshots();
+        if (!currentUser || !trade) return;
+        for (const slot of ['before', 'after']) {
+          const cloudPath = slot === 'before' ? trade.screenshotBeforePath : trade.screenshotAfterPath;
+          const id = slot === 'before' ? trade.screenshotBeforeId : trade.screenshotAfterId;
+          if (cloudPath && usingCloudData) {
+            try {
+              const blob = await downloadCloudScreenshot(cloudPath);
+              pendingScreenshots[slot] = { mode: 'existing-cloud', path: cloudPath };
+              setScreenshotUi(slot, blob, 'Cloud');
+              continue;
+            } catch (_) {
+              screenshotElements(slot).status.textContent = 'Cloud image unavailable';
+            }
+          }
+          if (!id) continue;
+          try {
+            const screenshot = await getScreenshot(id);
+            if (!screenshot || screenshot.userId !== currentUser.id || screenshot.accountId !== trade.accountId || screenshot.tradeId !== trade.id) continue;
+            pendingScreenshots[slot] = usingCloudData
+              ? { mode: 'legacy-local', id, blob: screenshot.blob, name: screenshot.name, type: screenshot.type }
+              : { mode: 'existing', id };
+            setScreenshotUi(slot, screenshot.blob, usingCloudData ? 'Ready to sync' : 'Saved');
+          } catch (_) {
+            screenshotElements(slot).status.textContent = 'Unable to load';
+          }
+        }
+      };
+
+      const persistTradeScreenshots = async (trade) => {
+        const refs = {
+          beforeId: trade.screenshotBeforeId || null,
+          afterId: trade.screenshotAfterId || null,
+          beforePath: trade.screenshotBeforePath || null,
+          afterPath: trade.screenshotAfterPath || null
+        };
+        if (!currentUser) return refs;
+        for (const slot of ['before', 'after']) {
+          const pending = pendingScreenshots[slot];
+          if (!pending || pending.mode === 'existing' || pending.mode === 'existing-cloud') continue;
+          const currentId = slot === 'before' ? refs.beforeId : refs.afterId;
+          const refKey = slot === 'before' ? 'beforeId' : 'afterId';
+          const currentPath = slot === 'before' ? refs.beforePath : refs.afterPath;
+          const pathKey = slot === 'before' ? 'beforePath' : 'afterPath';
+          const elements = screenshotElements(slot);
+          if (pending.mode === 'remove') {
+            if (usingCloudData && currentPath) await deleteCloudScreenshot(currentPath);
+            if (currentId) await removeScreenshot(currentId);
+            refs[refKey] = null;
+            refs[pathKey] = null;
+            elements.status.textContent = 'Removed';
+            continue;
+          }
+          elements.status.textContent = 'Saving image…';
+          if (usingCloudData) {
+            const sourceFile = pending.mode === 'legacy-local'
+              ? new File([pending.blob], pending.name || `${slot}-screenshot`, { type: pending.type || pending.blob?.type || 'application/octet-stream' })
+              : pending.file;
+            const path = await uploadCloudScreenshot(trade.id, slot, sourceFile);
+            if (currentPath && currentPath !== path) await deleteCloudScreenshot(currentPath);
+            refs[pathKey] = path;
+            if (currentId) {
+              try { await removeScreenshot(currentId); } catch (_) {}
+              refs[refKey] = null;
+            }
+            elements.status.textContent = 'Cloud saved';
+            continue;
+          }
+          const id = screenshotIdFor(trade.id, slot);
+          await saveScreenshot({
+            id,
+            userId: currentUser.id,
+            accountId: trade.accountId,
+            tradeId: trade.id,
+            slot,
+            name: pending.file.name || `${slot}-screenshot`,
+            type: pending.file.type || 'application/octet-stream',
+            size: pending.file.size,
+            blob: pending.file,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          });
+          refs[refKey] = id;
+          elements.status.textContent = 'Saved';
+        }
+        return refs;
+      };
+
+      const removeScreenshotsForTrade = async (trade) => {
+        if (usingCloudData) {
+          for (const path of [trade?.screenshotBeforePath, trade?.screenshotAfterPath].filter(Boolean)) {
+            await deleteCloudScreenshot(path);
+          }
+        }
+        for (const id of [trade?.screenshotBeforeId, trade?.screenshotAfterId].filter(Boolean)) {
+          try { await removeScreenshot(id); } catch (_) {}
+        }
+      };
+
+      const removeScreenshotsForAccount = async (accountId) => {
+        if (!currentUser || !accountId) return;
+        if (usingCloudData) {
+          const accountTrades = trades.filter((trade) => trade.accountId === accountId);
+          for (const trade of accountTrades) await removeScreenshotsForTrade(trade);
+          return;
+        }
+        const all = await getAllScreenshots();
+        for (const screenshot of all.filter((item) => item.userId === currentUser.id && item.accountId === accountId)) {
+          await removeScreenshot(screenshot.id);
+        }
+      };
+
+      const makeTradeRow = (trade, currency) => {
+        const row = document.createElement('article');
+        row.className = 'trade-row tappable';
+        row.tabIndex = 0;
+        row.setAttribute('role', 'button');
+        row.setAttribute('aria-label', `Open ${trade.instrument} trade detail`);
+        row.dataset.tradeId = trade.id;
+
+        const top = document.createElement('div');
+        top.className = 'trade-row-top';
+        const instrument = document.createElement('div');
+        instrument.className = 'trade-instrument';
+        instrument.textContent = trade.instrument;
+        if (trade.screenshotBeforeId || trade.screenshotAfterId || trade.screenshotBeforePath || trade.screenshotAfterPath) {
+          const indicator = document.createElement('span');
+          indicator.className = 'photo-indicator';
+          indicator.setAttribute('aria-label', 'Trade has screenshot');
+          indicator.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="10" r="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 17l4-4 2.5 2.5 2-2 2.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          instrument.appendChild(indicator);
+        }
+        const direction = document.createElement('span');
+        direction.className = `trade-direction ${trade.direction === 'BUY' ? 'buy' : 'sell'}`;
+        direction.textContent = trade.direction;
+        top.append(instrument, direction);
+
+        const bottom = document.createElement('div');
+        bottom.className = 'trade-row-bottom';
+        const left = document.createElement('div');
+        left.className = 'trade-meta';
+        const result = document.createElement('span');
+        const resultClass = trade.result === 'WIN' ? 'win' : trade.result === 'LOSS' ? 'loss' : 'break-even';
+        result.className = `result-chip ${resultClass}`;
+        result.textContent = trade.result;
+        const meta = document.createElement('div');
+        meta.style.marginTop = '7px';
+        meta.textContent = `${trade.date} · ${trade.session === 'Asian' ? 'Asia' : trade.session}`;
+        left.append(result, meta);
+
+        const stats = document.createElement('div');
+        stats.className = 'trade-stats';
+        const pl = document.createElement('div');
+        const plValue = Number(trade.profitLoss) || 0;
+        pl.className = `trade-pl ${plValue > 0 ? 'positive' : plValue < 0 ? 'negative' : 'flat'}`;
+        pl.textContent = formatMoney(plValue, currency);
+        const rr = document.createElement('div');
+        rr.style.color = 'var(--muted)';
+        rr.textContent = Number.isFinite(trade.plannedRr) ? `RR ${trade.plannedRr.toFixed(2)}R` : 'RR —';
+        rr.textContent = Number.isFinite(Number(trade.plannedRr)) ? `Planned 1:${Number(trade.plannedRr).toFixed(2)}` : 'Planned —';
+        const realized = document.createElement('div');
+        realized.style.color = 'var(--muted)';
+        realized.textContent = `Realized ${formatRealizedR(calculateTradeRealizedR(trade))}`;
+        stats.append(pl, rr, realized);
+        bottom.append(left, stats);
+
+        row.append(top, bottom);
+        return row;
+      };
+
+      const detailField = (label, value, full = false) => {
+        const item = document.createElement('div');
+        item.className = `detail-item${full ? ' full' : ''}`;
+        const labelEl = document.createElement('div');
+        labelEl.className = 'detail-label';
+        labelEl.textContent = label;
+        const valueEl = document.createElement('div');
+        valueEl.className = 'detail-value';
+        valueEl.textContent = value === '' || value === null || typeof value === 'undefined' ? '—' : String(value);
+        item.append(labelEl, valueEl);
+        return item;
+      };
+
+      const renderTradeDetail = () => {
+        const trade = trades.find((item) => item.id === detailTradeId && item.accountId === selectedAccountId);
+        if (!trade) {
+          detailTradeId = null;
+          showPage('Journal');
+          return;
+        }
+        const currency = currentAccount()?.currency || 'USD';
+        tradeDetailGrid.innerHTML = '';
+        tradeDetailGrid.append(
+          detailField('Instrument', trade.instrument),
+          detailField('Direction', trade.direction),
+          detailField('Date', trade.date),
+          detailField('Session', trade.session === 'Asian' ? 'Asia' : trade.session),
+          detailField('Entry Price', trade.entryPrice ?? '—'),
+          detailField('Stop Loss', trade.stopLoss ?? '—'),
+          detailField('Take Profit', trade.takeProfit ?? '—'),
+          detailField('Lot Size', trade.lotSize ?? '—'),
+          detailField('Risk %', trade.riskPercent === null || typeof trade.riskPercent === 'undefined' ? '—' : `${trade.riskPercent}%`),
+          detailField('Risk Amount', trade.riskAmount === null || typeof trade.riskAmount === 'undefined' ? '—' : formatMoney(Number(trade.riskAmount) || 0, currency)),
+          detailField('Profit / Loss', formatMoney(Number(trade.profitLoss) || 0, currency)),
+          detailField('Result', trade.result),
+          detailField('Planned RR', Number.isFinite(Number(trade.plannedRr)) ? `1:${Number(trade.plannedRr).toFixed(2)}` : '—'),
+          detailField('Realized R', formatRealizedR(calculateTradeRealizedR(trade))),
+          detailField('Reason for Entry', trade.notes || '—', true),
+          detailField('Mistakes', trade.mistakes || '—', true),
+          detailField('Emotion', trade.psychologyBefore || '—'),
+          detailField('Rating', formatTradeRating(parseStoredRating(trade.psychologyAfter)))
+        );
+      };
+
+      const JOURNAL_FILTER_COLLAPSE_KEY = 'ertrades-journal-filters-collapsed-v1';
+
+      const journalFilterEntries = journalFilterButtons.map((button) => {
+        const select = root.querySelector(`#${button.dataset.selectId || ''}`);
+        const menu = root.querySelector(`#${button.dataset.menuId || ''}`);
+        return { button, select, menu };
+      }).filter((entry) => entry.select && entry.menu);
+
+      const closeJournalFilterMenus = (except = null) => {
+        journalFilterEntries.forEach(({ button, menu }) => {
+          if (menu === except) return;
+          menu.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+        });
+      };
+
+      const syncJournalFilterPicker = ({ button, select, menu }) => {
+        const selectedOption = select.options[select.selectedIndex] || select.options[0];
+        button.textContent = selectedOption?.textContent || 'Select';
+        menu.innerHTML = '';
+        Array.from(select.options).forEach((option) => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.setAttribute('role', 'menuitem');
+          item.dataset.journalFilterValue = option.value;
+          item.textContent = option.textContent || option.value;
+          item.classList.toggle('selected', select.value === option.value);
+          menu.appendChild(item);
+        });
+      };
+
+      const syncAllJournalFilterPickers = () => {
+        journalFilterEntries.forEach(syncJournalFilterPicker);
+      };
+
+      const journalActiveFilterCount = () => {
+        let count = Boolean((journalSearch.value || '').trim()) ? 1 : 0;
+        [journalInstrumentFilter, journalDirectionFilter, journalResultFilter, journalSessionFilter, journalPeriodFilter]
+          .forEach((select) => { if ((select.value || 'ALL') !== 'ALL') count += 1; });
+        return count;
+      };
+
+      const syncJournalFilterToggleUi = () => {
+        const collapsed = journalPage.classList.contains('filters-collapsed');
+        const activeCount = journalActiveFilterCount();
+        journalFilterToggle.setAttribute('aria-expanded', String(!collapsed));
+        journalFilterBadge.hidden = activeCount === 0;
+        journalFilterBadge.textContent = String(activeCount);
+      };
+
+      const setJournalFiltersCollapsed = (collapsed, { persist = true } = {}) => {
+        journalPage.classList.toggle('filters-collapsed', Boolean(collapsed));
+        journalFilterPanel.hidden = Boolean(collapsed);
+        if (collapsed) closeJournalFilterMenus();
+        syncJournalFilterToggleUi();
+        if (persist) safeLocalSet(JOURNAL_FILTER_COLLAPSE_KEY, collapsed ? '1' : '0');
+      };
+
+      const journalFiltersActive = () => (
+        Boolean((journalSearch.value || '').trim()) ||
+        journalInstrumentFilter.value !== 'ALL' ||
+        journalDirectionFilter.value !== 'ALL' ||
+        journalResultFilter.value !== 'ALL' ||
+        journalSessionFilter.value !== 'ALL' ||
+        journalPeriodFilter.value !== 'ALL'
+      );
+
+      const syncJournalInstrumentFilter = (items) => {
+        const selected = journalInstrumentFilter.value || 'ALL';
+        const instruments = Array.from(new Set(
+          items.map((trade) => String(trade.instrument || '').trim()).filter(Boolean)
+        )).sort((a, b) => a.localeCompare(b));
+
+        journalInstrumentFilter.innerHTML = '';
+        const allOption = document.createElement('option');
+        allOption.value = 'ALL';
+        allOption.textContent = 'All instruments';
+        journalInstrumentFilter.appendChild(allOption);
+
+        instruments.forEach((instrument) => {
+          const option = document.createElement('option');
+          option.value = instrument;
+          option.textContent = instrument;
+          journalInstrumentFilter.appendChild(option);
+        });
+
+        journalInstrumentFilter.value = instruments.includes(selected) ? selected : 'ALL';
+        const instrumentEntry = journalFilterEntries.find((entry) => entry.select === journalInstrumentFilter);
+        if (instrumentEntry) syncJournalFilterPicker(instrumentEntry);
+      };
+
+      const journalPeriodStart = (period) => {
+        if (period === 'ALL') return null;
+        const start = new Date();
+        start.setHours(0, 0, 0, 0);
+        if (period === '7D') start.setDate(start.getDate() - 6);
+        else if (period === '30D') start.setDate(start.getDate() - 29);
+        else if (period === '3M') start.setMonth(start.getMonth() - 3);
+        else return null;
+        return start;
+      };
+
+      const journalFilteredTrades = (items) => {
+        const query = (journalSearch.value || '').trim().toLowerCase();
+        const instrument = journalInstrumentFilter.value || 'ALL';
+        const direction = journalDirectionFilter.value || 'ALL';
+        const result = journalResultFilter.value || 'ALL';
+        const session = journalSessionFilter.value || 'ALL';
+        const periodStart = journalPeriodStart(journalPeriodFilter.value || 'ALL');
+
+        return items.filter((trade) => {
+          if (instrument !== 'ALL' && trade.instrument !== instrument) return false;
+          if (direction !== 'ALL' && trade.direction !== direction) return false;
+          if (result !== 'ALL' && trade.result !== result) return false;
+          const normalizedSession = trade.session === 'Asian' ? 'Asia' : trade.session;
+          if (session !== 'ALL' && normalizedSession !== session) return false;
+
+          if (periodStart) {
+            const dateText = /^\d{4}-\d{2}-\d{2}$/.test(trade.date || '') ? trade.date : '';
+            if (!dateText) return false;
+            const tradeDate = new Date(`${dateText}T00:00:00`);
+            if (!Number.isFinite(tradeDate.getTime()) || tradeDate < periodStart) return false;
+          }
+
+          if (query) {
+            const haystack = [
+              trade.instrument,
+              trade.direction,
+              trade.result,
+              trade.session,
+              trade.date,
+              trade.notes,
+              trade.mistakes,
+              trade.psychologyBefore
+            ].map((value) => String(value || '').toLowerCase()).join(' ');
+            if (!haystack.includes(query)) return false;
+          }
+
+          return true;
+        });
+      };
+
+      const renderTrades = () => {
+        const account = currentAccount();
+        renderDashboardReminder();
+        const accountTrades = currentTrades();
+        const currency = account?.currency || 'USD';
+        syncJournalInstrumentFilter(accountTrades);
+        syncAllJournalFilterPickers();
+        const filteredTrades = journalFilteredTrades(accountTrades);
+        const filtersActive = journalFiltersActive();
+
+        journalList.innerHTML = '';
+        recentList.innerHTML = '';
+
+        journalCount.textContent = filtersActive
+          ? `${filteredTrades.length} of ${accountTrades.length} trades`
+          : `${accountTrades.length} ${accountTrades.length === 1 ? 'trade' : 'trades'}`;
+
+        recentTradesCount.textContent = `${accountTrades.length} ${accountTrades.length === 1 ? 'trade' : 'trades'}`;
+        journalClearFilters.disabled = !filtersActive;
+
+        journalEmpty.style.display = filteredTrades.length ? 'none' : 'grid';
+        if (!accountTrades.length) {
+          journalEmptyTitle.textContent = 'No trades recorded';
+          journalEmptyCopy.textContent = 'Use New Trade to add your first journal entry.';
+        } else if (!filteredTrades.length) {
+          journalEmptyTitle.textContent = 'No matching trades';
+          journalEmptyCopy.textContent = 'Try changing the search or clearing one of the filters.';
+        }
+
+        recentEmpty.style.display = accountTrades.length ? 'none' : 'grid';
+
+        filteredTrades.forEach((trade) => journalList.appendChild(makeTradeRow(trade, currency)));
+        accountTrades.slice(0, 3).forEach((trade) => recentList.appendChild(makeTradeRow(trade, currency)));
+        syncJournalFilterToggleUi();
+      };
+
+
+      const DASHBOARD_REMINDER_KEY_PREFIX = 'ertrades-dashboard-reminder:';
+      const DASHBOARD_REMINDER_META_KEY = 'ertrades_dashboard_reminders';
+      const dashboardReminderKey = (accountId = selectedAccountId) => `${DASHBOARD_REMINDER_KEY_PREFIX}${currentUser?.id || 'local'}:${accountId || 'none'}`;
+      const getDashboardReminder = () => {
+        const saved = safeLocalGet(dashboardReminderKey());
+        return saved || 'Protect your capital. Trade your plan, not your emotions.';
+      };
+      const getDashboardReminderMap = (session = null) => {
         const metadata = session?.user?.user_metadata || {};
-        const value = metadata?.[DRAFTS_META_KEY];
-        return value && typeof value === 'object' && !Array.isArray(value) ? { ...value } : {};
+        const map = metadata?.[DASHBOARD_REMINDER_META_KEY];
+        return map && typeof map === 'object' && !Array.isArray(map) ? { ...map } : {};
       };
-
-      const saveDraftsToCloud = async (accountId, drafts) => {
-        if (!usingCloudData || !currentUser?.id || !accountId) return false;
+      const fetchFreshDashboardReminderMap = async () => {
+        if (!currentUser?.id) return {};
         const session = await getValidSupabaseSession();
-        if (!session?.access_token || session.user?.id !== currentUser.id) return false;
-        const metadata = session.user?.user_metadata && typeof session.user.user_metadata === 'object'
-          ? { ...session.user.user_metadata } : {};
-        const map = getDraftMetadata(session);
-        map[accountId] = drafts;
-        metadata[DRAFTS_META_KEY] = map;
+        if (!session?.access_token || session.user?.id !== currentUser.id) return {};
+        try {
+          const freshUser = await supabaseRequest('/auth/v1/user', {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          const nextSession = {
+            ...session,
+            user: { ...session.user, ...(freshUser || {}), user_metadata: freshUser?.user_metadata || session.user?.user_metadata || {} }
+          };
+          saveSupabaseSession(nextSession);
+          return getDashboardReminderMap(nextSession);
+        } catch (_) {
+          return getDashboardReminderMap(session);
+        }
+      };
+      const setDashboardReminderLocal = (accountId, value) => {
+        if (!accountId || !value) return false;
+        return safeLocalSet(`${DASHBOARD_REMINDER_KEY_PREFIX}${currentUser?.id || 'local'}:${accountId}`, value);
+      };
+      const restoreDashboardRemindersFromSupabase = async () => {
+        if (!currentUser?.id) return false;
+        const map = await fetchFreshDashboardReminderMap();
+        Object.entries(map).forEach(([accountId, value]) => {
+          if (typeof value === 'string' && value.trim()) setDashboardReminderLocal(accountId, value.trim());
+        });
+        renderDashboardReminder();
+        return true;
+      };
+      const saveDashboardReminderToSupabase = async (accountId, value) => {
+        if (!currentUser?.id || !accountId || !value) return false;
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || session.user?.id !== currentUser.id) throw new Error('Sign in again to sync your reminder.');
+        const existingMetadata = session.user?.user_metadata && typeof session.user.user_metadata === 'object'
+          ? { ...session.user.user_metadata }
+          : {};
+        const reminderMap = getDashboardReminderMap(session);
+        reminderMap[accountId] = value;
+        const nextMetadata = { ...existingMetadata, [DASHBOARD_REMINDER_META_KEY]: reminderMap };
         const updatedUser = await supabaseRequest('/auth/v1/user', {
           method: 'PUT',
           headers: { Authorization: `Bearer ${session.access_token}` },
-          body: JSON.stringify({ data: metadata })
+          body: JSON.stringify({ data: nextMetadata })
         });
-        saveSupabaseSession({ ...session, user: { ...session.user, ...(updatedUser || {}), user_metadata: updatedUser?.user_metadata || metadata } });
+        const nextSession = { ...session, user: { ...session.user, ...(updatedUser || {}), user_metadata: updatedUser?.user_metadata || nextMetadata } };
+        saveSupabaseSession(nextSession);
         return true;
       };
-
-      const restoreDraftsFromCloud = async (accountId = selectedAccountId) => {
-        if (!usingCloudData || !currentUser?.id || !accountId) return [];
-        try {
-          const session = await getValidSupabaseSession();
-          if (!session?.access_token) return readDrafts(accountId);
-          const freshUser = await supabaseRequest('/auth/v1/user', {
-            method: 'GET', headers: { Authorization: `Bearer ${session.access_token}` }
-          });
-          const nextSession = { ...session, user: { ...session.user, ...(freshUser || {}), user_metadata: freshUser?.user_metadata || session.user?.user_metadata || {} } };
-          saveSupabaseSession(nextSession);
-          const cloudDrafts = getDraftMetadata(nextSession)[accountId];
-          if (Array.isArray(cloudDrafts)) {
-            writeDraftsLocal(cloudDrafts, accountId);
-            return cloudDrafts;
-          }
-        } catch (_) {}
-        return readDrafts(accountId);
+      const renderDashboardReminder = () => {
+        if (!dashboardReminder || !dashboardReminderText) return;
+        dashboardReminderText.textContent = getDashboardReminder();
+        if (dashboardReminderEditor) dashboardReminderEditor.classList.remove('visible');
       };
 
-      const collectDraft = () => ({
-        id: currentDraftId || (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `draft-${Date.now()}-${Math.random().toString(16).slice(2)}`),
-        accountId: selectedAccountId,
-        instrument: tradeInstrument.value.trim().toUpperCase(),
-        direction: selectedDirection,
-        date: tradeDate.value,
-        session: tradeSession.value,
-        entryPrice: parseOptionalNumber(entryPrice), stopLoss: parseOptionalNumber(stopLoss), takeProfit: parseOptionalNumber(takeProfit),
-        lotSize: parseOptionalNumber(lotSize), riskPercent: parseOptionalNumber(riskPercent), riskAmount: parseOptionalNumber(riskAmount),
-        profitLoss: parseOptionalNumber(profitLoss), result: tradeResult.value,
-        notes: tradeNotes.value.trim(), mistakes: tradeMistakes.value.trim(),
-        psychologyBefore: psychologyBefore.value, psychologyAfter: psychologyAfter.value,
-        rating: selectedRating || 0, updatedAt: Date.now()
-      });
 
-      const renderDrafts = (drafts = readDrafts()) => {
-        if (!draftsList) return;
-        const items = [...drafts].sort((a,b) => (Number(b.updatedAt)||0) - (Number(a.updatedAt)||0));
-        draftsCount.textContent = String(items.length);
-        if (!items.length) {
-          draftsList.innerHTML = '<div class="drafts-empty"><strong>No saved drafts</strong><span>Your unfinished trades will appear here.</span></div>';
+      if (dashboardReminderEdit && dashboardReminderEditor && dashboardReminderInput) {
+        dashboardReminderEdit.addEventListener('click', () => {
+          dashboardReminderInput.value = dashboardReminderText.textContent.trim();
+          dashboardReminderEditor.classList.add('visible');
+          dashboardReminderInput.focus();
+        });
+        dashboardReminderEditor.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const value = dashboardReminderInput.value.trim();
+          if (!value) return;
+          const accountId = selectedAccountId;
+          setDashboardReminderLocal(accountId, value);
+          dashboardReminderText.textContent = value;
+          dashboardReminderEditor.classList.remove('visible');
+          if (usingCloudData && currentUser?.id && accountId) {
+            try {
+              await saveDashboardReminderToSupabase(accountId, value);
+            } catch (error) {
+              notice.textContent = error instanceof Error ? error.message : 'Reminder saved locally, but cloud sync failed.';
+              notice.classList.add('show');
+            }
+          }
+        });
+      }
+
+      const renderDashboardAccount = () => {
+        const account = currentAccount();
+        renderDashboardReminder();
+        const accountTrades = currentTrades();
+        const currency = account?.currency || 'USD';
+        const totalPl = accountTrades.reduce((sum, trade) => sum + (Number(trade.profitLoss) || 0), 0);
+        const balance = account ? Number(account.startingBalance) + totalPl : 0;
+        const startingBalanceValue = account ? Number(account.startingBalance) || 0 : 0;
+        const balanceGrowth = startingBalanceValue > 0 ? ((balance - startingBalanceValue) / startingBalanceValue) * 100 : 0;
+        const wins = accountTrades.filter((trade) => trade.result === 'WIN');
+        const losses = accountTrades.filter((trade) => trade.result === 'LOSS');
+        const closedTrades = accountTrades.filter((trade) => ['WIN', 'LOSS', 'BREAK EVEN'].includes(trade.result));
+        const rrTrades = accountTrades.filter((trade) => Number.isFinite(trade.plannedRr));
+        const averageRr = rrTrades.length ? rrTrades.reduce((sum, trade) => sum + trade.plannedRr, 0) / rrTrades.length : 0;
+        const grossWins = wins.reduce((sum, trade) => sum + Math.max(0, Number(trade.profitLoss) || 0), 0);
+        const grossLosses = Math.abs(losses.reduce((sum, trade) => sum + Math.min(0, Number(trade.profitLoss) || 0), 0));
+        const profitFactor = grossLosses > 0 ? grossWins / grossLosses : 0;
+        const winRate = closedTrades.length ? (wins.length / closedTrades.length) * 100 : 0;
+
+        balanceValue.textContent = formatMoney(balance, currency);
+        totalPlValue.textContent = formatMoney(totalPl, currency);
+        balanceGrowthValue.textContent = `${balanceGrowth > 0 ? '+' : ''}${balanceGrowth.toFixed(2)}%`;
+        [totalPlValue, balanceGrowthValue].forEach((element) => {
+          element.classList.remove('value-positive', 'value-negative', 'value-flat');
+        });
+        totalPlValue.classList.add(totalPl > 0 ? 'value-positive' : totalPl < 0 ? 'value-negative' : 'value-flat');
+        balanceGrowthValue.classList.add(balanceGrowth > 0 ? 'value-positive' : balanceGrowth < 0 ? 'value-negative' : 'value-flat');
+        winRateValue.textContent = `${winRate.toFixed(2)}%`;
+        profitFactorValue.textContent = profitFactor.toFixed(2);
+        averageRrValue.textContent = averageRr.toFixed(2);
+        totalTradesValue.textContent = String(accountTrades.length);
+        maxDrawdownValue.textContent = `${calculateMaxDrawdown().toFixed(2)}%`;
+        const consistencyScore = calculateConsistencyScore();
+        consistencyScoreValue.textContent = consistencyScore === null ? '—' : `${consistencyScore.toFixed(2)}%`;
+        renderEquityCurve();
+        renderCalendar();
+        renderAnalytics();
+        renderPropFirm();
+        renderTrades();
+        if (tradeFormCard.classList.contains('visible')) updateAutomaticRiskPercent();
+      };
+
+      const renderAccountSelector = () => {
+        accountSelect.innerHTML = '';
+        accountSelectMenu.innerHTML = '';
+        if (accounts.length === 0) {
+          const emptyOption = document.createElement('option');
+          emptyOption.value = 'none';
+          emptyOption.textContent = 'No account selected';
+          accountSelect.appendChild(emptyOption);
+        } else {
+          accounts.forEach((account) => {
+            const option = document.createElement('option');
+            option.value = account.id;
+            option.textContent = account.name;
+            accountSelect.appendChild(option);
+          });
+        }
+        const createOption = document.createElement('option');
+        createOption.value = '__create__';
+        createOption.textContent = '+ Create Account';
+        accountSelect.appendChild(createOption);
+        if (selectedAccountId && accounts.some((account) => account.id === selectedAccountId)) {
+          accountSelect.value = selectedAccountId;
+        } else if (accounts.length > 0) {
+          selectedAccountId = accounts[0].id;
+          accountSelect.value = selectedAccountId;
+        } else {
+          accountSelect.value = 'none';
+        }
+        accountSelectLabel.textContent = currentAccount()?.name || 'No account selected';
+        accounts.forEach((account) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.dataset.accountValue = account.id;
+          button.textContent = account.name;
+          button.classList.toggle('selected', account.id === selectedAccountId);
+          accountSelectMenu.appendChild(button);
+        });
+        const createButton = document.createElement('button');
+        createButton.type = 'button';
+        createButton.dataset.accountValue = '__create__';
+        createButton.textContent = '+ Create Account';
+        accountSelectMenu.appendChild(createButton);
+        accountMenuBtn.hidden = !currentAccount();
+        accountMenu.classList.remove('open');
+        accountMenuBtn.setAttribute('aria-expanded', 'false');
+        accountSelectMenu.classList.remove('open');
+        accountSelectBtn.setAttribute('aria-expanded', 'false');
+      };
+
+      const instrumentCatalog = [{"category":"Forex","symbol":"EURUSD","name":"Euro / US Dollar"},{"category":"Forex","symbol":"GBPUSD","name":"British Pound / US Dollar"},{"category":"Forex","symbol":"USDJPY","name":"US Dollar / Japanese Yen"},{"category":"Forex","symbol":"USDCHF","name":"US Dollar / Swiss Franc"},{"category":"Forex","symbol":"USDCAD","name":"US Dollar / Canadian Dollar"},{"category":"Forex","symbol":"AUDUSD","name":"Australian Dollar / US Dollar"},{"category":"Forex","symbol":"NZDUSD","name":"New Zealand Dollar / US Dollar"},{"category":"Forex","symbol":"EURGBP","name":"Euro / British Pound"},{"category":"Forex","symbol":"EURJPY","name":"Euro / Japanese Yen"},{"category":"Forex","symbol":"EURCHF","name":"Euro / Swiss Franc"},{"category":"Forex","symbol":"EURCAD","name":"Euro / Canadian Dollar"},{"category":"Forex","symbol":"EURAUD","name":"Euro / Australian Dollar"},{"category":"Forex","symbol":"EURNZD","name":"Euro / New Zealand Dollar"},{"category":"Forex","symbol":"GBPJPY","name":"British Pound / Japanese Yen"},{"category":"Forex","symbol":"GBPCHF","name":"British Pound / Swiss Franc"},{"category":"Forex","symbol":"GBPCAD","name":"British Pound / Canadian Dollar"},{"category":"Forex","symbol":"GBPAUD","name":"British Pound / Australian Dollar"},{"category":"Forex","symbol":"GBPNZD","name":"British Pound / New Zealand Dollar"},{"category":"Forex","symbol":"AUDJPY","name":"Australian Dollar / Japanese Yen"},{"category":"Forex","symbol":"AUDCHF","name":"Australian Dollar / Swiss Franc"},{"category":"Forex","symbol":"AUDCAD","name":"Australian Dollar / Canadian Dollar"},{"category":"Forex","symbol":"AUDNZD","name":"Australian Dollar / New Zealand Dollar"},{"category":"Forex","symbol":"NZDJPY","name":"New Zealand Dollar / Japanese Yen"},{"category":"Forex","symbol":"NZDCHF","name":"New Zealand Dollar / Swiss Franc"},{"category":"Forex","symbol":"NZDCAD","name":"New Zealand Dollar / Canadian Dollar"},{"category":"Forex","symbol":"CADJPY","name":"Canadian Dollar / Japanese Yen"},{"category":"Forex","symbol":"CADCHF","name":"Canadian Dollar / Swiss Franc"},{"category":"Forex","symbol":"CHFJPY","name":"Swiss Franc / Japanese Yen"},{"category":"Forex","symbol":"USDSEK","name":"US Dollar / Swedish Krona"},{"category":"Forex","symbol":"USDNOK","name":"US Dollar / Norwegian Krone"},{"category":"Forex","symbol":"USDDKK","name":"US Dollar / Danish Krone"},{"category":"Forex","symbol":"USDPLN","name":"US Dollar / Polish Zloty"},{"category":"Forex","symbol":"USDHUF","name":"US Dollar / Hungarian Forint"},{"category":"Forex","symbol":"USDCZK","name":"US Dollar / Czech Koruna"},{"category":"Forex","symbol":"USDTRY","name":"US Dollar / Turkish Lira"},{"category":"Forex","symbol":"USDZAR","name":"US Dollar / South African Rand"},{"category":"Forex","symbol":"USDMXN","name":"US Dollar / Mexican Peso"},{"category":"Forex","symbol":"USDSGD","name":"US Dollar / Singapore Dollar"},{"category":"Forex","symbol":"USDHKD","name":"US Dollar / Hong Kong Dollar"},{"category":"Forex","symbol":"USDCNH","name":"US Dollar / Offshore Chinese Yuan"},{"category":"Forex","symbol":"USDTHB","name":"US Dollar / Thai Baht"},{"category":"Forex","symbol":"USDILS","name":"US Dollar / Israeli Shekel"},{"category":"Forex","symbol":"USDINR","name":"US Dollar / Indian Rupee"},{"category":"Forex","symbol":"EURSEK","name":"Euro / Swedish Krona"},{"category":"Forex","symbol":"EURNOK","name":"Euro / Norwegian Krone"},{"category":"Forex","symbol":"EURDKK","name":"Euro / Danish Krone"},{"category":"Forex","symbol":"EURPLN","name":"Euro / Polish Zloty"},{"category":"Forex","symbol":"EURHUF","name":"Euro / Hungarian Forint"},{"category":"Forex","symbol":"EURCZK","name":"Euro / Czech Koruna"},{"category":"Forex","symbol":"EURTRY","name":"Euro / Turkish Lira"},{"category":"Forex","symbol":"EURZAR","name":"Euro / South African Rand"},{"category":"Forex","symbol":"EURSGD","name":"Euro / Singapore Dollar"},{"category":"Forex","symbol":"EURHKD","name":"Euro / Hong Kong Dollar"},{"category":"Forex","symbol":"GBPSEK","name":"British Pound / Swedish Krona"},{"category":"Forex","symbol":"GBPNOK","name":"British Pound / Norwegian Krone"},{"category":"Forex","symbol":"GBPPLN","name":"British Pound / Polish Zloty"},{"category":"Forex","symbol":"GBPTRY","name":"British Pound / Turkish Lira"},{"category":"Forex","symbol":"GBPZAR","name":"British Pound / South African Rand"},{"category":"Forex","symbol":"GBPSGD","name":"British Pound / Singapore Dollar"},{"category":"Forex","symbol":"AUDSGD","name":"Australian Dollar / Singapore Dollar"},{"category":"Forex","symbol":"AUDHKD","name":"Australian Dollar / Hong Kong Dollar"},{"category":"Forex","symbol":"NZDSGD","name":"New Zealand Dollar / Singapore Dollar"},{"category":"Forex","symbol":"SGDJPY","name":"Singapore Dollar / Japanese Yen"},{"category":"Metals","symbol":"XAUUSD","name":"Gold / US Dollar"},{"category":"Metals","symbol":"XAGUSD","name":"Silver / US Dollar"},{"category":"Metals","symbol":"XPTUSD","name":"Platinum / US Dollar"},{"category":"Metals","symbol":"XPDUSD","name":"Palladium / US Dollar"},{"category":"Metals","symbol":"XAUEUR","name":"Gold / Euro"},{"category":"Metals","symbol":"XAUGBP","name":"Gold / British Pound"},{"category":"Metals","symbol":"XAUJPY","name":"Gold / Japanese Yen"},{"category":"Metals","symbol":"XAUAUD","name":"Gold / Australian Dollar"},{"category":"Metals","symbol":"XAUCAD","name":"Gold / Canadian Dollar"},{"category":"Metals","symbol":"XAUCHF","name":"Gold / Swiss Franc"},{"category":"Metals","symbol":"XAGEUR","name":"Silver / Euro"},{"category":"Metals","symbol":"XAGGBP","name":"Silver / British Pound"},{"category":"Indices","symbol":"US30","name":"Dow Jones 30"},{"category":"Indices","symbol":"DJ30","name":"Dow Jones 30 alias"},{"category":"Indices","symbol":"US100","name":"Nasdaq 100"},{"category":"Indices","symbol":"NAS100","name":"Nasdaq 100 alias"},{"category":"Indices","symbol":"USTEC","name":"Nasdaq 100 alias"},{"category":"Indices","symbol":"US500","name":"S&P 500"},{"category":"Indices","symbol":"SPX500","name":"S&P 500 alias"},{"category":"Indices","symbol":"SP500","name":"S&P 500 alias"},{"category":"Indices","symbol":"US2000","name":"Russell 2000"},{"category":"Indices","symbol":"RUS2000","name":"Russell 2000 alias"},{"category":"Indices","symbol":"VIX","name":"CBOE Volatility Index"},{"category":"Indices","symbol":"GER40","name":"Germany 40 / DAX"},{"category":"Indices","symbol":"DE40","name":"Germany 40 alias"},{"category":"Indices","symbol":"DAX40","name":"Germany 40 alias"},{"category":"Indices","symbol":"UK100","name":"FTSE 100"},{"category":"Indices","symbol":"FTSE100","name":"FTSE 100 alias"},{"category":"Indices","symbol":"FRA40","name":"France 40 / CAC"},{"category":"Indices","symbol":"CAC40","name":"France 40 alias"},{"category":"Indices","symbol":"EU50","name":"Euro Stoxx 50"},{"category":"Indices","symbol":"STOXX50","name":"Euro Stoxx 50 alias"},{"category":"Indices","symbol":"JPN225","name":"Japan 225 / Nikkei"},{"category":"Indices","symbol":"JP225","name":"Japan 225 alias"},{"category":"Indices","symbol":"NIKKEI225","name":"Japan 225 alias"},{"category":"Indices","symbol":"HK50","name":"Hong Kong 50 / Hang Seng"},{"category":"Indices","symbol":"HKG50","name":"Hong Kong 50 alias"},{"category":"Indices","symbol":"AUS200","name":"Australia 200"},{"category":"Indices","symbol":"ASX200","name":"Australia 200 alias"},{"category":"Indices","symbol":"CHINA50","name":"China A50"},{"category":"Indices","symbol":"CN50","name":"China A50 alias"},{"category":"Indices","symbol":"SPA35","name":"Spain 35"},{"category":"Indices","symbol":"IBEX35","name":"Spain 35 alias"},{"category":"Indices","symbol":"ITA40","name":"Italy 40"},{"category":"Indices","symbol":"SWI20","name":"Switzerland 20"},{"category":"Indices","symbol":"SMI20","name":"Switzerland 20 alias"},{"category":"Indices","symbol":"NETH25","name":"Netherlands 25"},{"category":"Indices","symbol":"AEX25","name":"Netherlands 25 alias"},{"category":"Indices","symbol":"SING30","name":"Singapore 30"},{"category":"Indices","symbol":"INDIA50","name":"India 50 / Nifty"},{"category":"Indices","symbol":"NIFTY50","name":"India 50 alias"},{"category":"Energies","symbol":"USOIL","name":"WTI Crude Oil"},{"category":"Energies","symbol":"WTI","name":"WTI Crude Oil alias"},{"category":"Energies","symbol":"WTICOUSD","name":"WTI Crude Oil alias"},{"category":"Energies","symbol":"UKOIL","name":"Brent Crude Oil"},{"category":"Energies","symbol":"BRENT","name":"Brent Crude Oil alias"},{"category":"Energies","symbol":"BRN","name":"Brent Crude Oil alias"},{"category":"Energies","symbol":"NATGAS","name":"Natural Gas"},{"category":"Energies","symbol":"XNGUSD","name":"Natural Gas alias"},{"category":"Energies","symbol":"GASOIL","name":"Low Sulphur Gasoil"},{"category":"Commodities","symbol":"COPPER","name":"Copper"},{"category":"Commodities","symbol":"XCUUSD","name":"Copper alias"},{"category":"Commodities","symbol":"COCOA","name":"Cocoa"},{"category":"Commodities","symbol":"COFFEE","name":"Coffee"},{"category":"Commodities","symbol":"CORN","name":"Corn"},{"category":"Commodities","symbol":"COTTON","name":"Cotton"},{"category":"Commodities","symbol":"SUGAR","name":"Sugar"},{"category":"Commodities","symbol":"WHEAT","name":"Wheat"},{"category":"Commodities","symbol":"SOYBEAN","name":"Soybeans"},{"category":"Commodities","symbol":"SOYBEANS","name":"Soybeans alias"},{"category":"Commodities","symbol":"OATS","name":"Oats"},{"category":"Commodities","symbol":"RICE","name":"Rough Rice"},{"category":"Commodities","symbol":"LUMBER","name":"Lumber"},{"category":"Commodities","symbol":"ORANGEJUICE","name":"Orange Juice"},{"category":"Crypto","symbol":"BTCUSD","name":"Bitcoin / US Dollar"},{"category":"Crypto","symbol":"ETHUSD","name":"Ethereum / US Dollar"},{"category":"Crypto","symbol":"SOLUSD","name":"Solana / US Dollar"},{"category":"Crypto","symbol":"XRPUSD","name":"XRP / US Dollar"},{"category":"Crypto","symbol":"BNBUSD","name":"BNB / US Dollar"},{"category":"Crypto","symbol":"ADAUSD","name":"Cardano / US Dollar"},{"category":"Crypto","symbol":"DOGEUSD","name":"Dogecoin / US Dollar"},{"category":"Crypto","symbol":"LTCUSD","name":"Litecoin / US Dollar"},{"category":"Crypto","symbol":"BCHUSD","name":"Bitcoin Cash / US Dollar"},{"category":"Crypto","symbol":"DOTUSD","name":"Polkadot / US Dollar"},{"category":"Crypto","symbol":"LINKUSD","name":"Chainlink / US Dollar"},{"category":"Crypto","symbol":"AVAXUSD","name":"Avalanche / US Dollar"},{"category":"Crypto","symbol":"TRXUSD","name":"TRON / US Dollar"},{"category":"Crypto","symbol":"UNIUSD","name":"Uniswap / US Dollar"},{"category":"Crypto","symbol":"XLMUSD","name":"Stellar / US Dollar"},{"category":"Crypto","symbol":"ATOMUSD","name":"Cosmos / US Dollar"},{"category":"Crypto","symbol":"AAVEUSD","name":"Aave / US Dollar"},{"category":"Crypto","symbol":"ETCUSD","name":"Ethereum Classic / US Dollar"},{"category":"Crypto","symbol":"FILUSD","name":"Filecoin / US Dollar"},{"category":"Crypto","symbol":"ICPUSD","name":"Internet Computer / US Dollar"},{"category":"Crypto","symbol":"NEARUSD","name":"NEAR / US Dollar"},{"category":"Crypto","symbol":"SUIUSD","name":"Sui / US Dollar"},{"category":"Crypto","symbol":"TONUSD","name":"Toncoin / US Dollar"},{"category":"Crypto","symbol":"HBARUSD","name":"Hedera / US Dollar"},{"category":"Crypto","symbol":"SHIBUSD","name":"Shiba Inu / US Dollar"},{"category":"Crypto","symbol":"PEPEUSD","name":"Pepe / US Dollar"},{"category":"Crypto","symbol":"POLUSD","name":"Polygon / US Dollar"},{"category":"Crypto","symbol":"MATICUSD","name":"Polygon legacy symbol / US Dollar"},{"category":"Crypto","symbol":"APTUSD","name":"Aptos / US Dollar"},{"category":"Crypto","symbol":"ARBUSD","name":"Arbitrum / US Dollar"},{"category":"Crypto","symbol":"OPUSD","name":"Optimism / US Dollar"},{"category":"Crypto","symbol":"INJUSD","name":"Injective / US Dollar"},{"category":"Crypto","symbol":"RENDERUSD","name":"Render / US Dollar"},{"category":"Crypto","symbol":"FETUSD","name":"Artificial Superintelligence Alliance / US Dollar"},{"category":"Crypto","symbol":"RUNEUSD","name":"THORChain / US Dollar"},{"category":"Crypto","symbol":"ALGOUSD","name":"Algorand / US Dollar"},{"category":"Crypto","symbol":"EOSUSD","name":"EOS / US Dollar"},{"category":"Crypto","symbol":"XTZUSD","name":"Tezos / US Dollar"},{"category":"Crypto","symbol":"MKRUSD","name":"Maker / US Dollar"},{"category":"Crypto","symbol":"COMPUSD","name":"Compound / US Dollar"},{"category":"Stocks","symbol":"AAPL","name":"Apple"},{"category":"Stocks","symbol":"MSFT","name":"Microsoft"},{"category":"Stocks","symbol":"NVDA","name":"NVIDIA"},{"category":"Stocks","symbol":"AMZN","name":"Amazon"},{"category":"Stocks","symbol":"META","name":"Meta Platforms"},{"category":"Stocks","symbol":"TSLA","name":"Tesla"},{"category":"Stocks","symbol":"GOOGL","name":"Alphabet Class A"},{"category":"Stocks","symbol":"GOOG","name":"Alphabet Class C"},{"category":"Stocks","symbol":"NFLX","name":"Netflix"},{"category":"Stocks","symbol":"AMD","name":"AMD"},{"category":"Stocks","symbol":"INTC","name":"Intel"},{"category":"Stocks","symbol":"AVGO","name":"Broadcom"},{"category":"Stocks","symbol":"ORCL","name":"Oracle"},{"category":"Stocks","symbol":"CRM","name":"Salesforce"},{"category":"Stocks","symbol":"ADBE","name":"Adobe"},{"category":"Stocks","symbol":"QCOM","name":"Qualcomm"},{"category":"Stocks","symbol":"MU","name":"Micron"},{"category":"Stocks","symbol":"ARM","name":"Arm Holdings"},{"category":"Stocks","symbol":"SMCI","name":"Super Micro Computer"},{"category":"Stocks","symbol":"PLTR","name":"Palantir"},{"category":"Stocks","symbol":"COIN","name":"Coinbase"},{"category":"Stocks","symbol":"MSTR","name":"Strategy / MicroStrategy"},{"category":"Stocks","symbol":"HOOD","name":"Robinhood"},{"category":"Stocks","symbol":"JPM","name":"JPMorgan Chase"},{"category":"Stocks","symbol":"BAC","name":"Bank of America"},{"category":"Stocks","symbol":"GS","name":"Goldman Sachs"},{"category":"Stocks","symbol":"MS","name":"Morgan Stanley"},{"category":"Stocks","symbol":"V","name":"Visa"},{"category":"Stocks","symbol":"MA","name":"Mastercard"},{"category":"Stocks","symbol":"PYPL","name":"PayPal"},{"category":"Stocks","symbol":"AXP","name":"American Express"},{"category":"Stocks","symbol":"WMT","name":"Walmart"},{"category":"Stocks","symbol":"COST","name":"Costco"},{"category":"Stocks","symbol":"HD","name":"Home Depot"},{"category":"Stocks","symbol":"NKE","name":"Nike"},{"category":"Stocks","symbol":"MCD","name":"McDonald's"},{"category":"Stocks","symbol":"KO","name":"Coca-Cola"},{"category":"Stocks","symbol":"PEP","name":"PepsiCo"},{"category":"Stocks","symbol":"DIS","name":"Walt Disney"},{"category":"Stocks","symbol":"SBUX","name":"Starbucks"},{"category":"Stocks","symbol":"UBER","name":"Uber"},{"category":"Stocks","symbol":"ABNB","name":"Airbnb"},{"category":"Stocks","symbol":"BA","name":"Boeing"},{"category":"Stocks","symbol":"CAT","name":"Caterpillar"},{"category":"Stocks","symbol":"GE","name":"GE Aerospace"},{"category":"Stocks","symbol":"XOM","name":"Exxon Mobil"},{"category":"Stocks","symbol":"CVX","name":"Chevron"},{"category":"Stocks","symbol":"OXY","name":"Occidental Petroleum"},{"category":"Stocks","symbol":"LLY","name":"Eli Lilly"},{"category":"Stocks","symbol":"JNJ","name":"Johnson & Johnson"},{"category":"Stocks","symbol":"PFE","name":"Pfizer"},{"category":"Stocks","symbol":"MRK","name":"Merck"},{"category":"Stocks","symbol":"UNH","name":"UnitedHealth"},{"category":"Stocks","symbol":"T","name":"AT&T"},{"category":"Stocks","symbol":"VZ","name":"Verizon"},{"category":"Stocks","symbol":"IBM","name":"IBM"}];
+
+      const syncInstrumentUi = () => {
+        const value = (tradeInstrument.value || '').trim().toUpperCase();
+        instrumentSelectBtn.textContent = value || 'Select instrument';
+      };
+
+      const renderInstrumentResults = (query = '') => {
+        const normalizedQuery = String(query || '').trim().toUpperCase();
+        const matches = instrumentCatalog.filter((item) => {
+          if (!normalizedQuery) return true;
+          return item.symbol.includes(normalizedQuery)
+            || item.name.toUpperCase().includes(normalizedQuery)
+            || item.category.toUpperCase().includes(normalizedQuery);
+        });
+
+        instrumentResults.innerHTML = '';
+        if (!matches.length) {
+          const empty = document.createElement('div');
+          empty.className = 'instrument-empty';
+          empty.textContent = 'No matching instrument. Try another symbol or name.';
+          instrumentResults.appendChild(empty);
           return;
         }
-        draftsList.innerHTML = items.map((draft) => {
-          const title = draft.instrument || 'Untitled Trade';
-          const side = draft.direction || 'Direction not set';
-          const date = draft.date || 'No date';
-          const stamp = draft.updatedAt ? new Date(draft.updatedAt).toLocaleString([], { dateStyle:'medium', timeStyle:'short' }) : '';
-          return `<div class="draft-row" data-draft-id="${String(draft.id).replace(/"/g,'&quot;')}"><div class="draft-row-main"><div class="draft-row-title"><span class="draft-badge">DRAFT</span><strong>${title}</strong></div><div class="draft-row-meta">${side} · ${date}${stamp ? ` · ${stamp}` : ''}</div></div><div class="draft-row-actions"><button class="secondary-btn draft-open-btn" type="button" data-draft-open="${String(draft.id).replace(/"/g,'&quot;')}">Open</button><button class="danger-btn draft-delete-btn" type="button" data-draft-delete="${String(draft.id).replace(/"/g,'&quot;')}">Delete</button></div></div>`;
-        }).join('');
+
+        let currentCategory = '';
+        matches.forEach((item) => {
+          if (item.category !== currentCategory) {
+            currentCategory = item.category;
+            const heading = document.createElement('div');
+            heading.className = 'instrument-category';
+            heading.textContent = currentCategory;
+            instrumentResults.appendChild(heading);
+          }
+
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.className = 'instrument-option';
+          option.dataset.instrumentValue = item.symbol;
+          option.classList.toggle('selected', tradeInstrument.value === item.symbol);
+
+          const symbol = document.createElement('span');
+          symbol.className = 'instrument-symbol';
+          symbol.textContent = item.symbol;
+
+          const name = document.createElement('span');
+          name.className = 'instrument-name';
+          name.textContent = item.name;
+
+          option.append(symbol, name);
+          instrumentResults.appendChild(option);
+        });
       };
 
-      const scheduleDraftCloudSync = (accountId, drafts) => {
-        if (!usingCloudData || !accountId) return;
-        clearTimeout(draftCloudSyncTimer);
-        draftCloudSyncTimer = setTimeout(() => { saveDraftsToCloud(accountId, drafts).catch(() => {}); }, 900);
+      const syncTradeSessionUi = () => {
+        const value = tradeSession.value || 'Asia';
+        tradeSessionBtn.textContent = value;
+        tradeSessionMenu.querySelectorAll('button[data-session-value]').forEach((button) => {
+          button.classList.toggle('selected', button.dataset.sessionValue === value);
+        });
       };
 
-      const saveDraftNow = async ({ quiet = false, announce = false } = {}) => {
-        if (editingTradeId || !currentAccount()) return false;
-        const draft = collectDraft();
-        if (!draftHasContent(draft)) return false;
-        currentDraftId = draft.id;
-        const drafts = readDrafts().filter((item) => item.id !== draft.id);
-        drafts.push(draft);
-        writeDraftsLocal(drafts);
-        scheduleDraftCloudSync(selectedAccountId, drafts);
-        if (quiet && usingCloudData) {
-          clearTimeout(draftCloudSyncTimer);
-          try { await saveDraftsToCloud(selectedAccountId, drafts); } catch (_) {}
+      const syncTradeResultUi = () => {
+        const value = tradeResult.value || '';
+        tradeResultBtn.textContent = value || 'Select result';
+        tradeResultMenu.querySelectorAll('button[data-result-value]').forEach((button) => {
+          button.classList.toggle('selected', button.dataset.resultValue === value);
+        });
+      };
+
+      const syncInstrumentMenuScrollLock = () => {
+        const pickerOpen =
+          instrumentMenu.classList.contains('open') ||
+          tradeSessionMenu.classList.contains('open') ||
+          tradeResultMenu.classList.contains('open') ||
+          psychologyBeforeMenu.classList.contains('open') ||
+          psychologyAfterMenu.classList.contains('open');
+        tradeForm.classList.toggle('psychology-menu-open', pickerOpen);
+      };
+
+      const parseStoredRating = (value) => {
+        const match = String(value || '').match(/^rating:([1-5])$/i);
+        return match ? Number(match[1]) : 0;
+      };
+
+      let selectedRating = 0;
+
+      const syncEmotionChoiceUi = () => {
+        const value = psychologyBefore.value || '';
+        emotionChoiceButtons.forEach((button) => {
+          const active = button.dataset.emotionValue === value;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        });
+      };
+
+      const syncRatingUi = () => {
+        tradeRating.value = selectedRating ? String(selectedRating) : '0';
+        ratingStarButtons.forEach((button) => {
+          const starValue = Number(button.dataset.ratingValue) || 0;
+          const active = selectedRating >= starValue && selectedRating > 0;
+          button.classList.toggle('active', active);
+          button.textContent = active ? '★' : '☆';
+          button.setAttribute('aria-checked', String(selectedRating === starValue));
+        });
+      };
+
+      const setTradeRating = (value, { saveDraft = false } = {}) => {
+        const next = Math.max(0, Math.min(5, Number(value) || 0));
+        selectedRating = next;
+        psychologyAfter.value = next ? `rating:${next}` : '';
+        syncRatingUi();
+        if (saveDraft) saveDraftNow();
+      };
+
+      const formatTradeRating = (value) => {
+        const rating = Number(value) || 0;
+        return rating ? `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} (${rating}/5)` : '—';
+      };
+
+      const psychologyStates = ['', 'Calm', 'Confident', 'Neutral', 'Anxious', 'Frustrated', 'Excited'];
+
+      const renderPsychologyMenu = (select, button, menu) => {
+        menu.innerHTML = '';
+        psychologyStates.forEach((state) => {
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.dataset.psychologyValue = state;
+          option.textContent = state || 'Select emotion';
+          option.classList.toggle('selected', select.value === state);
+          menu.appendChild(option);
+        });
+        button.textContent = select.value || 'Select emotion';
+      };
+
+      const syncPsychologyUi = () => {
+        renderPsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
+        renderPsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
+        syncEmotionChoiceUi();
+        syncRatingUi();
+      };
+
+      const syncPsychologyMenuScrollLock = () => {
+        syncInstrumentMenuScrollLock();
+      };
+
+      const closeCustomMenus = (except = null) => {
+        closeJournalFilterMenus(except);
+        [accountSelectMenu, instrumentMenu, tradeSessionMenu, tradeResultMenu, psychologyBeforeMenu, psychologyAfterMenu].forEach((menu) => {
+          if (menu !== except) menu.classList.remove('open');
+        });
+        if (accountSelectMenu !== except) accountSelectBtn.setAttribute('aria-expanded', 'false');
+        if (instrumentMenu !== except) instrumentSelectBtn.setAttribute('aria-expanded', 'false');
+        if (tradeSessionMenu !== except) tradeSessionBtn.setAttribute('aria-expanded', 'false');
+        if (tradeResultMenu !== except) tradeResultBtn.setAttribute('aria-expanded', 'false');
+        if (psychologyBeforeMenu !== except) psychologyBeforeBtn.setAttribute('aria-expanded', 'false');
+        if (psychologyAfterMenu !== except) psychologyAfterBtn.setAttribute('aria-expanded', 'false');
+        syncInstrumentMenuScrollLock();
+      };
+
+      const showPage = (page) => {
+        navButtons.forEach((item) => {
+          const active = item.dataset.page === page || (page === 'Trade Detail' && item.dataset.page === 'Journal');
+          item.classList.toggle('active', active);
+          if (active) item.setAttribute('aria-current', 'page');
+          else item.removeAttribute('aria-current');
+        });
+        dashboard.classList.toggle('hidden', page !== 'Dashboard');
+        journalPage.classList.toggle('visible', page === 'Journal');
+        calendarPage.classList.toggle('visible', page === 'Calendar');
+        analyticsPage.classList.toggle('visible', page === 'Analytics');
+        propFirmPage.classList.toggle('visible', page === 'Prop Firm');
+        tradeDetailPage.classList.toggle('visible', page === 'Trade Detail');
+        settingsPage.classList.toggle('visible', page === 'Settings');
+        if (page !== 'Dashboard' && page !== 'Journal' && page !== 'Calendar' && page !== 'Analytics' && page !== 'Prop Firm' && page !== 'Trade Detail' && page !== 'Settings') {
+          placeholder.classList.add('visible');
+          placeholderTitle.textContent = page;
+        } else {
+          placeholder.classList.remove('visible');
         }
-        if (!quiet || announce) showDraftSaved();
-        renderDrafts(drafts);
+        if (page === 'Calendar') renderCalendar();
+        if (page === 'Analytics') renderAnalytics();
+        if (page === 'Prop Firm') renderPropFirm();
+
+        const activePageElement =
+          page === 'Dashboard' ? dashboard :
+          page === 'Journal' ? journalPage :
+          page === 'Calendar' ? calendarPage :
+          page === 'Analytics' ? analyticsPage :
+          page === 'Prop Firm' ? propFirmPage :
+          page === 'Trade Detail' ? tradeDetailPage :
+          page === 'Settings' ? settingsPage :
+          placeholder;
+
+        playViewEntrance(activePageElement);
+      };
+
+      const openAccountForm = (account = null) => {
+        editingAccountId = account?.id || null;
+        accountFormCard.classList.add('visible');
+        tradeFormCard.classList.remove('visible');
+        accountFormError.classList.remove('show');
+        accountFormError.textContent = '';
+        root.querySelector('#account-form-title').textContent = account ? 'Edit Account' : 'Create Account';
+        accountForm.querySelector('button[type="submit"]').textContent = account ? 'Save Changes' : 'Create Account';
+        accountName.value = account?.name || '';
+        startingBalance.value = account ? String(account.startingBalance) : '';
+        accountCurrency.value = account?.currency || 'USD';
+        accountName.focus();
+      };
+
+      const closeAccountForm = () => {
+        accountFormCard.classList.remove('visible');
+        accountForm.reset();
+        accountCurrency.value = 'USD';
+        editingAccountId = null;
+        root.querySelector('#account-form-title').textContent = 'Create Account';
+        accountForm.querySelector('button[type="submit"]').textContent = 'Create Account';
+        accountFormError.classList.remove('show');
+        accountFormError.textContent = '';
+        renderAccountSelector();
+      };
+
+      const openTradeForm = () => {
+        if (!currentAccount()) {
+          notice.textContent = 'Create or select a trading account before adding a trade.';
+          notice.classList.add('show');
+          return;
+        }
+        notice.classList.remove('show');
+        tradeSuccess.classList.remove('show');
+        accountFormCard.classList.remove('visible');
+        if (typeof tradeFormCard.showModal === 'function' && !tradeFormCard.open) tradeFormCard.showModal();
+        tradeFormCard.classList.add('visible');
+        editingTradeId = null;
+        resetPendingScreenshots();
+        tradeFormTitle.textContent = 'New Trade';
+        tradeFormSubmit.textContent = 'Save Trade';
+        tradeFormError.classList.remove('show');
+        tradeFormError.textContent = '';
+        const restored = restoreDraft();
+        if (!restored) {
+          selectedRating = 0;
+          psychologyBefore.value = '';
+          psychologyAfter.value = '';
+        }
+        if (!restored && !tradeDate.value) tradeDate.value = getLocalDateValue();
+        syncTradeDateDisplay();
+        updateAutomaticRiskPercent();
+        syncTradeSessionUi();
+        syncTradeResultUi();
+        syncPsychologyUi();
+        syncInstrumentUi();
+        instrumentSelectBtn.focus();
+      };
+
+      const openEditTrade = async () => {
+        const trade = trades.find((item) => item.id === detailTradeId && item.accountId === selectedAccountId);
+        if (!trade) return;
+        editingTradeId = trade.id;
+        tradeForm.reset();
+        tradeInstrument.value = (trade.instrument || '').trim().toUpperCase();
+        syncInstrumentUi();
+        selectedDirection = trade.direction || '';
+        tradeDate.value = trade.date || getLocalDateValue();
+        syncTradeDateDisplay();
+        tradeSession.value = trade.session === 'Asian' ? 'Asia' : (trade.session || 'Asia');
+        syncTradeSessionUi();
+        entryPrice.value = trade.entryPrice ?? '';
+        stopLoss.value = trade.stopLoss ?? '';
+        takeProfit.value = trade.takeProfit ?? '';
+        lotSize.value = trade.lotSize ?? '';
+        riskAmount.value = trade.riskAmount ?? '';
+        updateAutomaticRiskPercent();
+        profitLoss.value = trade.profitLoss ?? '';
+        tradeResult.value = trade.result || '';
+        syncTradeResultUi();
+        tradeNotes.value = trade.notes || '';
+        tradeMistakes.value = trade.mistakes || '';
+        psychologyBefore.value = typeof trade.psychologyBefore === 'string' ? trade.psychologyBefore : '';
+        psychologyAfter.value = typeof trade.psychologyAfter === 'string' ? trade.psychologyAfter : '';
+        selectedRating = parseStoredRating(trade.psychologyAfter);
+        syncPsychologyUi();
+        await loadTradeScreenshots(trade);
+        updateDirectionButtons();
+        calculatePlannedRr();
+        updateRealizedRPreview();
+        tradeFormTitle.textContent = 'Edit Trade';
+        tradeFormSubmit.textContent = 'Save Changes';
+        tradeFormError.classList.remove('show');
+        tradeFormError.textContent = '';
+        draftStatus.classList.remove('show');
+        tradeDetailPage.classList.remove('visible');
+        journalPage.classList.remove('visible');
+        dashboard.classList.add('hidden');
+        placeholder.classList.remove('visible');
+        if (typeof tradeFormCard.showModal === 'function' && !tradeFormCard.open) tradeFormCard.showModal();
+        tradeFormCard.classList.add('visible');
+        syncInstrumentUi();
+        instrumentSelectBtn.focus();
+      };
+
+      const resetTradeForm = () => {
+        if (tradeFormCard.open && typeof tradeFormCard.close === 'function') tradeFormCard.close();
+        tradeFormCard.classList.remove('visible');
+        tradeForm.reset();
+        tradeInstrument.value = '';
+        syncInstrumentUi();
+        syncTradeSessionUi();
+        syncTradeResultUi();
+        psychologyBefore.value = '';
+        psychologyAfter.value = '';
+        selectedRating = 0;
+        syncPsychologyUi();
+        resetPendingScreenshots();
+        editingTradeId = null;
+        tradeFormTitle.textContent = 'New Trade';
+        tradeFormSubmit.textContent = 'Save Trade';
+        selectedDirection = '';
+        updateDirectionButtons();
+        tradeDate.value = getLocalDateValue();
+        syncTradeDateDisplay();
+        tradeSession.value = 'Asia';
+        riskPercent.value = '';
+        updateAutomaticRiskPercent();
+        psychologyBefore.value = '';
+        psychologyAfter.value = '';
+        selectedRating = 0;
+        syncPsychologyUi();
+        tradeFormError.classList.remove('show');
+        tradeFormError.textContent = '';
+      };
+
+      const discardAndCloseTradeForm = () => {
+        if (editingTradeId) {
+          resetTradeForm();
+          renderTradeDetail();
+          showPage('Trade Detail');
+          return;
+        }
+        const draft = readDraft();
+        if (draftHasContent(draft) && !window.confirm('Discard this unfinished trade draft?')) return;
+        clearDraft();
+        resetTradeForm();
+      };
+
+      const showAccountError = (message) => {
+        accountFormError.textContent = message;
+        accountFormError.classList.add('show');
+      };
+
+      const showTradeError = (message, focusTarget) => {
+        tradeFormError.textContent = message;
+        tradeFormError.classList.add('show');
+        if (focusTarget) focusTarget.focus();
+      };
+
+      const setJournalDataStatus = (message = '', type = '') => {
+        journalDataStatus.textContent = message;
+        journalDataStatus.classList.toggle('show', Boolean(message));
+        journalDataStatus.classList.toggle('error', type === 'error');
+      };
+
+      const setJournalImportStatus = (message = '', type = '') => {
+        journalImportStatus.textContent = message;
+        journalImportStatus.classList.toggle('show', Boolean(message));
+        journalImportStatus.classList.toggle('error', type === 'error');
+      };
+
+      const setJournalImportWarning = (message = '') => {
+        journalImportWarning.textContent = message;
+        journalImportWarning.classList.toggle('show', Boolean(message));
+      };
+
+      const makeRecordUuid = () => typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `00000000-0000-4000-8000-${String(Date.now()).padStart(12, '0').slice(-12)}`;
+
+      const hash32 = (value, seed = 2166136261) => {
+        let hash = seed >>> 0;
+        const text = String(value || '');
+        for (let index = 0; index < text.length; index += 1) {
+          hash ^= text.charCodeAt(index);
+          hash = Math.imul(hash, 16777619);
+        }
+        return hash >>> 0;
+      };
+
+      const deterministicUuid = (seed) => {
+        const a = hash32(seed, 2166136261);
+        const b = hash32(seed, 2246822519);
+        const c = hash32(seed, 3266489917);
+        const d = hash32(seed, 668265263);
+        let hex = [a,b,c,d].map((part) => part.toString(16).padStart(8, '0')).join('').slice(0, 32);
+        hex = `${hex.slice(0,12)}4${hex.slice(13,16)}${((parseInt(hex[16],16) & 3) | 8).toString(16)}${hex.slice(17)}`;
+        return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20,32)}`;
+      };
+
+      const normalizeImportKey = (value) => String(value || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[%$€£¥]/g, '')
+        .replace(/[\s._/\\()[\]-]+/g, '');
+
+      const IMPORT_FIELD_ALIASES = {
+        id: ['id','tradeid','ticket','ticketid','order','orderid','deal','dealid','positionid'],
+        instrument: ['instrument','symbol','pair','market','ticker','asset'],
+        direction: ['direction','side','type','tradetype','ordertype','positiontype'],
+        date: ['date','tradedate','opendate','closedate','datetime','opentime','closetime','time'],
+        session: ['session','tradingsession','marketsession'],
+        entryPrice: ['entry','entryprice','openprice','entrylevel','priceopen'],
+        stopLoss: ['sl','stoploss','stopprice','stoplossprice'],
+        takeProfit: ['tp','takeprofit','target','targetprice','takeprofitprice'],
+        lotSize: ['lot','lots','lotsize','volume','size','quantity','qty'],
+        riskPercent: ['riskpercent','riskpercentage','riskpct','risk'],
+        riskAmount: ['riskamount','riskusd','riskmoney','amountatrisk'],
+        profitLoss: ['pl','pnl','profit','profitloss','netprofit','netpl','realizedpnl','realizedprofit','resultamount'],
+        result: ['result','outcome','status','tradeoutcome'],
+        plannedRr: ['rr','plannedrr','riskreward','riskrewardratio','ratiorewardrisk'],
+        realizedR: ['realizedr','rmultiple','actualr'],
+        notes: ['notes','note','reason','reasonforentry','entryreason','comment','comments'],
+        mistakes: ['mistakes','mistake','error','errors'],
+        psychologyBefore: ['emotion','emotionalstate','psychology','mood'],
+        rating: ['rating','score','tradingscore'],
+        accountName: ['accountname','tradingaccount','account','portfolio'],
+        startingBalance: ['startingbalance','initialbalance','startbalance','balanceinitial'],
+        currency: ['currency','accountcurrency','ccy']
+      };
+
+      const findImportValue = (row, field) => {
+        if (!row || typeof row !== 'object') return '';
+        const aliases = IMPORT_FIELD_ALIASES[field] || [];
+        const keyMap = new Map(Object.keys(row).map((key) => [normalizeImportKey(key), key]));
+        for (const alias of aliases) {
+          const original = keyMap.get(normalizeImportKey(alias));
+          if (original !== undefined) return row[original];
+        }
+        return '';
+      };
+
+      const parseImportNumber = (value) => {
+        if (value === null || value === undefined || value === '') return null;
+        if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+        let text = String(value).trim();
+        if (!text) return null;
+        text = text.replace(/\s/g, '').replace(/[^\d,.\-+]/g, '');
+        if (!text) return null;
+        const comma = text.lastIndexOf(',');
+        const dot = text.lastIndexOf('.');
+        if (comma >= 0 && dot >= 0) {
+          if (comma > dot) text = text.replace(/\./g, '').replace(',', '.');
+          else text = text.replace(/,/g, '');
+        } else if (comma >= 0) {
+          const pieces = text.split(',');
+          text = pieces.length === 2 && pieces[1].length <= 2
+            ? `${pieces[0]}.${pieces[1]}`
+            : pieces.join('');
+        }
+        const number = Number(text);
+        return Number.isFinite(number) ? number : null;
+      };
+
+      const padDatePart = (value) => String(value).padStart(2, '0');
+
+      const validIsoDateParts = (year, month, day) => {
+        const y = Number(year);
+        const m = Number(month);
+        const d = Number(day);
+        if (!Number.isInteger(y) || y < 1970 || y > 2200 || !Number.isInteger(m) || m < 1 || m > 12 || !Number.isInteger(d) || d < 1 || d > 31) return '';
+        const probe = new Date(Date.UTC(y, m - 1, d));
+        if (probe.getUTCFullYear() !== y || probe.getUTCMonth() !== m - 1 || probe.getUTCDate() !== d) return '';
+        return `${y}-${padDatePart(m)}-${padDatePart(d)}`;
+      };
+
+      const parseImportDate = (value) => {
+        if (value === null || value === undefined || value === '') return '';
+
+        if (typeof value === 'number' && Number.isFinite(value) && value > 20000 && value < 90000) {
+          const epoch = Date.UTC(1899, 11, 30);
+          const date = new Date(epoch + Math.floor(value) * 86400000);
+          return validIsoDateParts(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+        }
+
+        const text = String(value).trim();
+        if (!text) return '';
+
+        let match = text.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+        if (match) return validIsoDateParts(match[1], match[2], match[3]);
+
+        match = text.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
+        if (match) {
+          const first = Number(match[1]);
+          const second = Number(match[2]);
+          if (first > 12) return validIsoDateParts(match[3], second, first);
+          if (second > 12) return validIsoDateParts(match[3], first, second);
+          // For ambiguous DD/MM/YYYY vs MM/DD/YYYY, use day-first because
+          // most third-party exports used by the target audience are non-US.
+          return validIsoDateParts(match[3], second, first);
+        }
+
+        const parsed = new Date(text);
+        if (Number.isFinite(parsed.getTime())) {
+          return validIsoDateParts(parsed.getUTCFullYear(), parsed.getUTCMonth() + 1, parsed.getUTCDate());
+        }
+        return '';
+      };
+
+      const normalizeImportDirection = (value) => {
+        const text = String(value || '').trim().toLowerCase();
+        if (['buy','long','b','buy limit','buy stop'].includes(text)) return 'BUY';
+        if (['sell','short','s','sell limit','sell stop'].includes(text)) return 'SELL';
+        return String(value || '').trim().toUpperCase() === 'BUY' ? 'BUY'
+          : String(value || '').trim().toUpperCase() === 'SELL' ? 'SELL'
+          : '';
+      };
+
+      const normalizeImportSession = (value) => {
+        const text = String(value || '').trim().toLowerCase();
+        if (!text) return '';
+        if (text.includes('asia')) return 'Asia';
+        if (text.includes('london')) return 'London';
+        if (text.includes('new york') || text === 'ny' || text.includes('newyork')) return 'New York';
+        return String(value || '').trim();
+      };
+
+      const normalizeImportResult = (value, profitLoss) => {
+        const text = String(value || '').trim().toLowerCase().replace(/[_-]+/g, ' ');
+        if (['win','winner','profit','won','tp','take profit'].includes(text)) return 'WIN';
+        if (['loss','lose','loser','lost','sl','stop loss'].includes(text)) return 'LOSS';
+        if (['be','break even','breakeven','break-even','flat'].includes(text)) return 'BREAK EVEN';
+        if (Number.isFinite(profitLoss)) return profitLoss > 0 ? 'WIN' : profitLoss < 0 ? 'LOSS' : 'BREAK EVEN';
+        return '';
+      };
+
+      const calculateImportedPlannedRr = (direction, entry, stopLoss, takeProfit) => {
+        if (![entry, stopLoss, takeProfit].every(Number.isFinite)) return null;
+        if (direction === 'BUY' && stopLoss < entry && takeProfit > entry) {
+          const risk = entry - stopLoss;
+          return risk > 0 ? (takeProfit - entry) / risk : null;
+        }
+        if (direction === 'SELL' && stopLoss > entry && takeProfit < entry) {
+          const risk = stopLoss - entry;
+          return risk > 0 ? (entry - takeProfit) / risk : null;
+        }
+        return null;
+      };
+
+      const normalizeExternalImportRow = (row, index) => {
+        const instrument = String(findImportValue(row, 'instrument') || '').trim().toUpperCase();
+        const date = parseImportDate(findImportValue(row, 'date'));
+        if (!instrument || !date) return { valid: false, reason: !instrument ? 'Missing instrument' : 'Missing/invalid date', index };
+
+        const direction = normalizeImportDirection(findImportValue(row, 'direction'));
+        const entryPrice = parseImportNumber(findImportValue(row, 'entryPrice'));
+        const stopLoss = parseImportNumber(findImportValue(row, 'stopLoss'));
+        const takeProfit = parseImportNumber(findImportValue(row, 'takeProfit'));
+        const lotSize = parseImportNumber(findImportValue(row, 'lotSize'));
+        const riskPercent = parseImportNumber(findImportValue(row, 'riskPercent'));
+        const riskAmount = parseImportNumber(findImportValue(row, 'riskAmount'));
+        const profitLoss = parseImportNumber(findImportValue(row, 'profitLoss')) ?? 0;
+        const result = normalizeImportResult(findImportValue(row, 'result'), profitLoss);
+        const importedPlanned = parseImportNumber(findImportValue(row, 'plannedRr'));
+        const plannedRr = Number.isFinite(importedPlanned)
+          ? importedPlanned
+          : calculateImportedPlannedRr(direction, entryPrice, stopLoss, takeProfit);
+        const importedRealized = parseImportNumber(findImportValue(row, 'realizedR'));
+        const realizedR = Number.isFinite(importedRealized)
+          ? importedRealized
+          : Number.isFinite(riskAmount) && riskAmount > 0
+            ? profitLoss / riskAmount
+            : result === 'BREAK EVEN'
+              ? 0
+              : result === 'LOSS'
+                ? -1
+                : result === 'WIN' && Number.isFinite(plannedRr)
+                  ? plannedRr
+                  : null;
+        const ratingRaw = parseImportNumber(findImportValue(row, 'rating'));
+        const rating = Number.isFinite(ratingRaw) ? Math.max(0, Math.min(5, Math.round(ratingRaw))) : 0;
+        const sourceId = String(findImportValue(row, 'id') || '').trim();
+
+        return {
+          valid: true,
+          index,
+          sourceId,
+          trade: {
+            instrument,
+            direction,
+            date,
+            session: normalizeImportSession(findImportValue(row, 'session')),
+            entryPrice,
+            stopLoss,
+            takeProfit,
+            lotSize,
+            riskPercent,
+            riskAmount,
+            profitLoss,
+            result,
+            plannedRr,
+            realizedR,
+            notes: String(findImportValue(row, 'notes') || '').trim(),
+            mistakes: String(findImportValue(row, 'mistakes') || '').trim(),
+            psychologyBefore: String(findImportValue(row, 'psychologyBefore') || '').trim(),
+            psychologyAfter: rating ? `rating:${rating}` : '',
+            screenshotBeforePath: null,
+            screenshotAfterPath: null,
+            screenshotBeforeId: null,
+            screenshotAfterId: null,
+            createdAt: Date.now() + index,
+            updatedAt: Date.now() + index
+          }
+        };
+      };
+
+      const parseCsvRows = (text) => {
+        const rows = [];
+        let row = [];
+        let cell = '';
+        let quoted = false;
+
+        for (let index = 0; index < text.length; index += 1) {
+          const char = text[index];
+          const next = text[index + 1];
+
+          if (char === '"') {
+            if (quoted && next === '"') {
+              cell += '"';
+              index += 1;
+            } else {
+              quoted = !quoted;
+            }
+          } else if (char === ',' && !quoted) {
+            row.push(cell);
+            cell = '';
+          } else if ((char === '\n' || char === '\r') && !quoted) {
+            if (char === '\r' && next === '\n') index += 1;
+            row.push(cell);
+            if (row.some((value) => String(value).trim() !== '')) rows.push(row);
+            row = [];
+            cell = '';
+          } else {
+            cell += char;
+          }
+        }
+
+        row.push(cell);
+        if (row.some((value) => String(value).trim() !== '')) rows.push(row);
+        if (rows.length < 2) return [];
+
+        const headers = rows[0].map((value, index) => String(value || '').trim() || `Column ${index + 1}`);
+        return rows.slice(1).map((cells) => {
+          const record = {};
+          headers.forEach((header, index) => { record[header] = cells[index] ?? ''; });
+          return record;
+        });
+      };
+
+      const loadXlsxRows = async (file) => {
+        let module;
+        try {
+          module = await import('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm');
+        } catch (_) {
+          throw new Error('Excel reader could not be loaded. Try exporting the journal as CSV or JSON instead.');
+        }
+        const XLSX = module?.default || module;
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array', cellDates: false });
+        const firstSheet = workbook.SheetNames?.[0];
+        if (!firstSheet) return [];
+        return XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: '', raw: true });
+      };
+
+      const safeFileBaseName = (name) => String(name || 'Imported Journal')
+        .replace(/\.[^.]+$/, '')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 80) || 'Imported Journal';
+
+      const inferExternalAccountMeta = (rows, parsedObject, fileName) => {
+        const first = Array.isArray(rows) ? rows.find((row) => row && typeof row === 'object') : null;
+        const objectAccount = parsedObject?.account && typeof parsedObject.account === 'object' ? parsedObject.account : null;
+        const name = String(
+          objectAccount?.name ||
+          parsedObject?.accountName ||
+          (first ? findImportValue(first, 'accountName') : '') ||
+          safeFileBaseName(fileName)
+        ).trim().slice(0,80) || 'Imported Journal';
+        const balance = parseImportNumber(
+          objectAccount?.startingBalance ??
+          parsedObject?.startingBalance ??
+          (first ? findImportValue(first, 'startingBalance') : '')
+        );
+        const currency = String(
+          objectAccount?.currency ||
+          parsedObject?.currency ||
+          (first ? findImportValue(first, 'currency') : '') ||
+          currentAccount()?.currency ||
+          'USD'
+        ).trim().toUpperCase();
+
+        return {
+          name,
+          startingBalance: Number.isFinite(balance) && balance >= 0 ? balance : 0,
+          currency: ['USD','EUR','GBP','IDR','JPY','AUD','CAD','CHF'].includes(currency) ? currency : 'USD'
+        };
+      };
+
+      const sanitizeBackupAccount = (account) => ({
+        id: String(account?.id || ''),
+        name: String(account?.name || 'Imported Account').trim().slice(0,80) || 'Imported Account',
+        startingBalance: Math.max(0, Number(account?.startingBalance) || 0),
+        currency: String(account?.currency || 'USD').trim().toUpperCase() || 'USD',
+        ...(account?.propFirmConfig ? { propFirmConfig: account.propFirmConfig } : {}),
+        createdAt: Number(account?.createdAt) || Date.now(),
+        updatedAt: Number(account?.updatedAt) || Date.now()
+      });
+
+      const sanitizeBackupTrade = (trade) => ({
+        id: String(trade?.id || ''),
+        accountId: String(trade?.accountId || ''),
+        instrument: String(trade?.instrument || '').trim().toUpperCase(),
+        direction: normalizeImportDirection(trade?.direction),
+        date: parseImportDate(trade?.date),
+        session: normalizeImportSession(trade?.session),
+        entryPrice: parseImportNumber(trade?.entryPrice),
+        stopLoss: parseImportNumber(trade?.stopLoss),
+        takeProfit: parseImportNumber(trade?.takeProfit),
+        lotSize: parseImportNumber(trade?.lotSize),
+        riskPercent: parseImportNumber(trade?.riskPercent),
+        riskAmount: parseImportNumber(trade?.riskAmount),
+        profitLoss: parseImportNumber(trade?.profitLoss) ?? 0,
+        result: normalizeImportResult(trade?.result, parseImportNumber(trade?.profitLoss) ?? 0),
+        plannedRr: parseImportNumber(trade?.plannedRr),
+        realizedR: parseImportNumber(trade?.realizedR),
+        notes: String(trade?.notes || ''),
+        mistakes: String(trade?.mistakes || ''),
+        psychologyBefore: String(trade?.psychologyBefore || ''),
+        psychologyAfter: /^rating:[1-5]$/i.test(String(trade?.psychologyAfter || '')) ? String(trade.psychologyAfter) : '',
+        screenshotBeforePath: null,
+        screenshotAfterPath: null,
+        screenshotBeforeId: null,
+        screenshotAfterId: null,
+        createdAt: Number(trade?.createdAt) || Date.now(),
+        updatedAt: Number(trade?.updatedAt) || Date.now()
+      });
+
+      const parseJournalImportFile = async (file) => {
+        if (!file) throw new Error('Choose a journal file first.');
+        if (file.size > JOURNAL_IMPORT_MAX_BYTES) throw new Error('This file is larger than 20 MB. Export journal data without screenshots and try again.');
+
+        const extension = String(file.name || '').split('.').pop().toLowerCase();
+        let rawRows = [];
+        let parsedObject = null;
+
+        if (extension === 'xlsx' || extension === 'xls') {
+          rawRows = await loadXlsxRows(file);
+        } else {
+          const text = await file.text();
+          if (extension === 'json' || String(file.type || '').includes('json') || /^[\s]*[\[{]/.test(text)) {
+            try {
+              parsedObject = JSON.parse(text);
+            } catch (_) {
+              if (extension === 'json') throw new Error('This JSON file is invalid or damaged.');
+            }
+          }
+          if (parsedObject === null) rawRows = parseCsvRows(text);
+        }
+
+        if (parsedObject && parsedObject.format === JOURNAL_BACKUP_FORMAT) {
+          if (Number(parsedObject.version) > JOURNAL_BACKUP_VERSION) {
+            throw new Error('This backup was created by a newer eRTrades backup format. Update eRTrades before importing it.');
+          }
+          const backupAccounts = Array.isArray(parsedObject.accounts) ? parsedObject.accounts.map(sanitizeBackupAccount).filter((item) => item.id) : [];
+          const validAccountIds = new Set(backupAccounts.map((item) => item.id));
+          const backupTrades = Array.isArray(parsedObject.trades)
+            ? parsedObject.trades.map(sanitizeBackupTrade).filter((item) => item.instrument && item.date && validAccountIds.has(item.accountId))
+            : [];
+          if (!backupAccounts.length && !backupTrades.length) throw new Error('This eRTrades backup does not contain journal data.');
+          return {
+            kind: 'backup',
+            sourceLabel: 'eRTrades Backup',
+            fileName: file.name,
+            accounts: backupAccounts,
+            trades: backupTrades,
+            invalidCount: Math.max(0, (Array.isArray(parsedObject.trades) ? parsedObject.trades.length : 0) - backupTrades.length),
+            exportedAt: parsedObject.exportedAt || '',
+            screenshotsIncluded: parsedObject.screenshotsIncluded === true
+          };
+        }
+
+        if (parsedObject !== null) {
+          if (Array.isArray(parsedObject)) rawRows = parsedObject;
+          else if (Array.isArray(parsedObject.trades)) rawRows = parsedObject.trades;
+          else if (Array.isArray(parsedObject.data)) rawRows = parsedObject.data;
+          else if (Array.isArray(parsedObject.rows)) rawRows = parsedObject.rows;
+          else throw new Error('No trade rows were found in this JSON file.');
+        }
+
+        if (!Array.isArray(rawRows) || !rawRows.length) throw new Error('No journal rows were found in this file.');
+
+        const normalized = rawRows.map(normalizeExternalImportRow);
+        const validRows = normalized.filter((item) => item.valid);
+        const invalidCount = normalized.length - validRows.length;
+        if (!validRows.length) {
+          throw new Error('No importable trades were found. The file needs at least an Instrument/Symbol and Date column.');
+        }
+
+        return {
+          kind: 'external',
+          sourceLabel: extension === 'xlsx' || extension === 'xls' ? 'Excel Journal' : extension === 'json' ? 'JSON Journal' : 'CSV Journal',
+          fileName: file.name,
+          rows: validRows,
+          invalidCount,
+          accountMeta: inferExternalAccountMeta(rawRows, parsedObject || {}, file.name)
+        };
+      };
+
+      const exportTradeForBackup = (trade) => ({
+        id: trade.id,
+        accountId: trade.accountId,
+        instrument: trade.instrument,
+        direction: trade.direction,
+        date: trade.date,
+        session: trade.session,
+        entryPrice: trade.entryPrice,
+        stopLoss: trade.stopLoss,
+        takeProfit: trade.takeProfit,
+        lotSize: trade.lotSize,
+        riskPercent: trade.riskPercent,
+        riskAmount: trade.riskAmount,
+        profitLoss: trade.profitLoss,
+        result: trade.result,
+        plannedRr: trade.plannedRr,
+        realizedR: trade.realizedR,
+        notes: trade.notes || '',
+        mistakes: trade.mistakes || '',
+        psychologyBefore: trade.psychologyBefore || '',
+        psychologyAfter: trade.psychologyAfter || '',
+        createdAt: trade.createdAt,
+        updatedAt: trade.updatedAt
+      });
+
+      const exportJournalBackup = () => {
+        if (!accounts.length && !trades.length) {
+          setJournalDataStatus('There is no journal data to export yet.', 'error');
+          return;
+        }
+
+        const payload = {
+          format: JOURNAL_BACKUP_FORMAT,
+          version: JOURNAL_BACKUP_VERSION,
+          app: 'eRTrades',
+          exportedAt: new Date().toISOString(),
+          screenshotsIncluded: false,
+          note: 'Journal backup only. Cloud screenshots are not included in backup version 1.',
+          accounts: accounts.map((account) => ({
+            id: account.id,
+            name: account.name,
+            startingBalance: account.startingBalance,
+            currency: account.currency,
+            ...(account.propFirmConfig ? { propFirmConfig: account.propFirmConfig } : {}),
+            createdAt: account.createdAt,
+            updatedAt: account.updatedAt
+          })),
+          trades: trades.map(exportTradeForBackup)
+        };
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        const now = new Date();
+        const dateName = `${now.getFullYear()}-${padDatePart(now.getMonth() + 1)}-${padDatePart(now.getDate())}`;
+        anchor.href = url;
+        anchor.download = `ertrades-backup-${dateName}.json`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setJournalDataStatus(`Backup ready: ${accounts.length} account${accounts.length === 1 ? '' : 's'} · ${trades.length} trade${trades.length === 1 ? '' : 's'}. Screenshots are not included.`);
+      };
+
+      const resetJournalImportUi = () => {
+        journalImportParsed = null;
+        journalImportTargetMode = 'new';
+        journalImportBusy = false;
+        journalImportFile.value = '';
+        journalImportFileName.textContent = 'Supported: eRTrades JSON backup, CSV, JSON, XLSX, XLS · max 20 MB';
+        journalImportSummary.classList.remove('show');
+        journalImportConfig.classList.remove('show');
+        journalImportPreviewWrap.classList.remove('show');
+        journalImportPreviewBody.innerHTML = '';
+        journalImportSource.textContent = '—';
+        journalImportTradesCount.textContent = '0';
+        journalImportAccountsCount.textContent = '—';
+        journalImportSourceNote.textContent = '';
+        journalImportExternalConfig.style.display = '';
+        journalImportTargetNew.classList.add('active');
+        journalImportTargetExisting.classList.remove('active');
+        journalImportNewAccount.classList.add('show');
+        journalImportExistingAccount.classList.remove('show');
+        journalImportAccountName.value = '';
+        journalImportStartingBalance.value = '0';
+        journalImportCurrency.value = currentAccount()?.currency || 'USD';
+        journalImportAccountSelect.innerHTML = '';
+        setJournalImportWarning('');
+        setJournalImportStatus('');
+        journalImportConfirmBtn.disabled = true;
+        journalImportConfirmBtn.textContent = 'Import Journal';
+      };
+
+      const populateJournalImportAccountSelect = () => {
+        journalImportAccountSelect.innerHTML = '';
+        accounts.forEach((account) => {
+          const option = document.createElement('option');
+          option.value = account.id;
+          option.textContent = `${account.name} · ${account.currency}`;
+          journalImportAccountSelect.appendChild(option);
+        });
+        if (selectedAccountId && accounts.some((account) => account.id === selectedAccountId)) {
+          journalImportAccountSelect.value = selectedAccountId;
+        }
+      };
+
+      const renderJournalImportPreview = (tradesToPreview) => {
+        journalImportPreviewBody.innerHTML = '';
+        const preview = tradesToPreview.slice(0, 6);
+        preview.forEach((trade) => {
+          const row = document.createElement('tr');
+          const values = [
+            trade.date || '—',
+            trade.instrument || '—',
+            trade.direction || '—',
+            trade.result || '—',
+            Number.isFinite(Number(trade.profitLoss)) ? String(Number(trade.profitLoss)) : '0',
+            trade.session || '—'
+          ];
+          values.forEach((value) => {
+            const cell = document.createElement('td');
+            cell.textContent = value;
+            row.appendChild(cell);
+          });
+          journalImportPreviewBody.appendChild(row);
+        });
+        journalImportPreviewWrap.classList.toggle('show', Boolean(preview.length));
+      };
+
+      const renderParsedJournalImport = () => {
+        const parsed = journalImportParsed;
+        if (!parsed) return;
+
+        journalImportSummary.classList.add('show');
+        journalImportConfig.classList.add('show');
+        journalImportSource.textContent = parsed.sourceLabel;
+
+        if (parsed.kind === 'backup') {
+          journalImportTradesCount.textContent = String(parsed.trades.length);
+          journalImportAccountsCount.textContent = String(parsed.accounts.length);
+          journalImportExternalConfig.style.display = 'none';
+          journalImportSourceNote.textContent = `Safe merge: ${parsed.accounts.length} account${parsed.accounts.length === 1 ? '' : 's'} and ${parsed.trades.length} trade${parsed.trades.length === 1 ? '' : 's'} will be restored without deleting your current journal. Existing duplicates are skipped.`;
+          renderJournalImportPreview(parsed.trades);
+          journalImportConfirmBtn.disabled = false;
+          if (parsed.invalidCount) {
+            setJournalImportWarning(`${parsed.invalidCount} incomplete trade row${parsed.invalidCount === 1 ? '' : 's'} will be skipped.`);
+          } else {
+            setJournalImportWarning('Screenshots are not restored in backup version 1. Existing cloud screenshots are never deleted by this import.');
+          }
+        } else {
+          journalImportExternalConfig.style.display = '';
+          journalImportTradesCount.textContent = String(parsed.rows.length);
+          journalImportAccountsCount.textContent = '1 target';
+          journalImportSourceNote.textContent = 'External journal detected. Choose an existing Trading Account or create a new one. Imported trades stay editable and you can keep adding new trades normally.';
+          journalImportAccountName.value = parsed.accountMeta.name;
+          journalImportStartingBalance.value = String(parsed.accountMeta.startingBalance);
+          journalImportCurrency.value = parsed.accountMeta.currency;
+          populateJournalImportAccountSelect();
+          renderJournalImportPreview(parsed.rows.map((item) => item.trade));
+          journalImportConfirmBtn.disabled = false;
+          if (parsed.invalidCount) {
+            setJournalImportWarning(`${parsed.invalidCount} row${parsed.invalidCount === 1 ? '' : 's'} could not be mapped and will be skipped. Required fields: Instrument/Symbol and Date.`);
+          } else {
+            setJournalImportWarning('Common column names are mapped automatically. Screenshots from third-party journals are not imported.');
+          }
+        }
+      };
+
+      const chooseJournalImportTarget = (mode) => {
+        if (mode === 'existing' && !accounts.length) mode = 'new';
+        journalImportTargetMode = mode;
+        journalImportTargetNew.classList.toggle('active', mode === 'new');
+        journalImportTargetExisting.classList.toggle('active', mode === 'existing');
+        journalImportNewAccount.classList.toggle('show', mode === 'new');
+        journalImportExistingAccount.classList.toggle('show', mode === 'existing');
+      };
+
+      const saveImportedRecords = async (newAccounts, newTrades) => {
+        if (usingCloudData) {
+          if (newAccounts.length) await saveAccountsBatchToSupabase(newAccounts);
+          if (newTrades.length) await saveTradesBatchToSupabase(newTrades);
+        } else {
+          for (const account of newAccounts) await saveAccount(account);
+          for (const trade of newTrades) await saveTrade(trade);
+        }
+      };
+
+      const importNativeBackup = async (parsed) => {
+        const currentAccountIds = new Set(accounts.map((account) => account.id));
+        const currentTradeIds = new Set(trades.map((trade) => trade.id));
+        const accountMap = new Map();
+        const newAccounts = [];
+        const now = Date.now();
+
+        parsed.accounts.forEach((sourceAccount, index) => {
+          let targetId;
+          if (currentAccountIds.has(sourceAccount.id)) {
+            targetId = sourceAccount.id;
+          } else {
+            targetId = deterministicUuid(`ertrades-backup-account|${currentUser?.id || 'local'}|${sourceAccount.id}`);
+            if (!currentAccountIds.has(targetId)) {
+              newAccounts.push({
+                ...sourceAccount,
+                id: targetId,
+                createdAt: sourceAccount.createdAt || now + index,
+                updatedAt: now + index
+              });
+              currentAccountIds.add(targetId);
+            }
+          }
+          accountMap.set(sourceAccount.id, targetId);
+        });
+
+        const seenImportedIds = new Set(currentTradeIds);
+        const newTrades = [];
+        let duplicates = 0;
+
+        parsed.trades.forEach((sourceTrade, index) => {
+          const targetAccountId = accountMap.get(sourceTrade.accountId);
+          if (!targetAccountId) return;
+          const deterministicId = deterministicUuid(`ertrades-backup-trade|${currentUser?.id || 'local'}|${targetAccountId}|${sourceTrade.id || index}`);
+
+          if (currentTradeIds.has(sourceTrade.id) || seenImportedIds.has(deterministicId)) {
+            duplicates += 1;
+            return;
+          }
+
+          const trade = {
+            ...sourceTrade,
+            id: deterministicId,
+            accountId: targetAccountId,
+            screenshotBeforePath: null,
+            screenshotAfterPath: null,
+            screenshotBeforeId: null,
+            screenshotAfterId: null,
+            updatedAt: now + index
+          };
+          seenImportedIds.add(deterministicId);
+          newTrades.push(trade);
+        });
+
+        await saveImportedRecords(newAccounts, newTrades);
+        accounts.push(...newAccounts);
+        trades.push(...newTrades);
+
+        const firstImportedAccount = accountMap.get(parsed.accounts[0]?.id);
+        if (firstImportedAccount) selectedAccountId = firstImportedAccount;
+
+        return { accountsAdded: newAccounts.length, tradesAdded: newTrades.length, duplicates };
+      };
+
+      const externalTradeSeed = (trade, sourceId, index) => [
+        sourceId || `row-${index}`,
+        trade.date,
+        trade.instrument,
+        trade.direction,
+        trade.entryPrice,
+        trade.stopLoss,
+        trade.takeProfit,
+        trade.lotSize,
+        trade.profitLoss,
+        trade.result
+      ].join('|');
+
+      const importExternalJournal = async (parsed) => {
+        let targetAccount = null;
+        const newAccounts = [];
+
+        if (journalImportTargetMode === 'existing') {
+          targetAccount = accounts.find((account) => account.id === journalImportAccountSelect.value) || null;
+          if (!targetAccount) throw new Error('Choose an existing Trading Account.');
+        } else {
+          const name = journalImportAccountName.value.trim();
+          const startingBalanceValue = Number(journalImportStartingBalance.value);
+          const currency = journalImportCurrency.value;
+          if (!name) throw new Error('Enter a Trading Account name.');
+          if (!Number.isFinite(startingBalanceValue) || startingBalanceValue < 0) throw new Error('Starting Balance must be 0 or more.');
+          targetAccount = {
+            id: makeRecordUuid(),
+            name,
+            startingBalance: startingBalanceValue,
+            currency,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          };
+          newAccounts.push(targetAccount);
+        }
+
+        const existingIds = new Set(trades.filter((trade) => trade.accountId === targetAccount.id).map((trade) => trade.id));
+        const newTrades = [];
+        let duplicates = 0;
+        const now = Date.now();
+
+        parsed.rows.forEach((item, index) => {
+          const sourceSeed = externalTradeSeed(item.trade, item.sourceId, item.index);
+          const id = deterministicUuid(`ertrades-external-trade|${currentUser?.id || 'local'}|${targetAccount.id}|${sourceSeed}`);
+          if (existingIds.has(id)) {
+            duplicates += 1;
+            return;
+          }
+          existingIds.add(id);
+          newTrades.push({
+            ...item.trade,
+            id,
+            accountId: targetAccount.id,
+            createdAt: now + index,
+            updatedAt: now + index
+          });
+        });
+
+        await saveImportedRecords(newAccounts, newTrades);
+        if (newAccounts.length) accounts.push(...newAccounts);
+        trades.push(...newTrades);
+        selectedAccountId = targetAccount.id;
+
+        return { accountsAdded: newAccounts.length, tradesAdded: newTrades.length, duplicates };
+      };
+
+      const finalizeJournalImport = async (result) => {
+        if (usingCloudData) {
+          persistCloudState();
+        } else {
+          await saveSelectedAccount(selectedAccountId);
+          if (selectedAccountId) safeLocalSet(SELECTED_ACCOUNT_LOCAL_KEY, selectedAccountId);
+        }
+
+        renderAccountSelector();
+        renderDashboardAccount();
+        renderTrades();
+        renderCalendar();
+        renderAnalytics();
+        settingsEmail.textContent = currentUser?.email || '—';
+
+        setJournalDataStatus(`Import complete: ${result.tradesAdded} trade${result.tradesAdded === 1 ? '' : 's'} added${result.accountsAdded ? ` · ${result.accountsAdded} account${result.accountsAdded === 1 ? '' : 's'} created` : ''}${result.duplicates ? ` · ${result.duplicates} duplicate${result.duplicates === 1 ? '' : 's'} skipped` : ''}.`);
+      };
+
+      const closeJournalImportDialog = () => {
+        if (journalImportBusy) return;
+        if (journalImportDialog.open && typeof journalImportDialog.close === 'function') journalImportDialog.close();
+        resetJournalImportUi();
+      };
+
+      const bootstrapCachedAuthenticatedView = () => {
+        try {
+          const recoveryRedirect = readRecoveryRedirect();
+          if (recoveryRedirect?.error || recoveryRedirect?.accessToken) return false;
+
+          const storedSession = readJsonLocal(SUPABASE_SESSION_KEY, null);
+          const storedUser = storedSession?.user;
+          if (!storedSession?.access_token || !storedUser?.id) return false;
+
+          const lastActive = readLastActive(storedUser.id);
+          if (lastActive && Date.now() - lastActive >= INACTIVITY_TIMEOUT_MS) return false;
+
+          currentUser = {
+            id: storedUser.id,
+            email: storedUser.email || ''
+          };
+
+          migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
+          loadCloudState();
+          renderAccountSelector();
+          renderDashboardAccount();
+          showAuthenticatedApp();
+          return true;
+        } catch (_) {
+          return false;
+        }
+      };
+
+      const initializeData = async () => {
+        try {
+          const recoveryRedirect = readRecoveryRedirect();
+          if (recoveryRedirect?.error) {
+            showLogin();
+            clearRecoveryUrl();
+            setAuthStatus(decodeURIComponent(recoveryRedirect.error.replace(/\+/g, ' ')), 'error');
+            tradeDate.value = getLocalDateValue();
+            syncTradeDateDisplay();
+            return;
+          }
+          if (recoveryRedirect?.accessToken) {
+            showPasswordReset(recoveryRedirect.accessToken);
+            clearRecoveryUrl();
+            tradeDate.value = getLocalDateValue();
+            syncTradeDateDisplay();
+            return;
+          }
+          const inactivityExpired = await expireStoredSessionForInactivity();
+          const session = await getValidSupabaseSession();
+          currentUser = session?.user?.id ? { id: session.user.id, email: session.user.email || '' } : null;
+          if (currentUser) {
+            migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
+
+            // Load cached account/trade state immediately if it wasn't already
+            // bootstrapped, then refresh from Supabase in the background.
+            loadCloudState();
+            renderAccountSelector();
+            renderDashboardAccount();
+            showAuthenticatedApp();
+            try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
+
+            try { await restoreAccountsFromSupabase(); } catch (_) {}
+            try { await restoreTradesFromSupabase(); } catch (_) {}
+            persistCloudState();
+            renderAccountSelector();
+            renderDashboardAccount();
+            requestAnimationFrame(updateTopNavSpace);
+            await detectExistingLocalData();
+          } else {
+            accounts = [];
+            trades = [];
+            selectedAccountId = null;
+            usingCloudData = false;
+            renderAccountSelector();
+            renderDashboardAccount();
+
+            if (inactivityExpired) {
+              showLogin();
+              setAuthStatus('For your security, you were signed out after 12 hours of inactivity. Please log in again.', 'error');
+            } else {
+              showLanding();
+            }
+          }
+          tradeDate.value = getLocalDateValue();
+          syncTradeDateDisplay();
+        } catch (error) {
+          showLogin();
+          setAuthStatus(error instanceof Error ? error.message : 'Unable to initialize eRTrades.', 'error');
+        }
+      };
+
+      landingOverviewCarousel.addEventListener('scroll', () => {
+        clearTimeout(landingCarouselScrollTimer);
+        landingCarouselScrollTimer = setTimeout(syncLandingCarouselFromScroll, 80);
+      }, { passive: true });
+
+      window.addEventListener('popstate', (event) => {
+        if (root.classList.contains('authenticated')) return;
+        if (authMode === 'recovery') return;
+
+        const targetView = event.state?.ertradesView;
+        if (targetView === 'auth') {
+          showAuthMode(event.state?.authMode || 'login', { pushHistory: false });
+          return;
+        }
+
+        if (authPage.classList.contains('visible') || targetView === 'landing' || !targetView) {
+          showLanding();
+        }
+      });
+
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredPwaInstallPrompt = event;
+        updatePwaInstallVisibility();
+
+        if (!pwaInstallPanel.hidden) {
+          configurePwaInstallPanel();
+        }
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredPwaInstallPrompt = null;
+        updatePwaInstallVisibility();
+        hidePwaInstallPanel();
+      });
+
+      landingInstallBtn.addEventListener('click', showPwaInstallPanel);
+      pwaNativeInstallBtn.addEventListener('click', runNativePwaInstall);
+      pwaInstallDoneBtn.addEventListener('click', hidePwaInstallPanel);
+      pwaInstallCloseBtn.addEventListener('click', hidePwaInstallPanel);
+
+      landingMenuBtn.addEventListener('click', () => {
+        const open = !landingMenuPanel.classList.contains('open');
+        landingMenuPanel.classList.toggle('open', open);
+        landingMenuBtn.setAttribute('aria-expanded', String(open));
+      });
+
+      landingLoginBtn.addEventListener('click', () => showAuthMode('login'));
+      landingSignupBtn.addEventListener('click', () => showAuthMode('signup'));
+      landingStartBtn.addEventListener('click', () => showAuthMode('signup'));
+      landingExistingBtn.addEventListener('click', () => showAuthMode('login'));
+
+      landingThemeDarkBtn.addEventListener('click', () => {
+        saveTheme('dark');
+        closeLandingMenu();
+      });
+
+      landingThemeLightBtn.addEventListener('click', () => {
+        saveTheme('light');
+        closeLandingMenu();
+      });
+
+      landingMenuPanel.addEventListener('click', (event) => event.stopPropagation());
+
+      document.addEventListener('click', (event) => {
+        if (!landingMenuPanel.contains(event.target) && event.target !== landingMenuBtn && !landingMenuBtn.contains(event.target)) {
+          closeLandingMenu();
+        }
+      });
+
+      loginTab.addEventListener('click', () => setAuthMode('login'));
+      signupTab.addEventListener('click', () => setAuthMode('signup'));
+
+      authPasswordEye.addEventListener('click', () => {
+        togglePasswordVisibility(authPassword, authPasswordEye);
+      });
+
+      authConfirmPasswordEye.addEventListener('click', () => {
+        togglePasswordVisibility(authConfirmPassword, authConfirmPasswordEye);
+      });
+
+      resendConfirmationBtn.addEventListener('click', async () => {
+        const email = normalizeEmail(authPendingConfirmationEmail || authEmail.value);
+
+        if (!email || !email.includes('@')) {
+          setAuthStatus('Enter a valid email address first.', 'error');
+          hideAuthEmailActions();
+          authEmail.focus();
+          return;
+        }
+
+        resendConfirmationBtn.disabled = true;
+        resendConfirmationBtn.textContent = 'Sending…';
+
+        try {
+          await supabaseRequest('/auth/v1/resend', {
+            method: 'POST',
+            body: JSON.stringify({
+              type: 'signup',
+              email
+            })
+          });
+
+          setAuthStatus(
+            `Confirmation email sent again to ${email}. Check your inbox and spam, then use the newest confirmation link.`,
+            'success'
+          );
+          authPendingConfirmationEmail = email;
+          startAuthResendCooldown('confirmation');
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to resend the confirmation email right now.';
+          setAuthStatus(
+            /rate limit|security purposes|after \d+ seconds?/i.test(message)
+              ? 'Please wait a little before requesting another confirmation email.'
+              : message,
+            'error'
+          );
+          startAuthResendCooldown('confirmation');
+        }
+      });
+
+      resendResetBtn.addEventListener('click', async () => {
+        const email = normalizeEmail(authPendingResetEmail || authEmail.value);
+
+        if (!email || !email.includes('@')) {
+          setAuthStatus('Enter a valid email address first.', 'error');
+          hideAuthEmailActions();
+          authEmail.focus();
+          return;
+        }
+
+        resendResetBtn.disabled = true;
+        resendResetBtn.textContent = 'Sending…';
+
+        try {
+          const redirectTo = `${window.location.origin}${window.location.pathname}`;
+          await supabaseRequest('/auth/v1/recover', {
+            method: 'POST',
+            body: JSON.stringify({
+              email,
+              redirect_to: redirectTo
+            })
+          });
+
+          setAuthStatus(
+            'If an account exists for this email, a new password reset link has been sent. Check your inbox and spam, and use the newest email.',
+            'success'
+          );
+          authPendingResetEmail = email;
+          startAuthResendCooldown('reset');
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to resend the password reset email right now.';
+          setAuthStatus(
+            /rate limit|security purposes|after \d+ seconds?/i.test(message)
+              ? 'Please wait a little before requesting another password reset email.'
+              : message,
+            'error'
+          );
+          startAuthResendCooldown('reset');
+        }
+      });
+
+      authForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearAuthStatus();
+        authSubmit.disabled = true;
+        const originalLabel = authSubmit.textContent;
+        authSubmit.textContent = authMode === 'signup' ? 'Creating…' : authMode === 'recovery' ? 'Updating…' : 'Logging in…';
+        try {
+          if (authMode === 'recovery') {
+            const password = authPassword.value;
+            const confirmPassword = authConfirmPassword.value;
+            if (!recoveryAccessToken) throw new Error('This password reset link is invalid or has expired. Request a new one from Forgot Password.');
+            if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+            if (password !== confirmPassword) throw new Error('Passwords do not match.');
+            await supabaseRequest('/auth/v1/user', {
+              method: 'PUT',
+              headers: { Authorization: `Bearer ${recoveryAccessToken}` },
+              body: JSON.stringify({ password })
+            });
+            recoveryAccessToken = null;
+            safeLocalRemove(SUPABASE_SESSION_KEY);
+            restoreLoginFields();
+            authForm.reset();
+            setAuthStatus('Password updated successfully. You can now log in with your new password.', 'success');
+            return;
+          }
+          const email = normalizeEmail(authEmail.value);
+          const password = authPassword.value;
+          if (!email || !email.includes('@')) throw new Error('Enter a valid email address.');
+          if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+          if (authMode === 'signup') {
+            const response = await supabaseRequest('/auth/v1/signup', {
+              method: 'POST',
+              body: JSON.stringify({ email, password })
+            });
+            if (!response?.access_token || !response?.user?.id) {
+              authForm.reset();
+
+              /*
+                Email confirmation is enabled.
+                Switch to Login FIRST because setAuthMode clears authStatus,
+                then show the confirmation notice so it remains visible.
+              */
+              setAuthMode('login');
+              authEmail.value = email;
+              authPassword.value = '';
+              setAuthStatus(
+                `Account created. We sent a confirmation link to ${email}. Check your inbox (and spam), confirm your email, then return here and log in.`,
+                'success'
+              );
+              showConfirmationResend(email);
+
+              window.setTimeout(() => {
+                try { authPassword.focus(); } catch (_) {}
+              }, 80);
+              return;
+            }
+            if (!saveSupabaseSession(response)) throw new Error('Unable to persist login session.');
+            currentUser = { id: response.user.id, email: response.user.email || email };
+            migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
+            loadCloudState();
+            try { await restoreAccountsFromSupabase(); } catch (_) {}
+            try { await restoreTradesFromSupabase(); } catch (_) {}
+            persistCloudState();
+            renderAccountSelector();
+            renderDashboardAccount();
+            showAuthenticatedApp();
+            try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
+            await detectExistingLocalData();
+          } else {
+            const response = await supabaseRequest('/auth/v1/token?grant_type=password', {
+              method: 'POST',
+              body: JSON.stringify({ email, password })
+            });
+            if (!response?.access_token || !response?.user?.id) throw new Error('Unable to create a Supabase login session.');
+            if (!saveSupabaseSession(response)) throw new Error('Unable to persist login session.');
+            currentUser = { id: response.user.id, email: response.user.email || email };
+            migrateLegacyCloudForEmail(currentUser.email, currentUser.id);
+            loadCloudState();
+            try { await restoreAccountsFromSupabase(); } catch (_) {}
+            try { await restoreTradesFromSupabase(); } catch (_) {}
+            persistCloudState();
+            renderAccountSelector();
+            renderDashboardAccount();
+            showAuthenticatedApp();
+            try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
+            await detectExistingLocalData();
+          }
+          authForm.reset();
+        } catch (error) {
+          setAuthStatus(error instanceof Error ? error.message : 'Authentication failed.', 'error');
+        } finally {
+          authSubmit.disabled = false;
+          authSubmit.textContent = originalLabel;
+        }
+      });
+
+      forgotPasswordBtn.addEventListener('click', async () => {
+        const email = normalizeEmail(authEmail.value);
+        if (!email || !email.includes('@')) {
+          setAuthStatus('Enter your email address first.', 'error');
+          authEmail.focus();
+          return;
+        }
+        forgotPasswordBtn.disabled = true;
+        const originalLabel = forgotPasswordBtn.textContent;
+        forgotPasswordBtn.textContent = 'Sending…';
+        try {
+          const redirectTo = `${window.location.origin}${window.location.pathname}`;
+          await supabaseRequest('/auth/v1/recover', {
+            method: 'POST',
+            body: JSON.stringify({ email, redirect_to: redirectTo })
+          });
+          setAuthStatus('If an account exists for this email, a password reset link has been sent. Check your inbox and spam, then open the newest email from eRTrades.', 'success');
+          showResetResend(email);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to request a password reset right now.';
+          setAuthStatus(/rate limit/i.test(message) ? 'Too many reset emails were requested. Wait a few minutes, then try Forgot Password again once.' : message, 'error');
+        } finally {
+          forgotPasswordBtn.disabled = false;
+          forgotPasswordBtn.textContent = originalLabel;
+        }
+      });
+
+      cancelPasswordResetBtn.addEventListener('click', () => {
+        recoveryAccessToken = null;
+        authForm.reset();
+        restoreLoginFields();
+      });
+
+      const setDeleteUserStatus = (message = '', type = '') => {
+        deleteUserStatus.textContent = message;
+        deleteUserStatus.className = 'auth-status delete-user-status';
+        if (message) deleteUserStatus.classList.add('show');
+        if (type) deleteUserStatus.classList.add(type);
+      };
+
+      const syncDeleteUserConfirmState = () => {
+        const confirmationMatches = deleteUserConfirmText.value.trim().toUpperCase() === 'DELETE';
+        const hasPassword = deleteUserPassword.value.length > 0;
+        deleteUserConfirmBtn.disabled = !(confirmationMatches && hasPassword);
+      };
+
+      const clearDeletedUserLocalState = async (userId) => {
+        if (!userId) return;
+
+        try {
+          const map = getCloudDataMap();
+          if (map && Object.prototype.hasOwnProperty.call(map, userId)) {
+            delete map[userId];
+            saveCloudDataMap(map);
+          }
+        } catch (_) {}
+
+        try {
+          const users = getCloudUsers().filter((user) => user?.id !== userId);
+          saveCloudUsers(users);
+        } catch (_) {}
+
+        try {
+          const keysToRemove = [];
+          for (let index = 0; index < localStorage.length; index += 1) {
+            const key = localStorage.key(index);
+            if (!key) continue;
+            if (
+              key.startsWith(`${DRAFT_PREFIX}${userId}:`) ||
+              key === `${THEME_KEY_PREFIX}${userId}` ||
+              key === `${IMPORT_MARKER_PREFIX}${userId}` ||
+              key === lastActiveKey(userId)
+            ) {
+              keysToRemove.push(key);
+            }
+          }
+          keysToRemove.forEach(safeLocalRemove);
+          safeLocalRemove(SELECTED_ACCOUNT_LOCAL_KEY);
+        } catch (_) {}
+
+        try {
+          const screenshots = await getAllScreenshots();
+          const ownScreenshots = screenshots.filter((item) => item?.userId === userId);
+          await Promise.all(ownScreenshots.map((item) => removeScreenshot(item.id).catch(() => {})));
+        } catch (_) {}
+      };
+
+      const verifyDeleteUserPassword = async (password) => {
+        if (!currentUser?.id || !currentUser?.email) throw new Error('Sign in again before deleting your account.');
+        const response = await supabaseRequest('/auth/v1/token?grant_type=password', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: currentUser.email,
+            password
+          })
+        });
+        if (!response?.user?.id || response.user.id !== currentUser.id) {
+          throw new Error('Password verification failed.');
+        }
         return true;
       };
 
-      const clearDraft = async (accountId = selectedAccountId, draftId = currentDraftId) => {
-        const drafts = draftId === null ? [] : readDrafts(accountId).filter((item) => item.id !== draftId);
-        writeDraftsLocal(drafts, accountId);
-        if (usingCloudData) { try { await saveDraftsToCloud(accountId, drafts); } catch (_) {} }
-        if (currentDraftId === draftId) currentDraftId = null;
-        if (draftStatus) draftStatus.classList.remove('show');
-        renderDrafts(drafts);
+      const invokeDeleteAccountFunction = async () => {
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || !currentUser?.id) {
+          throw new Error('Your session expired. Sign in again and retry.');
+        }
+
+        let response;
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
+          try {
+            response = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
+              method: 'POST',
+              headers: {
+                apikey: SUPABASE_PUBLISHABLE_KEY,
+                Authorization: `Bearer ${session.access_token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ confirmation: 'DELETE' }),
+              signal: controller.signal
+            });
+          } finally {
+            clearTimeout(timeoutId);
+          }
+        } catch (error) {
+          if (error?.name === 'AbortError') {
+            throw new Error('Account deletion service timed out. Please try again.');
+          }
+          throw new Error('Unable to reach the secure account deletion service. Check your connection and try again.');
+        }
+
+        const text = await response.text();
+        let payload = {};
+        if (text) {
+          try { payload = JSON.parse(text); } catch (_) { payload = { message: text }; }
+        }
+
+        if (!response.ok) {
+          throw new Error(payload?.message || payload?.error || 'Account deletion failed.');
+        }
+
+        if (!payload?.ok) {
+          throw new Error('Account deletion did not complete.');
+        }
+
+        return payload;
       };
 
-      const readDraft = (accountId = selectedAccountId, draftId = currentDraftId) => readDrafts(accountId).find((item) => item.id === draftId) || null;
-
-      const restoreDraft = (draft = readDraft()) => {
-        if (!draft) return false;
-        currentDraftId = draft.id;
-        tradeInstrument.value = (draft.instrument || '').trim().toUpperCase(); syncInstrumentUi();
-        selectedDirection = draft.direction === 'BUY' || draft.direction === 'SELL' ? draft.direction : '';
-        tradeDate.value = draft.date || getLocalDateValue(); syncTradeDateDisplay();
-        tradeSession.value = ['Asia','London','New York'].includes(draft.session) ? draft.session : 'Asia'; syncTradeSessionUi();
-        entryPrice.value = draft.entryPrice ?? ''; stopLoss.value = draft.stopLoss ?? ''; takeProfit.value = draft.takeProfit ?? '';
-        lotSize.value = draft.lotSize ?? ''; riskAmount.value = draft.riskAmount ?? ''; updateAutomaticRiskPercent();
-        profitLoss.value = draft.profitLoss ?? ''; tradeResult.value = draft.result || ''; syncTradeResultUi();
-        tradeNotes.value = draft.notes || ''; tradeMistakes.value = draft.mistakes || '';
-        psychologyBefore.value = draft.psychologyBefore || ''; psychologyAfter.value = draft.psychologyAfter || '';
-        selectedRating = Number(draft.rating) || parseStoredRating(draft.psychologyAfter); syncPsychologyUi();
-        updateDirectionButtons(); calculatePlannedRr(); updateRealizedRPreview();
-        return true;
+      const logout = async (destination = 'landing') => {
+        const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
+        const logoutUserId = currentUser?.id || session?.user?.id || null;
+        if (session?.access_token) {
+          try {
+            await supabaseRequest('/auth/v1/logout', {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${session.access_token}` }
+            });
+          } catch (_) {}
+        }
+        safeLocalRemove(SUPABASE_SESSION_KEY);
+        safeLocalRemove(AUTH_SESSION_KEY);
+        if (logoutUserId) safeLocalRemove(lastActiveKey(logoutUserId));
+        stopCloudJournalSync();
+        currentUser = null;
+        usingCloudData = false;
+        accounts = [];
+        trades = [];
+        selectedAccountId = null;
+        renderAccountSelector();
+        renderDashboardAccount();
+        if (destination === 'login') {
+          showLogin();
+        } else {
+          showLanding({ replaceHistory: true });
+        }
       };
+
+      settingsDeleteUserBtn.addEventListener('click', () => {
+        deleteUserForm.reset();
+        setDeleteUserStatus('');
+        syncDeleteUserConfirmState();
+        if (typeof deleteUserDialog.showModal === 'function') {
+          deleteUserDialog.showModal();
+        } else {
+          deleteUserDialog.setAttribute('open', '');
+        }
+        setTimeout(() => deleteUserPassword.focus(), 0);
+      });
+
+      deleteUserPassword.addEventListener('input', syncDeleteUserConfirmState);
+      deleteUserConfirmText.addEventListener('input', syncDeleteUserConfirmState);
+
+      deleteUserCancelBtn.addEventListener('click', () => {
+        if (deleteUserConfirmBtn.disabled === false && deleteUserConfirmBtn.dataset.deleting === 'true') return;
+        deleteUserDialog.close();
+        deleteUserForm.reset();
+        setDeleteUserStatus('');
+      });
+
+      deleteUserDialog.addEventListener('cancel', (event) => {
+        if (deleteUserConfirmBtn.dataset.deleting === 'true') {
+          event.preventDefault();
+        }
+      });
+
+      const deleteCurrentUserAccount = async () => {
+        if (deleteUserConfirmBtn.dataset.deleting === 'true') return;
+
+        if (deleteUserConfirmText.value.trim().toUpperCase() !== 'DELETE') {
+          setDeleteUserStatus('Type DELETE exactly to continue.', 'error');
+          deleteUserConfirmText.focus();
+          return;
+        }
+
+        const password = deleteUserPassword.value;
+        if (!password) {
+          setDeleteUserStatus('Enter your current password.', 'error');
+          deleteUserPassword.focus();
+          return;
+        }
+
+        const deletingUserId = currentUser?.id || null;
+        const originalLabel = deleteUserConfirmBtn.textContent;
+
+        deleteUserConfirmBtn.dataset.deleting = 'true';
+        deleteUserConfirmBtn.disabled = true;
+        deleteUserCancelBtn.disabled = true;
+        settingsDeleteUserBtn.disabled = true;
+        deleteUserConfirmBtn.textContent = 'Deleting…';
+        setDeleteUserStatus('Verifying password…');
+
+        try {
+          await verifyDeleteUserPassword(password);
+
+          setDeleteUserStatus('Password verified. Deleting cloud data…');
+          await invokeDeleteAccountFunction();
+
+          setDeleteUserStatus('Account deleted. Clearing this device…', 'success');
+          await clearDeletedUserLocalState(deletingUserId);
+
+          deleteUserDialog.close();
+          deleteUserForm.reset();
+
+          await logout('login');
+          setAuthStatus('Your eRTrades account and cloud trading data were permanently deleted.', 'success');
+        } catch (error) {
+          console.error('Delete account failed:', error);
+          setDeleteUserStatus(
+            error instanceof Error ? error.message : 'Unable to delete your account.',
+            'error'
+          );
+        } finally {
+          deleteUserConfirmBtn.dataset.deleting = 'false';
+          deleteUserCancelBtn.disabled = false;
+          settingsDeleteUserBtn.disabled = false;
+          deleteUserConfirmBtn.textContent = originalLabel;
+          syncDeleteUserConfirmState();
+        }
+      };
+
+      deleteUserConfirmBtn.addEventListener('click', deleteCurrentUserAccount);
+
+      deleteUserForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        deleteCurrentUserAccount();
+      });
+
+      logoutBtn.addEventListener('click', logout);
+      settingsLogoutBtn.addEventListener('click', logout);
+
+      const handleAppVisibility = async () => {
+        if (!currentUser?.id) return;
+        if (document.visibilityState === 'hidden') {
+          markCurrentUserActive();
+          return;
+        }
+        if (document.visibilityState !== 'visible') return;
+
+        const session = readJsonLocal(SUPABASE_SESSION_KEY, null);
+        if (session?.user?.id === currentUser.id && isSessionInactiveTooLong(session)) {
+          await logout('login');
+          setAuthStatus('For your security, you were signed out after 12 hours of inactivity. Please log in again.', 'error');
+          return;
+        }
+        markCurrentUserActive();
+      };
+
+      document.addEventListener('visibilitychange', handleAppVisibility);
+      window.addEventListener('pagehide', markCurrentUserActive);
+      let equityResizeTimer = null;
+      window.addEventListener('resize', () => {
+        updateTopNavSpace();
+        updateLandingNavSpace();
+        clearTimeout(equityResizeTimer);
+        equityResizeTimer = setTimeout(() => {
+          if (root.classList.contains('authenticated')) renderEquityCurve();
+        }, 90);
+      });
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+          updateTopNavSpace();
+          updateLandingNavSpace();
+          if (root.classList.contains('authenticated')) renderEquityCurve();
+        }, 100);
+      });
+
+      root.querySelectorAll('.landing-feature').forEach((feature) => {
+        feature.addEventListener('toggle', () => {
+          if (!feature.open) return;
+          root.querySelectorAll('.landing-feature').forEach((other) => {
+            if (other !== feature) other.open = false;
+          });
+        });
+      });
+
+      themeDarkBtn.addEventListener('click', () => saveTheme('dark'));
+      themeLightBtn.addEventListener('click', () => saveTheme('light'));
+
+      importLocalBtn.addEventListener('click', async () => {
+        if (!currentUser) return;
+        importLocalBtn.disabled = true;
+        const original = importLocalBtn.textContent;
+        importLocalBtn.textContent = 'Importing…';
+        try {
+          const [localAccountsRaw, localTradesRaw] = await Promise.all([getAllAccounts(), getAllTrades()]);
+          const localAccounts = Array.isArray(localAccountsRaw) ? localAccountsRaw : [];
+          const localTrades = Array.isArray(localTradesRaw) ? localTradesRaw.map(stripPsychologyData) : [];
+          const accountIds = new Set(accounts.map((account) => account.id));
+          const tradeIds = new Set(trades.map((trade) => trade.id));
+          const mergedAccounts = accounts.concat(localAccounts.filter((account) => !accountIds.has(account.id)));
+          const mergedTrades = trades.concat(localTrades.filter((trade) => !tradeIds.has(trade.id)));
+          accounts = mergedAccounts;
+          trades = mergedTrades;
+          if (!selectedAccountId || !accounts.some((account) => account.id === selectedAccountId)) selectedAccountId = accounts[0]?.id || null;
+          persistCloudState();
+          safeLocalSet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
+          importBanner.classList.remove('visible');
+          renderAccountSelector();
+          renderDashboardAccount();
+          notice.textContent = 'Existing trading data imported successfully.';
+          notice.classList.add('show');
+        } catch (error) {
+          notice.textContent = error instanceof Error ? error.message : 'Unable to import existing trading data.';
+          notice.classList.add('show');
+        } finally {
+          importLocalBtn.disabled = false;
+          importLocalBtn.textContent = original;
+        }
+      });
+
+      skipImportBtn.addEventListener('click', () => {
+        if (currentUser) safeLocalSet(`${IMPORT_MARKER_PREFIX}${currentUser.id}`, '1');
+        importBanner.classList.remove('visible');
+      });
+
+      navButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          if (editingTradeId) resetTradeForm();
+          showPage(button.dataset.page || 'Dashboard');
+        });
+      });
+
+      newTrade.addEventListener('click', openTradeForm);
+
+      tradeDate.addEventListener('input', () => {
+        syncTradeDateDisplay();
+        updateAutomaticRiskPercent();
+      });
+      tradeDate.addEventListener('change', () => {
+        syncTradeDateDisplay();
+        updateAutomaticRiskPercent();
+      });
+
+      directionButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          selectedDirection = button.dataset.direction || '';
+          updateDirectionButtons();
+          saveDraftNow();
+        });
+      });
+
+      [entryPrice, stopLoss, takeProfit].forEach((input) => input.addEventListener('input', calculatePlannedRr));
+
+      riskAmount.addEventListener('input', updateAutomaticRiskPercent);
+      riskAmount.addEventListener('change', updateAutomaticRiskPercent);
+
+      [entryPrice, stopLoss, takeProfit, riskAmount, profitLoss, tradeResult].forEach((input) => {
+        input.addEventListener('input', updateRealizedRPreview);
+        input.addEventListener('change', updateRealizedRPreview);
+      });
+
+      tradeResult.addEventListener('change', () => {
+        if (tradeResult.value === 'BREAK EVEN' && profitLoss.value.trim() === '') profitLoss.value = '0';
+        updateRealizedRPreview();
+      });
+
+      [
+        tradeInstrument,
+        tradeDate,
+        tradeSession,
+        entryPrice,
+        stopLoss,
+        takeProfit,
+        lotSize,
+        riskAmount,
+        profitLoss,
+        tradeResult,
+        tradeNotes,
+        tradeMistakes,
+        psychologyBefore,
+        psychologyAfter,
+        tradeRating
+      ].forEach((field) => {
+        field.addEventListener('input', () => saveDraftNow());
+        field.addEventListener('change', () => saveDraftNow());
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && tradeFormCard.classList.contains('visible') && !editingTradeId) {
+          saveDraftNow({ quiet: true });
+        }
+      });
+
+      window.addEventListener('pagehide', () => {
+        if (tradeFormCard.classList.contains('visible') && !editingTradeId) saveDraftNow({ quiet: true });
+      });
 
       const openTradeDetailFromRow = (row) => {
         const tradeId = row?.dataset?.tradeId;
@@ -11617,7 +14125,6 @@
 
       wirePsychologyMenu(psychologyBefore, psychologyBeforeBtn, psychologyBeforeMenu);
       wirePsychologyMenu(psychologyAfter, psychologyAfterBtn, psychologyAfterMenu);
-      renderDrafts(readDrafts());
       syncInstrumentUi();
       renderInstrumentResults('');
       syncTradeSessionUi();
@@ -11890,7 +14397,7 @@
             for (const tradeId of accountTradeIds) await removeTrade(tradeId);
             await removeAccount(accountId);
           }
-          await clearDraft(accountId, null);
+          clearDraft(accountId);
           trades = trades.filter((trade) => trade.accountId !== accountId);
           accounts = accounts.filter((account) => account.id !== accountId);
           selectedAccountId = accounts[0]?.id || null;
@@ -11954,40 +14461,6 @@
           psychologyAfterBtn.setAttribute('aria-expanded', 'false');
         }
         syncPsychologyMenuScrollLock();
-      });
-
-      tradeFormSaveDraft.addEventListener('click', async () => {
-        const saved = await saveDraftNow({ announce: true });
-        if (saved) {
-          resetTradeForm();
-          showPage('Journal');
-        }
-      });
-
-      draftsBtn.addEventListener('click', async () => {
-        const drafts = await restoreDraftsFromCloud(selectedAccountId);
-        renderDrafts(drafts);
-        if (typeof draftsDialog.showModal === 'function') draftsDialog.showModal();
-        else draftsDialog.setAttribute('open', '');
-      });
-      draftsClose.addEventListener('click', () => draftsDialog.close());
-      draftsList.addEventListener('click', async (event) => {
-        const openBtn = event.target.closest('[data-draft-open]');
-        const deleteBtn = event.target.closest('[data-draft-delete]');
-        if (openBtn) {
-          const draft = readDraft(selectedAccountId, openBtn.dataset.draftOpen);
-          if (!draft) return;
-          draftsDialog.close();
-          tradeForm.reset(); resetPendingScreenshots(); editingTradeId = null;
-          restoreDraft(draft); tradeFormTitle.textContent = 'Draft Trade'; tradeFormSubmit.textContent = 'Save Trade';
-          tradeFormError.classList.remove('show');
-          if (typeof tradeFormCard.showModal === 'function' && !tradeFormCard.open) tradeFormCard.showModal();
-          tradeFormCard.classList.add('visible'); syncInstrumentUi(); instrumentSelectBtn.focus();
-        }
-        if (deleteBtn) {
-          if (!window.confirm('Delete this trade draft?')) return;
-          await clearDraft(selectedAccountId, deleteBtn.dataset.draftDelete);
-        }
       });
 
       tradeForm.addEventListener('submit', async (event) => {
@@ -12101,8 +14574,8 @@
             trades = trades.map((item) => item.id === trade.id ? trade : item);
           } else {
             trades.push(trade);
+            clearDraft();
           }
-          if (currentDraftId) await clearDraft(selectedAccountId, currentDraftId);
           if (usingCloudData) persistCloudState();
           const wasEditing = Boolean(existingTrade);
           detailTradeId = trade.id;
