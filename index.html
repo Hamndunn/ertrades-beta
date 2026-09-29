@@ -1498,6 +1498,34 @@
 
     #ertrades-app .trade-warning.show { display: block; }
 
+    #ertrades-app .journal-drafts-card {
+      margin: 0 0 16px;
+      border: 1px solid rgba(241,197,107,.22);
+      border-radius: 14px;
+      background: rgba(241,197,107,.035);
+      overflow: hidden;
+    }
+    #ertrades-app .journal-drafts-head {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    #ertrades-app .journal-drafts-list { display:grid; gap:8px; padding:10px; }
+    #ertrades-app .journal-draft-row {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px; border:1px solid rgba(255,255,255,.07); border-radius:12px;
+      background:rgba(255,255,255,.025);
+    }
+    #ertrades-app .journal-draft-main { min-width:0; }
+    #ertrades-app .journal-draft-title { font-weight:850; color:var(--text); }
+    #ertrades-app .journal-draft-meta { margin-top:3px; color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #ertrades-app .journal-draft-actions { display:flex; gap:7px; flex-shrink:0; }
+    #ertrades-app .draft-badge {
+      display:inline-flex; align-items:center; padding:3px 7px; border-radius:999px;
+      background:rgba(241,197,107,.10); color:var(--yellow); font-size:9px; font-weight:900;
+      letter-spacing:.08em; text-transform:uppercase;
+    }
+    #ertrades-app .trade-form-actions .draft-save-btn { border-color:rgba(241,197,107,.32); color:var(--yellow); }
+
     #ertrades-app .trade-form-actions {
       display: grid;
       grid-template-columns: minmax(0,1fr) minmax(0,1.35fr);
@@ -7306,6 +7334,7 @@
           <div class="form-error" id="trade-form-error" role="alert"></div>
           <div class="trade-form-actions">
             <button class="secondary-btn" id="trade-form-cancel" type="button">Cancel</button>
+            <button class="secondary-btn draft-save-btn" id="trade-form-save-draft" type="button">Save Draft</button>
             <button class="primary-btn" type="submit">Save Trade</button>
           </div>
         </form>
@@ -7442,6 +7471,16 @@
             </button>
           </div>
         </div>
+        <section class="journal-drafts-card" id="journal-drafts-card" hidden aria-labelledby="journal-drafts-title">
+          <div class="journal-drafts-head">
+            <div>
+              <div class="section-kicker">Open Entries</div>
+              <div class="section-title" id="journal-drafts-title">Drafts</div>
+            </div>
+            <span class="section-meta" id="journal-drafts-count">0 drafts</span>
+          </div>
+          <div class="journal-drafts-list" id="journal-drafts-list"></div>
+        </section>
         <div class="journal-filter-panel" id="journal-filter-panel" aria-label="Search and filter journal">
           <input
             class="journal-search"
@@ -8427,6 +8466,10 @@
       const recentEmpty = root.querySelector('#recent-empty');
       const recentTradesCount = root.querySelector('#recent-trades-count');
       const draftStatus = root.querySelector('#draft-status');
+      const tradeFormSaveDraft = root.querySelector('#trade-form-save-draft');
+      const journalDraftsCard = root.querySelector('#journal-drafts-card');
+      const journalDraftsList = root.querySelector('#journal-drafts-list');
+      const journalDraftsCount = root.querySelector('#journal-drafts-count');
       const tradeDetailPage = root.querySelector('#trade-detail-page');
       const tradeDetailGrid = root.querySelector('#trade-detail-grid');
       const tradeDetailClose = root.querySelector('#trade-detail-close');
@@ -8574,6 +8617,8 @@
       const TRADES_STORE = 'trades';
       const SCREENSHOTS_STORE = 'screenshots';
       const DRAFT_PREFIX = 'ertrades-new-trade-draft:';
+      const JOURNAL_DRAFTS_META_KEY = 'ertrades_journal_drafts_v1';
+      const JOURNAL_DRAFTS_LOCAL_PREFIX = 'ertrades-journal-drafts-v1:';
       const SELECTED_ACCOUNT_LOCAL_KEY = 'ertrades-selected-account-id';
       const AUTH_SESSION_KEY = 'ertrades-auth-session-v1';
       const INACTIVITY_TIMEOUT_MS = 12 * 60 * 60 * 1000;
@@ -8594,6 +8639,7 @@
       let tradeSuccessTimer = null;
       let screenshotSyncNoticeTimer = null;
       let editingTradeId = null;
+      let editingDraftId = null;
       let detailTradeId = null;
       let editingAccountId = null;
       let authMode = 'login';
@@ -11190,6 +11236,136 @@
         );
       };
 
+      const journalDraftsKey = (accountId = selectedAccountId) => accountId && currentUser?.id
+        ? `${JOURNAL_DRAFTS_LOCAL_PREFIX}${currentUser.id}:${accountId}`
+        : null;
+
+      const readJournalDrafts = (accountId = selectedAccountId) => {
+        const key = journalDraftsKey(accountId);
+        if (!key) return [];
+        try {
+          const parsed = JSON.parse(safeLocalGet(key) || '[]');
+          return Array.isArray(parsed) ? parsed.filter((item) => item && item.id) : [];
+        } catch (_) { return []; }
+      };
+
+      const writeJournalDrafts = (items, accountId = selectedAccountId) => {
+        const key = journalDraftsKey(accountId);
+        if (!key) return false;
+        return safeLocalSet(key, JSON.stringify(items.slice(0, 50)));
+      };
+
+      const getJournalDraftsMap = (session = null) => {
+        const metadata = session?.user?.user_metadata || {};
+        const map = metadata?.[JOURNAL_DRAFTS_META_KEY];
+        return map && typeof map === 'object' && !Array.isArray(map) ? { ...map } : {};
+      };
+
+      const persistJournalDraftsToSupabase = async (accountId = selectedAccountId) => {
+        if (!currentUser?.id || !accountId) return false;
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || session.user?.id !== currentUser.id) throw new Error('Sign in again to sync drafts.');
+        const existingMetadata = session.user?.user_metadata && typeof session.user.user_metadata === 'object'
+          ? { ...session.user.user_metadata } : {};
+        const map = getJournalDraftsMap(session);
+        map[accountId] = readJournalDrafts(accountId);
+        const nextMetadata = { ...existingMetadata, [JOURNAL_DRAFTS_META_KEY]: map };
+        const updatedUser = await supabaseRequest('/auth/v1/user', {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          body: JSON.stringify({ data: nextMetadata })
+        });
+        saveSupabaseSession({ ...session, user: { ...session.user, ...(updatedUser || {}), user_metadata: updatedUser?.user_metadata || nextMetadata } });
+        return true;
+      };
+
+      const restoreJournalDraftsFromSupabase = async () => {
+        if (!currentUser?.id) return false;
+        const session = await getValidSupabaseSession();
+        if (!session?.access_token || session.user?.id !== currentUser.id) return false;
+        try {
+          const freshUser = await supabaseRequest('/auth/v1/user', {
+            method: 'GET', headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+          const nextSession = { ...session, user: { ...session.user, ...(freshUser || {}), user_metadata: freshUser?.user_metadata || session.user?.user_metadata || {} } };
+          saveSupabaseSession(nextSession);
+          const map = getJournalDraftsMap(nextSession);
+          Object.entries(map).forEach(([accountId, items]) => {
+            if (Array.isArray(items)) writeJournalDrafts(items, accountId);
+          });
+          renderJournalDrafts();
+          return true;
+        } catch (_) { return false; }
+      };
+
+      const upsertJournalDraft = async () => {
+        if (!currentAccount()) throw new Error('Create or select a trading account before saving a draft.');
+        const draft = collectDraft();
+        if (!draftHasContent(draft)) throw new Error('Add at least an instrument, entry, setup, or note before saving a draft.');
+        const items = readJournalDrafts();
+        const id = editingDraftId || makeRecordUuid();
+        const next = { ...draft, id, accountId: selectedAccountId, createdAt: items.find((item) => item.id === id)?.createdAt || Date.now(), updatedAt: Date.now() };
+        const updated = [next, ...items.filter((item) => item.id !== id)];
+        if (!writeJournalDrafts(updated)) throw new Error('Unable to save this draft on this device.');
+        if (usingCloudData) await persistJournalDraftsToSupabase();
+        editingDraftId = id;
+        renderJournalDrafts();
+        showDraftSaved();
+        return next;
+      };
+
+      const deleteJournalDraft = async (id, accountId = selectedAccountId) => {
+        const updated = readJournalDrafts(accountId).filter((item) => item.id !== id);
+        writeJournalDrafts(updated, accountId);
+        if (usingCloudData) await persistJournalDraftsToSupabase(accountId);
+        if (editingDraftId === id) editingDraftId = null;
+        renderJournalDrafts();
+      };
+
+      const renderJournalDrafts = () => {
+        if (!journalDraftsCard || !journalDraftsList) return;
+        const drafts = readJournalDrafts();
+        journalDraftsCard.hidden = !drafts.length;
+        journalDraftsCount.textContent = `${drafts.length} ${drafts.length === 1 ? 'draft' : 'drafts'}`;
+        journalDraftsList.innerHTML = '';
+        drafts.forEach((draft) => {
+          const row = document.createElement('div'); row.className = 'journal-draft-row';
+          const main = document.createElement('div'); main.className = 'journal-draft-main';
+          const title = document.createElement('div'); title.className = 'journal-draft-title';
+          title.innerHTML = `<span class="draft-badge">Draft</span> ${String(draft.instrument || 'Untitled Entry')}`;
+          const meta = document.createElement('div'); meta.className = 'journal-draft-meta';
+          meta.textContent = `${draft.direction || 'Direction not set'} · ${draft.date || 'No date'}${draft.entryPrice !== '' && draft.entryPrice != null ? ` · Entry ${draft.entryPrice}` : ''}`;
+          main.append(title, meta);
+          const actions = document.createElement('div'); actions.className = 'journal-draft-actions';
+          const open = document.createElement('button'); open.type = 'button'; open.className = 'secondary-btn'; open.textContent = 'Continue';
+          open.addEventListener('click', () => openJournalDraft(draft));
+          const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'secondary-btn'; remove.textContent = 'Delete';
+          remove.addEventListener('click', async () => { if (window.confirm('Delete this draft?')) { try { await deleteJournalDraft(draft.id); } catch (error) { notice.textContent = error?.message || 'Unable to delete draft.'; notice.classList.add('show'); } } });
+          actions.append(open, remove); row.append(main, actions); journalDraftsList.appendChild(row);
+        });
+      };
+
+      const openJournalDraft = (draft) => {
+        if (!currentAccount() || !draft) return;
+        editingDraftId = draft.id;
+        editingTradeId = null;
+        tradeForm.reset();
+        tradeInstrument.value = (draft.instrument || '').trim().toUpperCase(); syncInstrumentUi();
+        selectedDirection = draft.direction === 'BUY' || draft.direction === 'SELL' ? draft.direction : '';
+        tradeDate.value = draft.date || getLocalDateValue(); syncTradeDateDisplay();
+        tradeSession.value = ['Asia','London','New York'].includes(draft.session) ? draft.session : 'Asia'; syncTradeSessionUi();
+        entryPrice.value = draft.entryPrice ?? ''; stopLoss.value = draft.stopLoss ?? ''; takeProfit.value = draft.takeProfit ?? '';
+        lotSize.value = draft.lotSize ?? ''; riskAmount.value = draft.riskAmount ?? ''; updateAutomaticRiskPercent();
+        profitLoss.value = draft.profitLoss ?? ''; tradeResult.value = ['WIN','LOSS','BREAK EVEN'].includes(draft.result) ? draft.result : ''; syncTradeResultUi();
+        tradeNotes.value = draft.notes || ''; tradeMistakes.value = draft.mistakes || '';
+        psychologyBefore.value = draft.psychologyBefore || ''; psychologyAfter.value = draft.psychologyAfter || '';
+        selectedRating = Number(draft.rating) || parseStoredRating(draft.psychologyAfter); syncPsychologyUi(); updateDirectionButtons(); calculatePlannedRr(); updateRealizedRPreview();
+        tradeFormTitle.textContent = 'Continue Draft'; tradeFormSubmit.textContent = 'Save Trade';
+        tradeFormError.classList.remove('show'); tradeFormError.textContent = '';
+        if (typeof tradeFormCard.showModal === 'function' && !tradeFormCard.open) tradeFormCard.showModal();
+        tradeFormCard.classList.add('visible'); journalPage.classList.remove('visible'); instrumentSelectBtn.focus();
+      };
+
       const saveDraftNow = ({ quiet = false } = {}) => {
         if (editingTradeId) return;
         const key = draftKey();
@@ -11693,6 +11869,7 @@
 
       const renderTrades = () => {
         const account = currentAccount();
+        renderJournalDrafts();
         renderDashboardReminder();
         const accountTrades = currentTrades();
         const currency = account?.currency || 'USD';
@@ -12097,6 +12274,7 @@
         if (page === 'Calendar') renderCalendar();
         if (page === 'Analytics') renderAnalytics();
         if (page === 'Prop Firm') renderPropFirm();
+        if (page === 'Journal') renderTrades();
 
         const activePageElement =
           page === 'Dashboard' ? dashboard :
@@ -12149,6 +12327,7 @@
         if (typeof tradeFormCard.showModal === 'function' && !tradeFormCard.open) tradeFormCard.showModal();
         tradeFormCard.classList.add('visible');
         editingTradeId = null;
+        editingDraftId = null;
         resetPendingScreenshots();
         tradeFormTitle.textContent = 'New Trade';
         tradeFormSubmit.textContent = 'Save Trade';
@@ -12230,6 +12409,7 @@
         syncPsychologyUi();
         resetPendingScreenshots();
         editingTradeId = null;
+        editingDraftId = null;
         tradeFormTitle.textContent = 'New Trade';
         tradeFormSubmit.textContent = 'Save Trade';
         selectedDirection = '';
@@ -13133,6 +13313,7 @@
             renderDashboardAccount();
             showAuthenticatedApp();
             try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
+            try { await restoreJournalDraftsFromSupabase(); } catch (_) {}
 
             try { await restoreAccountsFromSupabase(); } catch (_) {}
             try { await restoreTradesFromSupabase(); } catch (_) {}
@@ -13393,6 +13574,7 @@
             renderDashboardAccount();
             showAuthenticatedApp();
             try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
+            try { await restoreJournalDraftsFromSupabase(); } catch (_) {}
             await detectExistingLocalData();
           } else {
             const response = await supabaseRequest('/auth/v1/token?grant_type=password', {
@@ -13411,6 +13593,7 @@
             renderDashboardAccount();
             showAuthenticatedApp();
             try { await restoreDashboardRemindersFromSupabase(); } catch (_) {}
+            try { await restoreJournalDraftsFromSupabase(); } catch (_) {}
             await detectExistingLocalData();
           }
           authForm.reset();
@@ -14576,6 +14759,13 @@
             trades.push(trade);
             clearDraft();
           }
+          if (editingDraftId) {
+            const completedDraftId = editingDraftId;
+            const remainingDrafts = readJournalDrafts().filter((item) => item.id !== completedDraftId);
+            writeJournalDrafts(remainingDrafts);
+            if (usingCloudData) await persistJournalDraftsToSupabase();
+            editingDraftId = null;
+          }
           if (usingCloudData) persistCloudState();
           const wasEditing = Boolean(existingTrade);
           detailTradeId = trade.id;
@@ -14593,6 +14783,19 @@
         } finally {
           tradeFormSubmit.disabled = false;
           tradeFormSubmit.textContent = editingTradeId ? 'Save Changes' : 'Save Trade';
+        }
+      });
+
+      tradeFormSaveDraft.addEventListener('click', async () => {
+        try {
+          tradeFormSaveDraft.disabled = true;
+          tradeFormSaveDraft.textContent = 'Saving…';
+          await upsertJournalDraft();
+        } catch (error) {
+          showTradeError(error instanceof Error ? error.message : 'Unable to save this draft.');
+        } finally {
+          tradeFormSaveDraft.disabled = false;
+          tradeFormSaveDraft.textContent = 'Save Draft';
         }
       });
 
