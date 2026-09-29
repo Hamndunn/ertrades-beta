@@ -1500,29 +1500,65 @@
 
     #ertrades-app .journal-drafts-card {
       margin: 0 0 16px;
-      border: 1px solid rgba(241,197,107,.22);
-      border-radius: 14px;
-      background: rgba(241,197,107,.035);
+      border: 1px solid rgba(241,197,107,.20);
+      border-radius: 16px;
+      background: rgba(241,197,107,.025);
       overflow: hidden;
     }
     #ertrades-app .journal-drafts-head {
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06);
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-    #ertrades-app .journal-drafts-list { display:grid; gap:8px; padding:10px; }
+    #ertrades-app .journal-drafts-list {
+      display:grid; gap:8px; padding:10px;
+    }
     #ertrades-app .journal-draft-row {
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:12px; border:1px solid rgba(255,255,255,.07); border-radius:12px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+      padding:12px;
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:12px;
       background:rgba(255,255,255,.025);
     }
     #ertrades-app .journal-draft-main { min-width:0; }
-    #ertrades-app .journal-draft-title { font-weight:850; color:var(--text); }
-    #ertrades-app .journal-draft-meta { margin-top:3px; color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    #ertrades-app .journal-draft-actions { display:flex; gap:7px; flex-shrink:0; }
+    #ertrades-app .journal-draft-title {
+      display:flex; align-items:center; gap:8px; min-width:0;
+      font-weight:850; color:var(--text);
+      line-height:1.25;
+    }
+    #ertrades-app .journal-draft-title > .draft-instrument {
+      min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    #ertrades-app .journal-draft-meta {
+      margin-top:6px; color:var(--muted); font-size:11px; line-height:1.4;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    #ertrades-app .journal-draft-actions {
+      display:flex; align-items:center; justify-content:flex-end; gap:7px;
+      flex-shrink:0;
+    }
+    #ertrades-app .journal-draft-actions .secondary-btn {
+      min-height:36px; padding:8px 12px; white-space:nowrap;
+    }
     #ertrades-app .draft-badge {
-      display:inline-flex; align-items:center; padding:3px 7px; border-radius:999px;
+      display:inline-flex; align-items:center; justify-content:center;
+      flex:0 0 auto; padding:3px 7px; border-radius:999px;
       background:rgba(241,197,107,.10); color:var(--yellow); font-size:9px; font-weight:900;
       letter-spacing:.08em; text-transform:uppercase;
+    }
+    @media (max-width: 600px) {
+      #ertrades-app .journal-draft-row {
+        grid-template-columns:1fr;
+        gap:10px;
+      }
+      #ertrades-app .journal-draft-actions {
+        display:grid; grid-template-columns:1fr 1fr; width:100%;
+      }
+      #ertrades-app .journal-draft-actions .secondary-btn { width:100%; }
     }
     #ertrades-app .trade-form-actions .draft-save-btn { border-color:rgba(241,197,107,.32); color:var(--yellow); }
 
@@ -11332,7 +11368,9 @@
           const row = document.createElement('div'); row.className = 'journal-draft-row';
           const main = document.createElement('div'); main.className = 'journal-draft-main';
           const title = document.createElement('div'); title.className = 'journal-draft-title';
-          title.innerHTML = `<span class="draft-badge">Draft</span> ${String(draft.instrument || 'Untitled Entry')}`;
+          const badge = document.createElement('span'); badge.className = 'draft-badge'; badge.textContent = 'Draft';
+          const instrument = document.createElement('span'); instrument.className = 'draft-instrument'; instrument.textContent = String(draft.instrument || 'Untitled Entry');
+          title.append(badge, instrument);
           const meta = document.createElement('div'); meta.className = 'journal-draft-meta';
           meta.textContent = `${draft.direction || 'Direction not set'} · ${draft.date || 'No date'}${draft.entryPrice !== '' && draft.entryPrice != null ? ` · Entry ${draft.entryPrice}` : ''}`;
           main.append(title, meta);
@@ -12434,10 +12472,25 @@
           showPage('Trade Detail');
           return;
         }
+
+        // Continuing a persistent Journal Draft must never delete that Draft.
+        // Cancel only closes the editor and returns to Journal with the Draft intact.
+        if (editingDraftId) {
+          editingDraftId = null;
+          if (tradeFormCard.open && typeof tradeFormCard.close === 'function') tradeFormCard.close();
+          tradeFormCard.classList.remove('visible');
+          resetTradeForm();
+          renderJournalDrafts();
+          showPage('Journal');
+          return;
+        }
+
         const draft = readDraft();
         if (draftHasContent(draft) && !window.confirm('Discard this unfinished trade draft?')) return;
         clearDraft();
         resetTradeForm();
+        renderJournalDrafts();
+        showPage('Journal');
       };
 
       const showAccountError = (message) => {
@@ -14794,8 +14847,12 @@
           // Persistent Draft is already saved; clear the old single-form autosave
           // so closing the modal later cannot resurrect stale draft data.
           clearDraft();
+          editingDraftId = null;
+          if (tradeFormCard.open && typeof tradeFormCard.close === 'function') tradeFormCard.close();
+          tradeFormCard.classList.remove('visible');
           resetTradeForm();
           renderDashboardAccount();
+          renderJournalDrafts();
           showPage('Journal');
         } catch (error) {
           showTradeError(error instanceof Error ? error.message : 'Unable to save this draft.');
