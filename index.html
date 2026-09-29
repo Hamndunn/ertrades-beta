@@ -1647,6 +1647,36 @@
       transform: rotate(180deg);
     }
 
+    /* v84d.8 — Journal header spacing: keep Saved Trades, count, Filters and Open Entries visually separated on mobile. */
+    @media (max-width: 600px) {
+      #ertrades-app .journal-head {
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 14px 12px;
+      }
+      #ertrades-app .journal-head > :first-child {
+        flex: 0 0 100%;
+        width: 100%;
+      }
+      #ertrades-app .journal-head-actions {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      #ertrades-app .journal-head-actions .section-meta {
+        margin-right: auto;
+      }
+      #ertrades-app .journal-filter-toggle {
+        flex: 0 0 auto;
+      }
+      #ertrades-app .journal-drafts-card {
+        margin: 12px 12px 16px;
+      }
+      #ertrades-app .journal-drafts-head {
+        padding: 13px 14px;
+      }
+    }
+
     #ertrades-app .journal-filter-badge {
       min-width: 18px;
       height: 18px;
