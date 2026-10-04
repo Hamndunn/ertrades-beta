@@ -12038,6 +12038,7 @@
       };
       const renderDashboardReminder = () => {
         if (!dashboardReminder || !dashboardReminderText) return;
+        if (dashboardReminderEditor?.classList.contains('visible')) return;
         dashboardReminderText.textContent = getDashboardReminder();
         if (dashboardReminderEditor) dashboardReminderEditor.classList.remove('visible');
       };
